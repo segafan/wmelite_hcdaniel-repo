@@ -1,0 +1,49 @@
+#include "scripts\base.inc"
+
+
+////////////////////////////////////////////////////////////////////////////////
+// load the old guy person
+global OldGuy = Scene.LoadEntity("entities\oldguy\oldguy.entity");
+OldGuy.SkipTo(505, 330);
+
+////////////////////////////////////////////////////////////////////////////////
+// setup actor's initial position depending on where he came from
+if(Game.PrevScene=="street")
+{
+  actor.SkipTo(139, 428);
+  actor.Direction = DI_DOWNRIGHT;
+}
+else
+{
+  actor.SkipTo(314, 505);
+  actor.Direction = DI_DOWNRIGHT;
+}
+
+// point the "camera" at the actor
+Scene.SkipTo(actor);
+
+
+////////////////////////////////////////////////////////////////////////////////
+// scene state
+global StateRoom;
+
+// default values
+if(StateRoom==null)
+{
+  StateRoom.Visited = false;
+  StateRoom.TalkedToOldGuy = false;
+  StateRoom.FanSpeed = 1;
+}
+
+
+if(StateRoom.Visited==false)
+{
+  actor.SkipTo(461, 685);
+  actor.Direction = DI_DOWN;
+  Scene.SkipTo(actor);
+
+  StateRoom.Visited = true;
+}
+
+// and start the music
+if(!Game.IsMusicPlaying()) Game.PlayMusic("music\narco - postmortusica.ogg");
