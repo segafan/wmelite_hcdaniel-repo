@@ -14,8 +14,6 @@
 		461507A813520AFD000E96C4 /* libbass.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 461507A713520AFD000E96C4 /* libbass.a */; };
 		461507AA13520B13000E96C4 /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 461507A913520B13000E96C4 /* libboost_filesystem.a */; };
 		461507AC13520B13000E96C4 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 461507AB13520B13000E96C4 /* libboost_system.a */; };
-		461507AE13520B24000E96C4 /* libfreeimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 461507AD13520B24000E96C4 /* libfreeimage.a */; };
-		461507B213520B46000E96C4 /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 461507B113520B46000E96C4 /* libSDL.a */; };
 		4615089A13520B93000E96C4 /* AdActor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 461507B313520B93000E96C4 /* AdActor.cpp */; };
 		4615089B13520B93000E96C4 /* AdActorDir.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 461507B513520B93000E96C4 /* AdActorDir.cpp */; };
 		4615089C13520B93000E96C4 /* AdEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 461507B713520B93000E96C4 /* AdEntity.cpp */; };
@@ -140,6 +138,9 @@
 		46D0ADFD13E1A39A00CBDA40 /* SXStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D0ADFB13E1A39A00CBDA40 /* SXStore.cpp */; };
 		46D0AE0313E1A50800CBDA40 /* IOS_StoreKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 46D0AE0213E1A50800CBDA40 /* IOS_StoreKit.m */; };
 		46D0AE0513E1A73000CBDA40 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46D0AE0413E1A73000CBDA40 /* StoreKit.framework */; };
+		46EA217415C01C2E00A18708 /* libfreeimage-iphone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46EA217215C01C2E00A18708 /* libfreeimage-iphone.a */; };
+		46EA217515C01C2E00A18708 /* libfreeimage-iphonesimulator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46EA217315C01C2E00A18708 /* libfreeimage-iphonesimulator.a */; };
+		46EA218115C03A2200A18708 /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46EA218015C03A2200A18708 /* libSDL.a */; };
 		46EB701A1359B54A00E280F6 /* data.dcp in Resources */ = {isa = PBXBuildFile; fileRef = 46EB70191359B54A00E280F6 /* data.dcp */; };
 		FD779EDE0E26BA1200F39101 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD779EDD0E26BA1200F39101 /* CoreAudio.framework */; };
 		FD77A07D0E26BD8C00F39101 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = FD77A07C0E26BD8C00F39101 /* Icon.png */; };
@@ -157,8 +158,6 @@
 		461507A713520AFD000E96C4 /* libbass.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbass.a; path = ../dep/bass/lib/libbass.a; sourceTree = SOURCE_ROOT; };
 		461507A913520B13000E96C4 /* libboost_filesystem.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_filesystem.a; path = ../dep/boost/lib/libboost_filesystem.a; sourceTree = SOURCE_ROOT; };
 		461507AB13520B13000E96C4 /* libboost_system.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_system.a; path = ../dep/boost/lib/libboost_system.a; sourceTree = SOURCE_ROOT; };
-		461507AD13520B24000E96C4 /* libfreeimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreeimage.a; path = ../dep/FreeImage/lib/libfreeimage.a; sourceTree = SOURCE_ROOT; };
-		461507B113520B46000E96C4 /* libSDL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL.a; path = ../dep/SDL/lib/libSDL.a; sourceTree = SOURCE_ROOT; };
 		461507B313520B93000E96C4 /* AdActor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AdActor.cpp; path = ../../src/AdActor.cpp; sourceTree = SOURCE_ROOT; };
 		461507B413520B93000E96C4 /* AdActor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AdActor.h; path = ../../src/AdActor.h; sourceTree = SOURCE_ROOT; };
 		461507B513520B93000E96C4 /* AdActorDir.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AdActorDir.cpp; path = ../../src/AdActorDir.cpp; sourceTree = SOURCE_ROOT; };
@@ -405,6 +404,9 @@
 		46D0AE0213E1A50800CBDA40 /* IOS_StoreKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IOS_StoreKit.m; path = ../../src/IOS_StoreKit.m; sourceTree = "<group>"; };
 		46D0AE0413E1A73000CBDA40 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		46D0AE0613E1A8DB00CBDA40 /* IOS_StoreKit_interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOS_StoreKit_interface.h; path = ../../src/IOS_StoreKit_interface.h; sourceTree = "<group>"; };
+		46EA217215C01C2E00A18708 /* libfreeimage-iphone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libfreeimage-iphone.a"; path = "../dep/FreeImage/lib/libfreeimage-iphone.a"; sourceTree = "<group>"; };
+		46EA217315C01C2E00A18708 /* libfreeimage-iphonesimulator.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libfreeimage-iphonesimulator.a"; path = "../dep/FreeImage/lib/libfreeimage-iphonesimulator.a"; sourceTree = "<group>"; };
+		46EA218015C03A2200A18708 /* libSDL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL.a; path = ../dep/SDL/lib/libSDL.a; sourceTree = "<group>"; };
 		46EB70191359B54A00E280F6 /* data.dcp */ = {isa = PBXFileReference; lastKnownFileType = file; path = data.dcp; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FD779EDD0E26BA1200F39101 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
@@ -430,10 +432,11 @@
 				461507A813520AFD000E96C4 /* libbass.a in Frameworks */,
 				461507AA13520B13000E96C4 /* libboost_filesystem.a in Frameworks */,
 				461507AC13520B13000E96C4 /* libboost_system.a in Frameworks */,
-				461507AE13520B24000E96C4 /* libfreeimage.a in Frameworks */,
-				461507B213520B46000E96C4 /* libSDL.a in Frameworks */,
 				4615094013521059000E96C4 /* CFNetwork.framework in Frameworks */,
 				461509531352207F000E96C4 /* libfreetype.a in Frameworks */,
+				46EA217415C01C2E00A18708 /* libfreeimage-iphone.a in Frameworks */,
+				46EA217515C01C2E00A18708 /* libfreeimage-iphonesimulator.a in Frameworks */,
+				46EA218115C03A2200A18708 /* libSDL.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -451,15 +454,16 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				46EA218015C03A2200A18708 /* libSDL.a */,
 				29B97315FDCFA39411CA2CEA /* Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				46EA217315C01C2E00A18708 /* libfreeimage-iphonesimulator.a */,
+				46EA217215C01C2E00A18708 /* libfreeimage-iphone.a */,
 				461507A713520AFD000E96C4 /* libbass.a */,
 				461507A913520B13000E96C4 /* libboost_filesystem.a */,
 				461507AB13520B13000E96C4 /* libboost_system.a */,
-				461507AD13520B24000E96C4 /* libfreeimage.a */,
-				461507B113520B46000E96C4 /* libSDL.a */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -768,7 +772,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0410;
+				LastUpgradeCheck = 0430;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "wmelite" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -945,7 +949,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../dep/bass/include\"",
@@ -963,13 +967,15 @@
 					"\"$(SRCROOT)/../dep/FreeImage/lib\"",
 					"\"$(SRCROOT)/../dep/freetype/lib\"",
 					"\"$(SRCROOT)/../dep/SDL/lib\"",
+					"\"$(SRCROOT)/../dep/SDL/lib/device\"",
+					"\"$(SRCROOT)/../dep/SDL/lib/simulator\"",
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_NAME = wmelite;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "armv6 i386";
+				VALID_ARCHS = "armv7 armv6 i386";
 			};
 			name = Debug;
 		};
@@ -982,7 +988,7 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../dep/bass/include\"",
@@ -1000,13 +1006,15 @@
 					"\"$(SRCROOT)/../dep/FreeImage/lib\"",
 					"\"$(SRCROOT)/../dep/freetype/lib\"",
 					"\"$(SRCROOT)/../dep/SDL/lib\"",
+					"\"$(SRCROOT)/../dep/SDL/lib/device\"",
+					"\"$(SRCROOT)/../dep/SDL/lib/simulator\"",
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_NAME = wmelite;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "armv6 i386";
+				VALID_ARCHS = "armv7 armv6 i386";
 			};
 			name = Release;
 		};
