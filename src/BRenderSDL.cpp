@@ -125,12 +125,11 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed)
 	Uint32 flags = SDL_WINDOW_SHOWN;
 #ifdef __IPHONEOS__
 	flags |= SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS;
-#endif
-
+#else
 	//m_Windowed = Game->m_Registry->ReadBool("Video", "Windowed", true);
+    // as of Novmber 2012 using SDL_WINDOW_FULLSCREEN causes iOS glitch when returning back to the app (the image is shifted several pixels up)
 	if (!windowed) flags |= SDL_WINDOW_FULLSCREEN;
-
-
+#endif
 	m_Win = SDL_CreateWindow("WME Lite",
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
@@ -163,6 +162,7 @@ HRESULT CBRenderSDL::Flip()
 	
 #ifdef __IPHONEOS__
 	// hack: until viewports work correctly, we just paint black bars instead
+    
 	SDL_SetRenderDrawColor(m_Renderer, 0x00, 0x00, 0x00, 0xFF);
 
 	static bool firstRefresh = true; // prevents a weird color glitch
@@ -206,6 +206,7 @@ HRESULT CBRenderSDL::Flip()
 			SDL_RenderFillRect(m_Renderer, &rect);
 		}
 	}
+    
 #endif
 
 
