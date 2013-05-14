@@ -366,11 +366,11 @@ HRESULT CBSurfaceSDL::DisplayZoom(int X, int Y, RECT rect, float ZoomX, float Zo
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBSurfaceSDL::DisplayTransform(int X, int Y, int HotX, int HotY, RECT Rect, float ZoomX, float ZoomY, DWORD Alpha, float Rotate, TSpriteBlendMode BlendMode, bool MirrorX, bool MirrorY)
 {
-	return DrawSprite(X, Y, &Rect, ZoomX, ZoomY, Alpha, false, BlendMode, MirrorX, MirrorY);
+	return DrawSprite(X, Y, &Rect, ZoomX, ZoomY, Alpha, false, BlendMode, MirrorX, MirrorY, 0, 0, HotX, HotY, Rotate);
 }
 
 //////////////////////////////////////////////////////////////////////////
-HRESULT CBSurfaceSDL::DrawSprite(int X, int Y, RECT* Rect, float ZoomX, float ZoomY, DWORD Alpha, bool AlphaDisable, TSpriteBlendMode BlendMode, bool MirrorX, bool MirrorY, int offsetX, int offsetY)
+HRESULT CBSurfaceSDL::DrawSprite(int X, int Y, RECT* Rect, float ZoomX, float ZoomY, DWORD Alpha, bool AlphaDisable, TSpriteBlendMode BlendMode, bool MirrorX, bool MirrorY, int offsetX, int offsetY, int originX, int originY, float angle)
 {
 	CBRenderSDL* renderer = static_cast<CBRenderSDL*>(Game->m_Renderer);
 
@@ -399,14 +399,27 @@ HRESULT CBSurfaceSDL::DrawSprite(int X, int Y, RECT* Rect, float ZoomX, float Zo
 	position.x = X;
 	position.y = Y;
 	position.w = (float)srcRect.w * ZoomX / 100.f;
-	position.h = (float)srcRect.h * ZoomX / 100.f;
+	position.h = (float)srcRect.h * ZoomY / 100.f;
 
 	renderer->ModTargetRect(&position);
 
 	position.x += offsetX;
 	position.y += offsetY;
 
-	SDL_RenderCopy(renderer->GetSdlRenderer(), m_Texture, &srcRect, &position);
+	if (angle == 0.0f && !MirrorX && !MirrorY) SDL_RenderCopy(renderer->GetSdlRenderer(), m_Texture, &srcRect, &position);
+	else
+	{
+		SDL_Point origin;
+		origin.x = originX * ZoomX / 100.f;
+		origin.y = originY * ZoomY / 100.f;
+		renderer->ModOrigin(&origin);
+
+		int flip = SDL_FLIP_NONE;
+		if (MirrorX) flip |= SDL_FLIP_HORIZONTAL;
+		if (MirrorY) flip |= SDL_FLIP_VERTICAL;
+
+		SDL_RenderCopyEx(renderer->GetSdlRenderer(), m_Texture, &srcRect, &position, angle, &origin, (SDL_RendererFlip)flip);
+	}
 
 
 	return S_OK;

@@ -56,6 +56,7 @@ public:
 	HRESULT SetViewport(int left, int top, int right, int bottom);
 
 	void ModTargetRect(SDL_Rect* rect);
+	void ModOrigin(SDL_Point* origin);
 	void PointFromScreen(POINT* point);
 	void PointToScreen(POINT* point);
 

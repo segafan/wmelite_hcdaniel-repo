@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib SDLmain.lib bass.lib zlib.lib freetype2311_D.lib FreeImage.lib"
+				AdditionalDependencies="SDL2.lib SDL2main.lib bass.lib zlib.lib freetype2311_D.lib FreeImage.lib"
 				OutputFile="$(InputDir)\..\bin\$(IntDir)\$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="dep\sdl\lib;dep\zlib\lib;dep\bass\lib;dep\freetype\lib;dep\FreeImage\lib;dep\boost\lib"
@@ -141,7 +141,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib SDLmain.lib bass.lib zlib.lib freetype2311ST.lib FreeImage.lib"
+				AdditionalDependencies="SDL2.lib SDL2main.lib bass.lib zlib.lib freetype2311ST.lib FreeImage.lib"
 				OutputFile="$(InputDir)\..\bin\$(IntDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="dep\sdl\lib;dep\zlib\lib;dep\bass\lib;dep\freetype\lib;dep\FreeImage\lib;dep\boost\lib"

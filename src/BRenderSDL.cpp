@@ -89,9 +89,9 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed)
 	m_RealHeight = Game->m_Registry->ReadInt("Debug", "ForceResHeight", m_Height);
 #endif
 
-	/*	
-	m_RealWidth = 480;
-	m_RealHeight = 320;
+	/*
+	m_RealWidth = 1024;
+	m_RealHeight = 768;
 	*/
 	
 
@@ -373,6 +373,13 @@ void CBRenderSDL::ModTargetRect(SDL_Rect* rect)
 	rect->y = MathUtil::Round(rect->y * m_RatioY + m_BorderTop - viewportRect.y);
 	rect->w = MathUtil::RoundUp(rect->w * m_RatioX);
 	rect->h = MathUtil::RoundUp(rect->h * m_RatioY);
+}
+
+//////////////////////////////////////////////////////////////////////////
+void CBRenderSDL::ModOrigin(SDL_Point* origin)
+{
+	origin->x *= m_RatioX;
+	origin->y *= m_RatioY;
 }
 
 //////////////////////////////////////////////////////////////////////////
