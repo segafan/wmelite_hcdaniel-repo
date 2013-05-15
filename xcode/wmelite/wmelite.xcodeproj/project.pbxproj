@@ -8,8 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
+		1E3D7C371743EF3E0038FD9C /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E3D7C361743EF3E0038FD9C /* SDL2.framework */; };
+		1E3D7C3A1743F0F20038FD9C /* SXStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3D7C381743F0F20038FD9C /* SXStore.cpp */; };
+		1E3D7C3C1743F21F0038FD9C /* data.dcp in Resources */ = {isa = PBXBuildFile; fileRef = 1E3D7C3B1743F21F0038FD9C /* data.dcp */; };
 		469841EA1351DA2B00E5CCEF /* libbass.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 46D40F76134A5D67002829D8 /* libbass.dylib */; };
-		46D40D3A134A42AE002829D8 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46D40D39134A42AE002829D8 /* SDL.framework */; };
 		46D40E4D134A44DC002829D8 /* AdActor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D40D66134A44DB002829D8 /* AdActor.cpp */; };
 		46D40E4E134A44DC002829D8 /* AdActorDir.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D40D68134A44DB002829D8 /* AdActorDir.cpp */; };
 		46D40E4F134A44DC002829D8 /* AdEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D40D6A134A44DB002829D8 /* AdEntity.cpp */; };
@@ -129,7 +131,6 @@
 		46D40F79134A5D92002829D8 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46D40F78134A5D92002829D8 /* libfreetype.a */; };
 		46D40F7E134A5DBA002829D8 /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46D40F7D134A5DBA002829D8 /* libboost_filesystem.a */; };
 		46D40F80134A5DBA002829D8 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46D40F7F134A5DBA002829D8 /* libboost_system.a */; };
-		46D40FCE134A6111002829D8 /* SDL.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 46D40D39134A42AE002829D8 /* SDL.framework */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
@@ -142,7 +143,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				469841EA1351DA2B00E5CCEF /* libbass.dylib in Copy Frameworks */,
-				46D40FCE134A6111002829D8 /* SDL.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -154,10 +154,13 @@
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		1E3D7C361743EF3E0038FD9C /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
+		1E3D7C381743F0F20038FD9C /* SXStore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SXStore.cpp; path = ../../src/SXStore.cpp; sourceTree = "<group>"; };
+		1E3D7C391743F0F20038FD9C /* SXStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SXStore.h; path = ../../src/SXStore.h; sourceTree = "<group>"; };
+		1E3D7C3B1743F21F0038FD9C /* data.dcp */ = {isa = PBXFileReference; lastKnownFileType = file; path = data.dcp; sourceTree = "<group>"; };
 		256AC3F00F4B6AF500CF3369 /* wmelite_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wmelite_Prefix.pch; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		46D40D39134A42AE002829D8 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = Library/Frameworks/SDL.framework; sourceTree = SDKROOT; };
 		46D40D66134A44DB002829D8 /* AdActor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AdActor.cpp; path = ../../src/AdActor.cpp; sourceTree = SOURCE_ROOT; };
 		46D40D67134A44DB002829D8 /* AdActor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AdActor.h; path = ../../src/AdActor.h; sourceTree = SOURCE_ROOT; };
 		46D40D68134A44DB002829D8 /* AdActorDir.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AdActorDir.cpp; path = ../../src/AdActorDir.cpp; sourceTree = SOURCE_ROOT; };
@@ -405,13 +408,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
-				46D40D3A134A42AE002829D8 /* SDL.framework in Frameworks */,
 				46D40F6C134A5D0F002829D8 /* libz.a in Frameworks */,
 				46D40F72134A5D45002829D8 /* libfreeimage.a in Frameworks */,
 				46D40F77134A5D67002829D8 /* libbass.dylib in Frameworks */,
 				46D40F79134A5D92002829D8 /* libfreetype.a in Frameworks */,
 				46D40F7E134A5DBA002829D8 /* libboost_filesystem.a in Frameworks */,
 				46D40F80134A5DBA002829D8 /* libboost_system.a in Frameworks */,
+				1E3D7C371743EF3E0038FD9C /* SDL2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -421,6 +424,8 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				1E3D7C381743F0F20038FD9C /* SXStore.cpp */,
+				1E3D7C391743F0F20038FD9C /* SXStore.h */,
 				46D40D66134A44DB002829D8 /* AdActor.cpp */,
 				46D40D67134A44DB002829D8 /* AdActor.h */,
 				46D40D68134A44DB002829D8 /* AdActorDir.cpp */,
@@ -659,9 +664,9 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1E3D7C361743EF3E0038FD9C /* SDL2.framework */,
 				46D40F76134A5D67002829D8 /* libbass.dylib */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
-				46D40D39134A42AE002829D8 /* SDL.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -707,6 +712,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				1E3D7C3B1743F21F0038FD9C /* data.dcp */,
 				8D1107310486CEB800E47090 /* wmelite-Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
@@ -782,6 +788,7 @@
 			files = (
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
+				1E3D7C3C1743F21F0038FD9C /* data.dcp in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -921,6 +928,7 @@
 				46D40EBB134A44DC002829D8 /* UIWindow.cpp in Sources */,
 				46D40EBC134A44DC002829D8 /* utils.cpp in Sources */,
 				46D40EBD134A44DC002829D8 /* Vector2.cpp in Sources */,
+				1E3D7C3A1743F0F20038FD9C /* SXStore.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -959,7 +967,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = wmelite_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
-					/Library/Frameworks/SDL.framework/Headers,
+					/Library/Frameworks/SDL2.framework/Headers,
 					../dep/bass/include,
 					../dep/freetype/include,
 					../dep/FreeImage/include,
@@ -977,6 +985,7 @@
 					"\"$(SRCROOT)/../dep/boost/lib\"",
 				);
 				PRODUCT_NAME = wmelite;
+				SDKROOT = "";
 			};
 			name = Debug;
 		};
@@ -991,7 +1000,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = wmelite_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
-					/Library/Frameworks/SDL.framework/Headers,
+					/Library/Frameworks/SDL2.framework/Headers,
 					../dep/bass/include,
 					../dep/freetype/include,
 					../dep/FreeImage/include,
@@ -1009,6 +1018,7 @@
 					"\"$(SRCROOT)/../dep/boost/lib\"",
 				);
 				PRODUCT_NAME = wmelite;
+				SDKROOT = "";
 				VALID_ARCHS = i386;
 			};
 			name = Release;
