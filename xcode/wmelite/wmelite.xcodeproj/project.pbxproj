@@ -3,14 +3,23 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
-		1E3D7C371743EF3E0038FD9C /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E3D7C361743EF3E0038FD9C /* SDL2.framework */; };
 		1E3D7C3A1743F0F20038FD9C /* SXStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3D7C381743F0F20038FD9C /* SXStore.cpp */; };
 		1E3D7C3C1743F21F0038FD9C /* data.dcp in Resources */ = {isa = PBXBuildFile; fileRef = 1E3D7C3B1743F21F0038FD9C /* data.dcp */; };
+		1EDECB6817456DB5008020C3 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6717456DB5008020C3 /* SDL2.framework */; };
+		1EDECB6917456DBD008020C3 /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6717456DB5008020C3 /* SDL2.framework */; };
+		1EDECB6E17456EE4008020C3 /* Ogg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6A17456EE4008020C3 /* Ogg.framework */; };
+		1EDECB6F17456EE4008020C3 /* Theora.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6B17456EE4008020C3 /* Theora.framework */; };
+		1EDECB7017456EE4008020C3 /* theoraplayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6C17456EE4008020C3 /* theoraplayer.framework */; };
+		1EDECB7117456EE4008020C3 /* Vorbis.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6D17456EE4008020C3 /* Vorbis.framework */; };
+		1EDECB7217456EF1008020C3 /* Ogg.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6A17456EE4008020C3 /* Ogg.framework */; };
+		1EDECB7317456EF1008020C3 /* Theora.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6B17456EE4008020C3 /* Theora.framework */; };
+		1EDECB7417456EF1008020C3 /* theoraplayer.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6C17456EE4008020C3 /* theoraplayer.framework */; };
+		1EDECB7517456EF1008020C3 /* Vorbis.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6D17456EE4008020C3 /* Vorbis.framework */; };
 		469841EA1351DA2B00E5CCEF /* libbass.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 46D40F76134A5D67002829D8 /* libbass.dylib */; };
 		46D40E4D134A44DC002829D8 /* AdActor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D40D66134A44DB002829D8 /* AdActor.cpp */; };
 		46D40E4E134A44DC002829D8 /* AdActorDir.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D40D68134A44DB002829D8 /* AdActorDir.cpp */; };
@@ -143,6 +152,11 @@
 			dstSubfolderSpec = 10;
 			files = (
 				469841EA1351DA2B00E5CCEF /* libbass.dylib in Copy Frameworks */,
+				1EDECB6917456DBD008020C3 /* SDL2.framework in Copy Frameworks */,
+				1EDECB7217456EF1008020C3 /* Ogg.framework in Copy Frameworks */,
+				1EDECB7317456EF1008020C3 /* Theora.framework in Copy Frameworks */,
+				1EDECB7417456EF1008020C3 /* theoraplayer.framework in Copy Frameworks */,
+				1EDECB7517456EF1008020C3 /* Vorbis.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -154,10 +168,14 @@
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		1E3D7C361743EF3E0038FD9C /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		1E3D7C381743F0F20038FD9C /* SXStore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SXStore.cpp; path = ../../src/SXStore.cpp; sourceTree = "<group>"; };
 		1E3D7C391743F0F20038FD9C /* SXStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SXStore.h; path = ../../src/SXStore.h; sourceTree = "<group>"; };
 		1E3D7C3B1743F21F0038FD9C /* data.dcp */ = {isa = PBXFileReference; lastKnownFileType = file; path = data.dcp; sourceTree = "<group>"; };
+		1EDECB6717456DB5008020C3 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../dep/SDL/SDL2.framework; sourceTree = "<group>"; };
+		1EDECB6A17456EE4008020C3 /* Ogg.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Ogg.framework; path = ../dep/libtheoraplayer/Ogg.framework; sourceTree = "<group>"; };
+		1EDECB6B17456EE4008020C3 /* Theora.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Theora.framework; path = ../dep/libtheoraplayer/Theora.framework; sourceTree = "<group>"; };
+		1EDECB6C17456EE4008020C3 /* theoraplayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = theoraplayer.framework; path = ../dep/libtheoraplayer/theoraplayer.framework; sourceTree = "<group>"; };
+		1EDECB6D17456EE4008020C3 /* Vorbis.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vorbis.framework; path = ../dep/libtheoraplayer/Vorbis.framework; sourceTree = "<group>"; };
 		256AC3F00F4B6AF500CF3369 /* wmelite_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wmelite_Prefix.pch; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -399,7 +417,7 @@
 		46D40F7D134A5DBA002829D8 /* libboost_filesystem.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_filesystem.a; path = ../dep/boost/lib/libboost_filesystem.a; sourceTree = SOURCE_ROOT; };
 		46D40F7F134A5DBA002829D8 /* libboost_system.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_system.a; path = ../dep/boost/lib/libboost_system.a; sourceTree = SOURCE_ROOT; };
 		8D1107310486CEB800E47090 /* wmelite-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "wmelite-Info.plist"; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* wmelite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wmelite.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* WME Lite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WME Lite.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -414,7 +432,11 @@
 				46D40F79134A5D92002829D8 /* libfreetype.a in Frameworks */,
 				46D40F7E134A5DBA002829D8 /* libboost_filesystem.a in Frameworks */,
 				46D40F80134A5DBA002829D8 /* libboost_system.a in Frameworks */,
-				1E3D7C371743EF3E0038FD9C /* SDL2.framework in Frameworks */,
+				1EDECB6817456DB5008020C3 /* SDL2.framework in Frameworks */,
+				1EDECB6E17456EE4008020C3 /* Ogg.framework in Frameworks */,
+				1EDECB6F17456EE4008020C3 /* Theora.framework in Frameworks */,
+				1EDECB7017456EE4008020C3 /* theoraplayer.framework in Frameworks */,
+				1EDECB7117456EE4008020C3 /* Vorbis.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -664,7 +686,6 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1E3D7C361743EF3E0038FD9C /* SDL2.framework */,
 				46D40F76134A5D67002829D8 /* libbass.dylib */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 			);
@@ -684,7 +705,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D1107320486CEB800E47090 /* wmelite.app */,
+				8D1107320486CEB800E47090 /* WME Lite.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -723,6 +744,11 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1EDECB6A17456EE4008020C3 /* Ogg.framework */,
+				1EDECB6B17456EE4008020C3 /* Theora.framework */,
+				1EDECB6C17456EE4008020C3 /* theoraplayer.framework */,
+				1EDECB6D17456EE4008020C3 /* Vorbis.framework */,
+				1EDECB6717456DB5008020C3 /* SDL2.framework */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 				46D40F6B134A5D0F002829D8 /* libz.a */,
@@ -754,7 +780,7 @@
 			name = wmelite;
 			productInstallPath = "$(HOME)/Applications";
 			productName = wmelite;
-			productReference = 8D1107320486CEB800E47090 /* wmelite.app */;
+			productReference = 8D1107320486CEB800E47090 /* WME Lite.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -762,8 +788,11 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "wmelite" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -806,7 +835,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "install_name_tool -change \"@loader_path/libbass.dylib\" \"@executable_path/../Frameworks/libbass.dylib\" \"$BUILT_PRODUCTS_DIR/$EXECUTABLE_NAME.app/Contents/MacOS/$EXECUTABLE_NAME\"\n\n";
+			shellScript = "install_name_tool -change \"@loader_path/libbass.dylib\" \"@executable_path/../Frameworks/libbass.dylib\" \"$BUILT_PRODUCTS_DIR/$EXECUTABLE_NAME.app/Contents/MacOS/$EXECUTABLE_NAME\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -958,21 +987,28 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks;
+				FRAMEWORK_SEARCH_PATHS = (
+					/Library/Frameworks,
+					"\"$(SRCROOT)/../dep/libtheoraplayer/lib\"",
+					"\"$(SRCROOT)/../../../Library/Developer/Xcode/DerivedData/theoraplayer_workspace-bhwjqhzzucuzwlfadtafmsouwruf/Build/Intermediates/UninstalledProducts\"",
+					"\"$(SRCROOT)/../dep/SDL\"",
+					"\"$(SRCROOT)/../dep/libtheoraplayer\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = wmelite_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
-					/Library/Frameworks/SDL2.framework/Headers,
+					../dep/SDL/SDL2.framework/Headers,
 					../dep/bass/include,
 					../dep/freetype/include,
 					../dep/FreeImage/include,
 					../dep/zlib/include,
 					../dep/boost/include,
+					../dep/libtheoraplayer/theoraplayer.framework/Headers,
 				);
 				INFOPLIST_FILE = "wmelite-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
@@ -984,7 +1020,7 @@
 					"\"$(SRCROOT)/../dep/freetype/lib\"",
 					"\"$(SRCROOT)/../dep/boost/lib\"",
 				);
-				PRODUCT_NAME = wmelite;
+				PRODUCT_NAME = "WME Lite";
 				SDKROOT = "";
 			};
 			name = Debug;
@@ -994,18 +1030,26 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks;
+				FRAMEWORK_SEARCH_PATHS = (
+					/Library/Frameworks,
+					"\"$(SRCROOT)/../dep/libtheoraplayer/lib\"",
+					"\"$(SRCROOT)/../../../Library/Developer/Xcode/DerivedData/theoraplayer_workspace-bhwjqhzzucuzwlfadtafmsouwruf/Build/Intermediates/UninstalledProducts\"",
+					"\"$(SRCROOT)/../dep/SDL\"",
+					"\"$(SRCROOT)/../dep/libtheoraplayer\"",
+				);
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = wmelite_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
-					/Library/Frameworks/SDL2.framework/Headers,
+					../dep/SDL/SDL2.framework/Headers,
 					../dep/bass/include,
 					../dep/freetype/include,
 					../dep/FreeImage/include,
 					../dep/zlib/include,
 					../dep/boost/include,
+					../dep/libtheoraplayer/theoraplayer.framework/Headers,
 				);
 				INFOPLIST_FILE = "wmelite-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
@@ -1017,7 +1061,7 @@
 					"\"$(SRCROOT)/../dep/freetype/lib\"",
 					"\"$(SRCROOT)/../dep/boost/lib\"",
 				);
-				PRODUCT_NAME = wmelite;
+				PRODUCT_NAME = "WME Lite";
 				SDKROOT = "";
 				VALID_ARCHS = i386;
 			};
@@ -1032,8 +1076,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PREBINDING = NO;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 				VALID_ARCHS = i386;
 			};
 			name = Debug;
@@ -1045,8 +1088,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 				VALID_ARCHS = i386;
 			};
 			name = Release;

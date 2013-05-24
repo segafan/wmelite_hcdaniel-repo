@@ -9,6 +9,13 @@
 /* Begin PBXBuildFile section */
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		1EE8C095174FFBD4000B5435 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EE8C094174FFBD4000B5435 /* AVFoundation.framework */; };
+		1EE8C097174FFC2C000B5435 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EE8C096174FFC2C000B5435 /* CoreMedia.framework */; };
+		1EE8C099174FFC65000B5435 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EE8C098174FFC65000B5435 /* CoreVideo.framework */; };
+		1EE8C09E174FFDB7000B5435 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EE8C09A174FFDB7000B5435 /* libogg.a */; };
+		1EE8C09F174FFDB7000B5435 /* libtheora.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EE8C09B174FFDB7000B5435 /* libtheora.a */; };
+		1EE8C0A0174FFDB7000B5435 /* libtheoraplayer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EE8C09C174FFDB7000B5435 /* libtheoraplayer.a */; };
+		1EE8C0A1174FFDB7000B5435 /* libtremor.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EE8C09D174FFDB7000B5435 /* libtremor.a */; };
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
 		461507A813520AFD000E96C4 /* libbass.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 461507A713520AFD000E96C4 /* libbass.a */; };
@@ -153,6 +160,13 @@
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* wmelite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wmelite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		1EE8C094174FFBD4000B5435 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		1EE8C096174FFC2C000B5435 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		1EE8C098174FFC65000B5435 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		1EE8C09A174FFDB7000B5435 /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = ../dep/libtheoraplayer/lib/libogg.a; sourceTree = "<group>"; };
+		1EE8C09B174FFDB7000B5435 /* libtheora.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtheora.a; path = ../dep/libtheoraplayer/lib/libtheora.a; sourceTree = "<group>"; };
+		1EE8C09C174FFDB7000B5435 /* libtheoraplayer.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtheoraplayer.a; path = ../dep/libtheoraplayer/lib/libtheoraplayer.a; sourceTree = "<group>"; };
+		1EE8C09D174FFDB7000B5435 /* libtremor.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtremor.a; path = ../dep/libtheoraplayer/lib/libtremor.a; sourceTree = "<group>"; };
 		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		461507A713520AFD000E96C4 /* libbass.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbass.a; path = ../dep/bass/lib/libbass.a; sourceTree = SOURCE_ROOT; };
@@ -421,6 +435,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1EE8C099174FFC65000B5435 /* CoreVideo.framework in Frameworks */,
+				1EE8C097174FFC2C000B5435 /* CoreMedia.framework in Frameworks */,
+				1EE8C095174FFBD4000B5435 /* AVFoundation.framework in Frameworks */,
 				46D0AE0513E1A73000CBDA40 /* StoreKit.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
@@ -437,6 +454,10 @@
 				46EA217415C01C2E00A18708 /* libfreeimage-iphone.a in Frameworks */,
 				46EA217515C01C2E00A18708 /* libfreeimage-iphonesimulator.a in Frameworks */,
 				46EA218115C03A2200A18708 /* libSDL.a in Frameworks */,
+				1EE8C09E174FFDB7000B5435 /* libogg.a in Frameworks */,
+				1EE8C09F174FFDB7000B5435 /* libtheora.a in Frameworks */,
+				1EE8C0A0174FFDB7000B5435 /* libtheoraplayer.a in Frameworks */,
+				1EE8C0A1174FFDB7000B5435 /* libtremor.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -454,6 +475,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				1EE8C098174FFC65000B5435 /* CoreVideo.framework */,
 				46EA218015C03A2200A18708 /* libSDL.a */,
 				29B97315FDCFA39411CA2CEA /* Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -464,6 +486,10 @@
 				461507A713520AFD000E96C4 /* libbass.a */,
 				461507A913520B13000E96C4 /* libboost_filesystem.a */,
 				461507AB13520B13000E96C4 /* libboost_system.a */,
+				1EE8C09A174FFDB7000B5435 /* libogg.a */,
+				1EE8C09B174FFDB7000B5435 /* libtheora.a */,
+				1EE8C09C174FFDB7000B5435 /* libtheoraplayer.a */,
+				1EE8C09D174FFDB7000B5435 /* libtremor.a */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -732,6 +758,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1EE8C096174FFC2C000B5435 /* CoreMedia.framework */,
+				1EE8C094174FFBD4000B5435 /* AVFoundation.framework */,
 				4615093F13521059000E96C4 /* CFNetwork.framework */,
 				46D0AE0413E1A73000CBDA40 /* StoreKit.framework */,
 				FDB8BFC50E5A0F6A00980157 /* CoreGraphics.framework */,
@@ -957,6 +985,7 @@
 					"\"$(SRCROOT)/../dep/FreeImage/include\"",
 					"\"$(SRCROOT)/../dep/freetype/include\"",
 					"\"$(SRCROOT)/../dep/SDL/include\"",
+					"\"$(SRCROOT)/../dep/libtheoraplayer/include\"",
 				);
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
@@ -967,8 +996,7 @@
 					"\"$(SRCROOT)/../dep/FreeImage/lib\"",
 					"\"$(SRCROOT)/../dep/freetype/lib\"",
 					"\"$(SRCROOT)/../dep/SDL/lib\"",
-					"\"$(SRCROOT)/../dep/SDL/lib/device\"",
-					"\"$(SRCROOT)/../dep/SDL/lib/simulator\"",
+					"\"$(SRCROOT)/../dep/libtheoraplayer/lib\"",
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-lz";
@@ -996,6 +1024,7 @@
 					"\"$(SRCROOT)/../dep/FreeImage/include\"",
 					"\"$(SRCROOT)/../dep/freetype/include\"",
 					"\"$(SRCROOT)/../dep/SDL/include\"",
+					"\"$(SRCROOT)/../dep/libtheoraplayer/include\"",
 				);
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
@@ -1006,8 +1035,7 @@
 					"\"$(SRCROOT)/../dep/FreeImage/lib\"",
 					"\"$(SRCROOT)/../dep/freetype/lib\"",
 					"\"$(SRCROOT)/../dep/SDL/lib\"",
-					"\"$(SRCROOT)/../dep/SDL/lib/device\"",
-					"\"$(SRCROOT)/../dep/SDL/lib/simulator\"",
+					"\"$(SRCROOT)/../dep/libtheoraplayer/lib\"",
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-lz";
