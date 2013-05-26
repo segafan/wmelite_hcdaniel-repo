@@ -35,10 +35,10 @@ class CPartEmitter;
 class CPartParticle : public CBBase
 {
 public:
-	typedef enum TParticleState
+	typedef enum
 	{
 		PARTICLE_NORMAL, PARTICLE_FADEIN, PARTICLE_FADEOUT
-	};
+	} TParticleState;
 
 	CPartParticle(CBGame* inGame);
 	virtual ~CPartParticle(void);

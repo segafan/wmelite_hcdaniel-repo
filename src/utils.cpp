@@ -244,10 +244,16 @@ bool CBUtils::MatchesPattern(const char* Pattern, const char* String)
 
 			default:
 				if (patternc != stringc)
+                {
 					if (patternc=='.' && stringc==0)
+                    {
 						return(CBUtils::MatchesPattern(Pattern, String));
+                    }
 					else
+                    {
 						return false;
+                    }
+                }
 			break;
 		}
 	}

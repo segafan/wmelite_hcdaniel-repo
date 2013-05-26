@@ -100,36 +100,36 @@ typedef enum{
 	DYNAMIC_CONSTRUCTOR
 }TDynamicConstructor;
 
-typedef enum TSeek{
+typedef enum {
 	SEEK_TO_BEGIN   = SEEK_SET,
 	SEEK_TO_CURRENT = SEEK_CUR,
 	SEEK_TO_END     = SEEK_END
-};
+}TSeek;
 
-typedef enum TSoundType{
+typedef enum {
 	SOUND_SFX, SOUND_MUSIC, SOUND_SPEECH
-};
+}TSoundType;
 
-typedef enum TVideoMode{
+typedef enum {
 	VIDEO_WINDOW, VIDEO_FULLSCREEN, VIDEO_ANY
-};
+}TVideoMode;
 
 
-typedef enum TVideoPlayback{
+typedef enum {
 	VID_PLAY_POS=0,
 	VID_PLAY_STRETCH=1,
 	VID_PLAY_CENTER=2
-};
+}TVideoPlayback;
 
 
-typedef enum TMouseEvent{
+typedef enum {
 	MOUSE_CLICK, MOUSE_RELEASE, MOUSE_DBLCLICK
-};
+}TMouseEvent;
 
 
-typedef enum TMouseButton{
+typedef enum {
 	MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT, MOUSE_BUTTON_MIDDLE
-};
+}TMouseButton;
 
 
 typedef enum {

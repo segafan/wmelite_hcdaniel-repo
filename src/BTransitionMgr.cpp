@@ -69,7 +69,7 @@ HRESULT CBTransitionMgr::Start(TTransitionType Type, bool NonInteractive)
 		m_OrigInteractive = Game->m_Interactive;
 		Game->m_Interactive = false;
 	}
-	else m_PreserveInteractive;
+	else m_PreserveInteractive = false;
 
 	m_Type = Type;	
 	m_State = TRANS_MGR_RUNNING;

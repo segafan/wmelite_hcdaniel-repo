@@ -298,12 +298,6 @@ CBSurface* CBFontTT::RenderTextToTexture(const WideString& text, int width, TTex
 			if (prevChar != L'\0') kerning = GetKerning(prevChar, ch);
 			posX += (int)kerning;
 
-
-			if (glyph->GetBearingY() > 0)
-			{
-				int i = 10;
-			}
-
 			SDL_Rect rect;
 			rect.x = posX + glyph->GetBearingX();
 			rect.y = posY - glyph->GetBearingY() + textOffset;

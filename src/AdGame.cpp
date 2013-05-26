@@ -1800,7 +1800,10 @@ HRESULT CAdGame::DisplayContent(bool Update, bool DisplayAll)
 	if(m_LoadingIcon)
 	{
 		m_LoadingIcon->Display(m_LoadingIconX, m_LoadingIconY);
-		if(!m_LoadingIconPersistent) SAFE_DELETE(m_LoadingIcon);
+		if(!m_LoadingIconPersistent)
+        {
+            SAFE_DELETE(m_LoadingIcon);
+        }
 	}
 
 	return S_OK;	

@@ -2015,8 +2015,8 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 	else if(strcmp(Name, "AccOutputText")==0)
 	{
 		Stack->CorrectParams(2);
-		char* Str = Stack->Pop()->GetString();
-		int Type = Stack->Pop()->GetInt();
+		Stack->Pop()->GetString(); // Str
+		Stack->Pop()->GetInt(); // Type
 		// do nothing
 		Stack->PushNULL();
 
@@ -2085,7 +2085,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 			if(AsHex)
 			{
 				char Hex[100];
-				sprintf(Hex, "%x", checksum);
+				sprintf(Hex, "%lx", checksum);
 				Stack->PushString(Hex);
 			}
 			else
@@ -4289,7 +4289,7 @@ HRESULT CBGame::DisplayIndicator()
 		else m_SaveLoadImage->DisplayTrans(m_SaveImageX, m_SaveImageY, rc);
 	}
 
-	if(!m_IndicatorDisplay && m_IndicatorWidth<=0 || m_IndicatorHeight<=0) return S_OK;
+	if((!m_IndicatorDisplay && m_IndicatorWidth<=0) || m_IndicatorHeight<=0) return S_OK;
 	m_Renderer->SetupLines();
 	for(int i=0; i<m_IndicatorHeight; i++)
 		m_Renderer->DrawLine(m_IndicatorX, m_IndicatorY + i, m_IndicatorX + (int)(m_IndicatorWidth * (float)((float)m_IndicatorProgress / 100.0f)), m_IndicatorY + i, m_IndicatorColor);
@@ -4301,7 +4301,7 @@ HRESULT CBGame::DisplayIndicator()
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBGame::UpdateMusicCrossfade()
 {
-	BYTE GlobMusicVol = m_SoundMgr->GetVolumePercent(SOUND_MUSIC);
+	//BYTE GlobMusicVol = m_SoundMgr->GetVolumePercent(SOUND_MUSIC);
 
 	if(!m_MusicCrossfadeRunning) return S_OK;
 	if(m_State==GAME_FROZEN) return S_OK;
@@ -4755,7 +4755,7 @@ bool CBGame::IsDoubleClick(int buttonIndex)
 	maxDoubleCLickTime = GetDoubleClickTime();
 	maxMoveX = GetSystemMetrics(SM_CXDOUBLECLK);
 	maxMoveY = GetSystemMetrics(SM_CYDOUBLECLK);
-#else if __IPHONEOS__
+#elseif __IPHONEOS__
 	maxMoveX = 16;
 	maxMoveY = 16;
 #endif

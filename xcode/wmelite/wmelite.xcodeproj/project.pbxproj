@@ -987,12 +987,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_EMPTY_BODY = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					/Library/Frameworks,
-					"\"$(SRCROOT)/../dep/libtheoraplayer/lib\"",
-					"\"$(SRCROOT)/../../../Library/Developer/Xcode/DerivedData/theoraplayer_workspace-bhwjqhzzucuzwlfadtafmsouwruf/Build/Intermediates/UninstalledProducts\"",
 					"\"$(SRCROOT)/../dep/SDL\"",
 					"\"$(SRCROOT)/../dep/libtheoraplayer\"",
 				);
@@ -1001,6 +1000,8 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = wmelite_Prefix.pch;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = NO;
 				HEADER_SEARCH_PATHS = (
 					../dep/SDL/SDL2.framework/Headers,
 					../dep/bass/include,
@@ -1022,6 +1023,7 @@
 				);
 				PRODUCT_NAME = "WME Lite";
 				SDKROOT = "";
+				WARNING_CFLAGS = "-Wno-deprecated-writable-strings";
 			};
 			name = Debug;
 		};
@@ -1030,18 +1032,19 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_WARN_EMPTY_BODY = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
 					/Library/Frameworks,
-					"\"$(SRCROOT)/../dep/libtheoraplayer/lib\"",
-					"\"$(SRCROOT)/../../../Library/Developer/Xcode/DerivedData/theoraplayer_workspace-bhwjqhzzucuzwlfadtafmsouwruf/Build/Intermediates/UninstalledProducts\"",
 					"\"$(SRCROOT)/../dep/SDL\"",
 					"\"$(SRCROOT)/../dep/libtheoraplayer\"",
 				);
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = wmelite_Prefix.pch;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = NO;
 				HEADER_SEARCH_PATHS = (
 					../dep/SDL/SDL2.framework/Headers,
 					../dep/bass/include,
@@ -1064,6 +1067,7 @@
 				PRODUCT_NAME = "WME Lite";
 				SDKROOT = "";
 				VALID_ARCHS = i386;
+				WARNING_CFLAGS = "-Wno-deprecated-writable-strings";
 			};
 			name = Release;
 		};

@@ -164,8 +164,6 @@ HRESULT CUIObject::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *Th
 		Stack->CorrectParams(1);
 		CScValue* Val = Stack->Pop();
 
-		char* Filename = Val->GetString();
-
 		SAFE_DELETE(m_Image);		
 		if(Val->IsNULL()){
 			Stack->PushBool(true);

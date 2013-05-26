@@ -202,7 +202,10 @@ void CBSurfaceSDL::GenAlphaMask(SDL_Surface* surface)
 
 	SDL_UnlockSurface(surface);
 
-	if (!hasTransparency) SAFE_DELETE_ARRAY(m_AlphaMask);
+	if (!hasTransparency)
+    {
+        SAFE_DELETE_ARRAY(m_AlphaMask);
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////

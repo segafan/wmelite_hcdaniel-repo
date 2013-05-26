@@ -413,7 +413,6 @@ void CBRenderSDL::DumpData(char* Filename)
 	CBSurfaceStorage* Mgr = Game->m_SurfaceStorage;
 
 	int TotalKB = 0;
-	int TotalLoss = 0;
 	fprintf(f, "Filename;Usage;Size;KBytes\n");
 	for(int i=0; i<Mgr->m_Surfaces.GetSize(); i++)
 	{

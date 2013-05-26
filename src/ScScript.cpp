@@ -478,7 +478,6 @@ HRESULT CScScript::ExecuteInstruction()
 	case II_DEF_CONST_VAR:
 		{
 		dw = GetDWORD();
-		char* Temp = m_Symbols[dw]; // TODO delete
 		// only create global var if it doesn't exist
 		if(!m_Engine->m_Globals->PropExists(m_Symbols[dw])){
 			m_Operand->SetNULL();
@@ -1656,7 +1655,7 @@ HRESULT CScScript::DbgSendVariables(IWmeDebugClient* Client)
 	{
 		for(int i=0; i<=m_ScopeStack->m_SP; i++)
 		{
-			CScValue* Scope = m_ScopeStack->GetAt(i);
+			//CScValue* Scope = m_ScopeStack->GetAt(i);
 			//Scope->DbgSendVariables(Client, WME_DBGVAR_SCOPE, this, (unsigned int)Scope);
 		}
 	}

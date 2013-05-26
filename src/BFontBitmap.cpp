@@ -353,7 +353,7 @@ HRESULT CBFontBitmap::LoadBuffer(BYTE * Buffer)
 
 		case TOKEN_WIDTHS:
 			parser.ScanStr(params, "%D", widths, &num);
-			for(i=0; last_width < NUM_CHARACTERS, num > 0; last_width++,num--,i++)
+			for(i=0; last_width < NUM_CHARACTERS && num > 0; last_width++,num--,i++)
 			{
 				m_Widths[last_width] = (BYTE)widths[i];
 			}
@@ -415,7 +415,10 @@ HRESULT CBFontBitmap::LoadBuffer(BYTE * Buffer)
 	{
 		SAFE_DELETE(m_Sprite);
 		m_Sprite = new CBSprite(Game, this);
-		if(!m_Sprite || FAILED(m_Sprite->LoadFile(sprite_file))) SAFE_DELETE(m_Sprite);
+		if(!m_Sprite || FAILED(m_Sprite->LoadFile(sprite_file)))
+        {
+            SAFE_DELETE(m_Sprite);
+        }
 	}
 
 	if(surface_file!=NULL && !m_Sprite)

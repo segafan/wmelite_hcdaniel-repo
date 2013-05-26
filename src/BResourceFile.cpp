@@ -92,7 +92,7 @@ HRESULT CBResourceFile::Seek(DWORD Pos, TSeek Origin)
 		case SEEK_TO_CURRENT: NewPos = m_Pos + Pos;  break;
 	}
 
-	if( NewPos<0 || NewPos > m_Size) return E_FAIL;
+	if(NewPos > m_Size) return E_FAIL;
 	else m_Pos = NewPos;
 
 	return S_OK;

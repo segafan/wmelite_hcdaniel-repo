@@ -660,7 +660,6 @@ HRESULT CAdScene::LoadBuffer(BYTE * Buffer, bool Complete)
 
 	int ar, ag, ab, aa;
 	char camera[MAX_PATH] = "";
-	float WaypointHeight = -1.0f;
 
 	while ((cmd = parser.GetCommand ((char**)&Buffer, commands, (char**)&params)) > 0)
 	{
@@ -1013,8 +1012,6 @@ HRESULT CAdScene::TraverseNodes(bool Update)
 	Game->m_Renderer->Setup2D();
 
 	// for each layer
-	int MainOffsetX = 0;
-	int MainOffsetY = 0;
 
 	for(j=0; j<m_Layers.GetSize(); j++)
 	{
@@ -2335,8 +2332,6 @@ float CAdScene::GetScaleAt(int Y)
 
 	for(int i=0; i<m_ScaleLevels.GetSize(); i++)
 	{
-		CAdScaleLevel* xxx = m_ScaleLevels[i];
-		int j = m_ScaleLevels.GetSize();
 		if(m_ScaleLevels[i]->m_PosY < Y) prev = m_ScaleLevels[i];
 		else
 		{
@@ -2844,8 +2839,6 @@ float CAdScene::GetRotationAt(int X, int Y)
 
 	for(int i=0; i<m_RotLevels.GetSize(); i++)
 	{
-		CAdRotLevel* xxx = m_RotLevels[i];
-		int j = m_RotLevels.GetSize();
 		if(m_RotLevels[i]->m_PosX < X) prev = m_RotLevels[i];
 		else
 		{

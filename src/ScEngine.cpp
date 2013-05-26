@@ -757,7 +757,7 @@ HRESULT CScEngine::AddBreakpoint(char* ScriptFilename, int Line)
 		Bp = new CScBreakpoint(ScriptFilename);
 		m_Breakpoints.Add(Bp);
 	}
-	bool Found = false;
+
 	for(int i=0; i<Bp->m_Lines.GetSize(); i++)
 	{
 		if(Bp->m_Lines[i]==Line) return S_OK;
@@ -869,7 +869,6 @@ HRESULT CScEngine::LoadBreakpoints()
 	int Count = Game->m_Registry->ReadInt("Debug", "NumBreakpoints", 0);
 	for(int i=1; i<=Count; i++)
 	{
-		DWORD BufSize = 512;
 		sprintf(Key, "Breakpoint%d", i);
 		AnsiString breakpoint = Game->m_Registry->ReadString("Debug", Key, "");
 		

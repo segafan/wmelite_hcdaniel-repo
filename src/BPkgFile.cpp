@@ -172,7 +172,7 @@ HRESULT CBPkgFile::Seek(DWORD Pos, TSeek Origin)
 		case SEEK_TO_CURRENT: NewPos = m_Pos + Pos;  break;
 	}
 
-	if(NewPos<0 || NewPos > m_Size) return E_FAIL;
+	if(NewPos > m_Size) return E_FAIL;
 
 	return SeekToPos(NewPos);
 }

@@ -33,10 +33,10 @@ THE SOFTWARE.
 class CPartForce : public CBNamedObject
 {
 public:
-	typedef enum TForceType
+	typedef enum
 	{
 		FORCE_POINT, FORCE_GLOBAL
-	};
+	} TForceType;
 	
 	CPartForce(CBGame* inGame);
 	virtual ~CPartForce(void);

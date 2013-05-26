@@ -920,7 +920,10 @@ HRESULT CBObject::Persist(CBPersistMgr *PersistMgr)
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBObject::SetCursor(char* Filename)
 {
-	if(!m_SharedCursors) SAFE_DELETE(m_Cursor);
+	if(!m_SharedCursors)
+    {
+        SAFE_DELETE(m_Cursor);
+    }
 
 	m_SharedCursors = false;
 	m_Cursor = new CBSprite(Game);
@@ -1023,7 +1026,10 @@ HRESULT CBObject::StopSFX(bool DeleteSound)
 {
 	if(m_SFX){
 		m_SFX->Stop();
-		if(DeleteSound) SAFE_DELETE(m_SFX);
+		if(DeleteSound)
+        {
+            SAFE_DELETE(m_SFX);
+        }
 		return S_OK;
 	}
 	else return E_FAIL;
