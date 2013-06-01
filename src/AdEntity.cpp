@@ -39,6 +39,8 @@ CAdEntity::CAdEntity(CBGame* inGame):CAdTalkHolder(inGame)
 
 	m_WalkToX = m_WalkToY = 0;
 	m_WalkToDir = DI_NONE;
+
+	m_Theora = NULL;
 }
 
 
@@ -46,6 +48,7 @@ CAdEntity::CAdEntity(CBGame* inGame):CAdTalkHolder(inGame)
 CAdEntity::~CAdEntity()
 {
 	Game->UnregisterObject(m_Region);
+	SAFE_DELETE(m_Theora);
 
 	SAFE_DELETE_ARRAY(m_Item);
 }
@@ -500,7 +503,11 @@ HRESULT CAdEntity::Display()
 		}
 
 		DisplaySpriteAttachments(true);
-		if(m_CurrentSprite)
+		if(m_Theora && (m_Theora->IsPlaying() || m_Theora->IsPaused()))
+		{
+			m_Theora->Display(Alpha);
+		}
+		else if(m_CurrentSprite)
 		{
 			m_CurrentSprite->Display(m_PosX,
 										m_PosY,
@@ -604,6 +611,20 @@ HRESULT CAdEntity::Update()
 	UpdateBlockRegion();
 	m_Ready = (m_State == STATE_READY);
 
+	if (m_Theora)
+	{
+		int OffsetX, OffsetY;
+		Game->GetOffset(&OffsetX, &OffsetY);
+		m_Theora->m_PosX = m_PosX - OffsetX;
+		m_Theora->m_PosY = m_PosY - OffsetY;
+
+		m_Theora->Update();
+		if(m_Theora->IsFinished())
+		{
+			m_Theora->Stop();
+			SAFE_DELETE(m_Theora);
+		}
+	}
 
 	UpdatePartEmitter();
 	UpdateSpriteAttachments();
@@ -634,8 +655,26 @@ HRESULT CAdEntity::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *Th
 	//////////////////////////////////////////////////////////////////////////
 	else if(strcmp(Name, "PlayTheora")==0)
 	{
-		Stack->CorrectParams(0);
-		Stack->PushBool(false);
+		Stack->CorrectParams(4);
+		char* Filename = Stack->Pop()->GetString();
+		bool Looping = Stack->Pop()->GetBool(false);
+		CScValue* ValAlpha = Stack->Pop();
+		int StartTime = Stack->Pop()->GetInt();
+
+		SAFE_DELETE(m_Theora);
+		m_Theora = new CVidTheoraPlayer(Game);
+		if (m_Theora && SUCCEEDED(m_Theora->Initialize(Filename)))
+		{
+			if (!ValAlpha->IsNULL()) m_Theora->SetAlphaImage(ValAlpha->GetString());
+			m_Theora->Play(VID_PLAY_POS, 0, 0, false, false, Looping, StartTime, m_Scale>=0.0f?m_Scale:-1.0f, m_SFXVolume);
+			//if(m_Scale>=0) m_Theora->m_PlayZoom = m_Scale;
+			Stack->PushBool(true);
+		}
+		else
+		{
+			Script->RuntimeError("Entity.PlayTheora - error playing video '%s'", Filename);
+			Stack->PushBool(false);
+		}
 
 		return S_OK;
 	}
@@ -646,7 +685,13 @@ HRESULT CAdEntity::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *Th
 	else if(strcmp(Name, "StopTheora")==0)
 	{
 		Stack->CorrectParams(0);
-		Stack->PushBool(false);
+		if (m_Theora)
+		{
+			m_Theora->Stop();
+			SAFE_DELETE(m_Theora);
+			Stack->PushBool(true);
+		}
+		else Stack->PushBool(false);
 
 		return S_OK;
 	}
@@ -657,7 +702,8 @@ HRESULT CAdEntity::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *Th
 	else if(strcmp(Name, "IsTheoraPlaying")==0)
 	{
 		Stack->CorrectParams(0);
-		Stack->PushBool(false);
+		if(m_Theora && m_Theora->IsPlaying()) Stack->PushBool(true);
+		else Stack->PushBool(false);
 
 		return S_OK;
 	}
@@ -668,7 +714,12 @@ HRESULT CAdEntity::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *Th
 	else if(strcmp(Name, "PauseTheora")==0)
 	{
 		Stack->CorrectParams(0);
-		Stack->PushBool(false);
+		if(m_Theora && m_Theora->IsPlaying())
+		{
+			m_Theora->Pause();
+			Stack->PushBool(true);
+		}
+		else Stack->PushBool(false);
 
 		return S_OK;
 	}
@@ -679,7 +730,12 @@ HRESULT CAdEntity::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *Th
 	else if(strcmp(Name, "ResumeTheora")==0)
 	{
 		Stack->CorrectParams(0);
-		Stack->PushBool(false);
+		if(m_Theora && m_Theora->IsPaused())
+		{
+			m_Theora->Resume();
+			Stack->PushBool(true);
+		}
+		else Stack->PushBool(false);
 
 		return S_OK;
 	}
@@ -690,7 +746,8 @@ HRESULT CAdEntity::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *Th
 	else if(strcmp(Name, "IsTheoraPaused")==0)
 	{
 		Stack->CorrectParams(0);
-		Stack->PushBool(false);
+		if(m_Theora && m_Theora->IsPaused()) Stack->PushBool(true);
+		else Stack->PushBool(false);
 
 		return S_OK;
 	}
@@ -990,6 +1047,11 @@ HRESULT CAdEntity::Persist(CBPersistMgr *PersistMgr)
 	PersistMgr->Transfer(TMEMBER(m_WalkToX));
 	PersistMgr->Transfer(TMEMBER(m_WalkToY));
 	PersistMgr->Transfer(TMEMBER_INT(m_WalkToDir));
+
+	if (PersistMgr->CheckVersion(1, 0, 2))
+		PersistMgr->Transfer(TMEMBER(m_Theora));
+	else
+		m_Theora = NULL;
 
 	return S_OK;
 }

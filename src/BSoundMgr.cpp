@@ -83,7 +83,7 @@ HRESULT CBSoundMgr::Initialize()
 
 #ifdef __IPHONEOS__
 	#define BASS_CONFIG_IOS_MIXAUDIO 34
-    BASS_SetConfig(BASS_CONFIG_IOS_MIXAUDIO, 5);
+    BASS_SetConfig(BASS_CONFIG_IOS_MIXAUDIO, 6);
 #endif
 
 	

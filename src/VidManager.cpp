@@ -2,7 +2,7 @@
 This file is part of WME Lite.
 http://dead-code.org/redir.php?target=wmelite
 
-Copyright (c) 2011 Jan Nedoma
+Copyright (c) 2013 Jan Nedoma
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,39 +23,42 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#ifndef __WmeAdEntity_H__
-#define __WmeAdEntity_H__
+#include "dcgf.h"
+#include "VidManager.h"
+#include <theoraplayer/TheoraPlayer.h>
 
 
-class CAdEntity : public CAdTalkHolder
+//////////////////////////////////////////////////////////////////////////
+CVidManager::CVidManager(CBGame* inGame):CBBase(inGame)
 {
-public:
-	CVidTheoraPlayer* m_Theora;
-	HRESULT SetSprite(char* Filename);
-	int m_WalkToX;
-	int m_WalkToY;
-	TDirection m_WalkToDir;
-	void SetItem(char* ItemName);
-	char* m_Item;
-	DECLARE_PERSISTENT(CAdEntity, CAdTalkHolder);
-	void UpdatePosition();
-	virtual int GetHeight();
-	CBRegion* m_Region;
-	virtual HRESULT SaveAsText(CBDynBuffer *Buffer, int Indent);
-	virtual HRESULT Update();
-	virtual HRESULT Display();
-	CAdEntity(CBGame* inGame);
-	virtual ~CAdEntity();
-	HRESULT LoadFile(char * Filename);
-	HRESULT LoadBuffer(BYTE* Buffer, bool Complete=true);
-	TEntityType m_Subtype;
+	m_Theora = NULL;
+	m_PrevTime = 0;
+}
 
-	// scripting interface
-	virtual CScValue* ScGetProperty(char* Name);
-	virtual HRESULT ScSetProperty(char *Name, CScValue *Value);
-	virtual HRESULT ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisStack, char *Name);
-	virtual char* ScToString();
+//////////////////////////////////////////////////////////////////////////
+CVidManager::~CVidManager()
+{
+	SAFE_DELETE(m_Theora);
+}
 
-};
+//////////////////////////////////////////////////////////////////////////
+HRESULT CVidManager::InitLoop()
+{
+	DWORD currentTime = CBPlatform::GetTime();
 
-#endif
+	if (m_Theora && m_PrevTime > 0)
+	{
+		float timeIncrement = (float)(currentTime - m_PrevTime) / 1000.0f;
+		m_Theora->update(timeIncrement);
+	}
+	m_PrevTime = currentTime;
+	
+	return S_OK;
+}
+
+//////////////////////////////////////////////////////////////////////////
+HRESULT CVidManager::Initialize()
+{
+	m_Theora = new TheoraVideoManager();
+	return S_OK;
+}

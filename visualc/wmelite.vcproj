@@ -2604,6 +2604,18 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath="..\src\VidDataSource.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\VidManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\VidTheoraPlayer.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -3080,6 +3092,18 @@
 			</File>
 			<File
 				RelativePath="..\src\Vector2.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\VidDataSource.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\VidManager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\VidTheoraPlayer.h"
 				>
 			</File>
 			<File

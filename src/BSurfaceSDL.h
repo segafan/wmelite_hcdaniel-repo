@@ -61,6 +61,8 @@ public:
 	static int DLL_CALLCONV SeekProc(fi_handle handle, long offset, int origin);
 	static long DLL_CALLCONV TellProc(fi_handle handle);
 
+	void FillTexture(const void* pixelData, int pitch);
+
 private:
 	SDL_Texture* m_Texture;
 

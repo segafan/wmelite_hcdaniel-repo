@@ -2,7 +2,7 @@
 This file is part of WME Lite.
 http://dead-code.org/redir.php?target=wmelite
 
-Copyright (c) 2011 Jan Nedoma
+Copyright (c) 2013 Jan Nedoma
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,39 +23,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#ifndef __WmeAdEntity_H__
-#define __WmeAdEntity_H__
+#ifndef __WmeVidDataSource_H__
+#define __WmeVidDataSource_H__
+
+#include <theoraplayer/TheoraDataSource.h>
 
 
-class CAdEntity : public CAdTalkHolder
+class CVidDataSource : public TheoraDataSource
 {
-public:
-	CVidTheoraPlayer* m_Theora;
-	HRESULT SetSprite(char* Filename);
-	int m_WalkToX;
-	int m_WalkToY;
-	TDirection m_WalkToDir;
-	void SetItem(char* ItemName);
-	char* m_Item;
-	DECLARE_PERSISTENT(CAdEntity, CAdTalkHolder);
-	void UpdatePosition();
-	virtual int GetHeight();
-	CBRegion* m_Region;
-	virtual HRESULT SaveAsText(CBDynBuffer *Buffer, int Indent);
-	virtual HRESULT Update();
-	virtual HRESULT Display();
-	CAdEntity(CBGame* inGame);
-	virtual ~CAdEntity();
-	HRESULT LoadFile(char * Filename);
-	HRESULT LoadBuffer(BYTE* Buffer, bool Complete=true);
-	TEntityType m_Subtype;
+public:	
+	CVidDataSource(CBGame* inGame, CBFile* file, const char* fileName);
+	virtual ~CVidDataSource();
 
-	// scripting interface
-	virtual CScValue* ScGetProperty(char* Name);
-	virtual HRESULT ScSetProperty(char *Name, CScValue *Value);
-	virtual HRESULT ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisStack, char *Name);
-	virtual char* ScToString();
+	int read(void* output,int nBytes);
+	std::string repr();
+	void seek(unsigned long byte_index);
+	unsigned long size();
+	unsigned long tell();
 
+private:
+	CBGame* m_Game;
+	CBFile* m_File;
+	AnsiString m_Filename;
 };
 
-#endif
+#endif // __WmeVidDataSource_H__

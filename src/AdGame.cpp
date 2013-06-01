@@ -57,6 +57,7 @@ CAdGame::CAdGame():CBGame()
 	m_TexTalkLifeTime = 10000;
 
 	m_TalkSkipButton = TALK_SKIP_LEFT;
+	m_VideoSkipButton = VIDEO_SKIP_LEFT;
 
 	m_SceneViewport = NULL;
 
@@ -942,6 +943,15 @@ CScValue* CAdGame::ScGetProperty(char *Name)
 	}
 
 	//////////////////////////////////////////////////////////////////////////
+	// VideoSkipButton
+	//////////////////////////////////////////////////////////////////////////
+	else if(strcmp(Name, "VideoSkipButton")==0)
+	{
+		m_ScValue->SetInt(m_VideoSkipButton);
+		return m_ScValue;
+	}
+
+	//////////////////////////////////////////////////////////////////////////
 	// ChangingScene
 	//////////////////////////////////////////////////////////////////////////
 	else if(strcmp(Name, "ChangingScene")==0)
@@ -1174,6 +1184,7 @@ TOKEN_DEF_START
 	TOKEN_DEF (ITEMS)
 	TOKEN_DEF (ITEM)
 	TOKEN_DEF (TALK_SKIP_BUTTON)
+	TOKEN_DEF (VIDEO_SKIP_BUTTON)
 	TOKEN_DEF (SCENE_VIEWPORT)
 	TOKEN_DEF (ENTITY_CONTAINER)
 	TOKEN_DEF (EDITOR_PROPERTY)
@@ -1190,6 +1201,7 @@ HRESULT CAdGame::LoadBuffer(BYTE * Buffer, bool Complete)
 		TOKEN_TABLE (INVENTORY_BOX)
 		TOKEN_TABLE (ITEMS)
 		TOKEN_TABLE (TALK_SKIP_BUTTON)
+		TOKEN_TABLE (VIDEO_SKIP_BUTTON)
 		TOKEN_TABLE (SCENE_VIEWPORT)
 		TOKEN_TABLE (EDITOR_PROPERTY)
 		TOKEN_TABLE (STARTUP_SCENE)
@@ -1248,6 +1260,12 @@ HRESULT CAdGame::LoadBuffer(BYTE * Buffer, bool Complete)
 							if(CBPlatform::stricmp((char*)params2, "right")==0) m_TalkSkipButton = TALK_SKIP_RIGHT;
 							else if(CBPlatform::stricmp((char*)params2, "both")==0) m_TalkSkipButton = TALK_SKIP_BOTH;
 							else m_TalkSkipButton = TALK_SKIP_LEFT;
+						break;
+
+						case TOKEN_VIDEO_SKIP_BUTTON:
+							if(stricmp((char*)params2, "right")==0) m_VideoSkipButton = VIDEO_SKIP_RIGHT;
+							else if(stricmp((char*)params2, "both")==0) m_VideoSkipButton = VIDEO_SKIP_BOTH;
+							else m_VideoSkipButton = VIDEO_SKIP_LEFT;
 						break;
 
 						case TOKEN_SCENE_VIEWPORT:
@@ -1340,6 +1358,11 @@ HRESULT CAdGame::Persist(CBPersistMgr *PersistMgr)
 	
 	PersistMgr->Transfer(TMEMBER(m_StartupScene));
 
+	if(PersistMgr->CheckVersion(1, 0, 2))
+	{
+		PersistMgr->Transfer(TMEMBER_INT(m_VideoSkipButton));
+	}
+	else if(!PersistMgr->m_Saving) m_VideoSkipButton = VIDEO_SKIP_LEFT;
 
 	return S_OK;
 }
@@ -1762,38 +1785,54 @@ HRESULT CAdGame::DisplayContent(bool Update, bool DisplayAll)
 	// fill black
 	m_Renderer->Fill(0,0,0);
 	if(!m_EditorMode) m_Renderer->SetScreenViewport();
-		
-	// process scripts
-	if(Update) m_ScEngine->Tick();
-		
-	POINT p;
-	GetMousePos(&p);
-		
-	m_Scene->Update();		
-	m_Scene->Display();
 
-
-	// display in-game windows
-	DisplayWindows(true);				
-	if(m_InventoryBox) m_InventoryBox->Display();		
-	if(m_StateEx==GAME_WAITING_RESPONSE) m_ResponseBox->Display();		
-	if(m_IndicatorDisplay) DisplayIndicator();
-
-
-	if(Update || DisplayAll)
+	// playing exclusive video?
+	if (m_TheoraPlayer)
 	{
-		// display normal windows
-		DisplayWindows(false);
+		if(m_TheoraPlayer->IsPlaying())
+		{
+			if(Update) m_TheoraPlayer->Update();
+			m_TheoraPlayer->Display();
+		}
+		if(m_TheoraPlayer->IsFinished())
+		{
+			SAFE_DELETE(m_TheoraPlayer);
+		}
+	}
+	else
+	{
+		// process scripts
+		if(Update) m_ScEngine->Tick();
 		
-		SetActiveObject(Game->m_Renderer->GetObjectAt(p.x, p.y));
+		POINT p;
+		GetMousePos(&p);
 		
-		// textual info
-		DisplaySentences(m_State==GAME_FROZEN);
+		m_Scene->Update();		
+		m_Scene->Display();
 
-		ShowCursor();
+
+		// display in-game windows
+		DisplayWindows(true);				
+		if(m_InventoryBox) m_InventoryBox->Display();		
+		if(m_StateEx==GAME_WAITING_RESPONSE) m_ResponseBox->Display();		
+		if(m_IndicatorDisplay) DisplayIndicator();
+
+
+		if(Update || DisplayAll)
+		{
+			// display normal windows
+			DisplayWindows(false);
+		
+			SetActiveObject(Game->m_Renderer->GetObjectAt(p.x, p.y));
+		
+			// textual info
+			DisplaySentences(m_State==GAME_FROZEN);
+
+			ShowCursor();
 			
-		if(m_Fader) m_Fader->Display();				
-		m_TransMgr->Update();
+			if(m_Fader) m_Fader->Display();				
+			m_TransMgr->Update();
+		}
 	}
 
 
@@ -2035,6 +2074,12 @@ HRESULT CAdGame::OnMouseLeftDown()
 		return S_OK;
 	}
 
+	if ((m_VideoSkipButton==VIDEO_SKIP_LEFT || m_VideoSkipButton==VIDEO_SKIP_BOTH) && IsVideoPlaying())
+	{
+		Game->StopVideo();
+		return S_OK;
+	}
+
 	if(m_ActiveObject) m_ActiveObject->HandleMouse(MOUSE_CLICK, MOUSE_BUTTON_LEFT);
 
 	bool Handled = m_State==GAME_RUNNING && SUCCEEDED(ApplyEvent("LeftClick"));
@@ -2060,6 +2105,8 @@ HRESULT CAdGame::OnMouseLeftDown()
 //////////////////////////////////////////////////////////////////////////
 HRESULT CAdGame::OnMouseLeftUp()
 {
+	if (IsVideoPlaying()) return S_OK;
+
 	if(m_ActiveObject) m_ActiveObject->HandleMouse(MOUSE_RELEASE, MOUSE_BUTTON_LEFT);
 
 	CBPlatform::ReleaseCapture();
@@ -2085,6 +2132,8 @@ HRESULT CAdGame::OnMouseLeftUp()
 HRESULT CAdGame::OnMouseLeftDblClick()
 {
 	if(!ValidMouse()) return S_OK;
+
+	if (IsVideoPlaying()) return S_OK;
 
 	if(m_State==GAME_RUNNING && !m_Interactive) return S_OK;
 
@@ -2118,6 +2167,12 @@ HRESULT CAdGame::OnMouseRightDown()
 		return S_OK;
 	}
 
+	if ((m_VideoSkipButton==VIDEO_SKIP_RIGHT || m_VideoSkipButton==VIDEO_SKIP_BOTH) && IsVideoPlaying())
+	{
+		Game->StopVideo();
+		return S_OK;
+	}
+
 	if((m_State==GAME_RUNNING && !m_Interactive) || m_StateEx == GAME_WAITING_RESPONSE) return S_OK;
 
 	if(m_ActiveObject) m_ActiveObject->HandleMouse(MOUSE_CLICK, MOUSE_BUTTON_RIGHT);
@@ -2140,6 +2195,8 @@ HRESULT CAdGame::OnMouseRightDown()
 //////////////////////////////////////////////////////////////////////////
 HRESULT CAdGame::OnMouseRightUp()
 {
+	if (IsVideoPlaying()) return S_OK;
+
 	if(m_ActiveObject) m_ActiveObject->HandleMouse(MOUSE_RELEASE, MOUSE_BUTTON_RIGHT);
 
 	bool Handled = m_State==GAME_RUNNING && SUCCEEDED(ApplyEvent("RightRelease"));

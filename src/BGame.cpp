@@ -66,6 +66,7 @@ CBGame::CBGame():CBObject(this)
 	m_FontStorage = NULL;
 	m_Renderer = NULL;
 	m_SoundMgr = NULL;
+	m_VideoMgr = NULL;
 	m_FileManager = NULL;
 	m_TransMgr = NULL;
 	m_DebugMgr = NULL;
@@ -81,6 +82,8 @@ CBGame::CBGame():CBObject(this)
 
 	m_SystemFont = NULL;
 	m_VideoFont = NULL;
+
+	m_TheoraPlayer = NULL;
 
 	m_MainObject = NULL;
 	m_ActiveObject = NULL;
@@ -274,6 +277,8 @@ CBGame::~CBGame()
 	SAFE_DELETE(m_ScEngine);
 	SAFE_DELETE(m_FontStorage);
 	SAFE_DELETE(m_SurfaceStorage);
+	SAFE_DELETE(m_TheoraPlayer);
+	SAFE_DELETE(m_VideoMgr);
 	SAFE_DELETE(m_SoundMgr);
 	SAFE_DELETE(m_DebugMgr);
 	//SAFE_DELETE(m_KeyboardState);
@@ -380,6 +385,10 @@ HRESULT CBGame::Initialize1()
 	m_SoundMgr = new CBSoundMgr(this);
 	if(m_SoundMgr==NULL) goto init_fail;
 
+	m_VideoMgr = new CVidManager(this);
+	if(m_VideoMgr==NULL) goto init_fail;
+	m_VideoMgr->Initialize();
+
 	m_DebugMgr = new CBDebugger(this);
 	if(m_DebugMgr==NULL) goto init_fail;
 
@@ -413,6 +422,7 @@ init_fail:
 	if(m_DebugMgr) delete m_DebugMgr;
 	if(m_SurfaceStorage) delete m_SurfaceStorage;
 	if(m_FontStorage) delete m_FontStorage;
+	if(m_VideoMgr) delete m_VideoMgr;
 	if(m_SoundMgr) delete m_SoundMgr;
 	if(m_FileManager) delete m_FileManager;
 	if(m_ScEngine) delete m_ScEngine;
@@ -553,6 +563,7 @@ HRESULT CBGame::InitLoop()
 	
 	GetDebugMgr()->OnGameTick();
 	m_Renderer->InitLoop();
+	m_VideoMgr->InitLoop();
 	m_SoundMgr->InitLoop();
 	UpdateMusicCrossfade();
 	
@@ -1390,8 +1401,36 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 	//////////////////////////////////////////////////////////////////////////
 	else if(strcmp(Name, "PlayTheora")==0)
 	{
-		Stack->CorrectParams(0);
-		Stack->PushBool(false);
+		Stack->CorrectParams(7);
+		char* Filename = Stack->Pop()->GetString();
+		CScValue* valType = Stack->Pop();
+		int Type;
+		if(valType->IsNULL()) Type = (int)VID_PLAY_STRETCH;
+		else Type = valType->GetInt();
+
+		int X = Stack->Pop()->GetInt();
+		int Y = Stack->Pop()->GetInt();
+		bool FreezeMusic = Stack->Pop()->GetBool(true);
+		bool DropFrames = Stack->Pop()->GetBool(true);
+
+		CScValue* valSub = Stack->Pop();
+		char* SubtitleFile = valSub->IsNULL()?NULL:valSub->GetString();
+
+
+		if(Type < (int)VID_PLAY_POS || Type > (int)VID_PLAY_CENTER) Type = (int)VID_PLAY_STRETCH;
+
+		SAFE_DELETE(m_TheoraPlayer);
+		m_TheoraPlayer = new CVidTheoraPlayer(this);
+		if(m_TheoraPlayer && SUCCEEDED(m_TheoraPlayer->Initialize(Filename, SubtitleFile)))
+		{
+			if(SUCCEEDED(m_TheoraPlayer->Play((TVideoPlayback)Type, X, Y, true, FreezeMusic)))
+			{
+				Stack->PushBool(true);
+				Script->Sleep(0);
+			}
+			else Stack->PushBool(false);
+		}
+		else Stack->PushBool(false);
 
 		return S_OK;
 	}
@@ -3466,6 +3505,7 @@ HRESULT CBGame::InitAfterLoad()
 	CSysClassRegistry::GetInstance()->EnumInstances(AfterLoadRegion,   "CBRegion",   NULL);
 	CSysClassRegistry::GetInstance()->EnumInstances(AfterLoadSubFrame, "CBSubFrame", NULL);
 	CSysClassRegistry::GetInstance()->EnumInstances(AfterLoadSound,    "CBSound",    NULL);
+	CSysClassRegistry::GetInstance()->EnumInstances(AfterLoadTheora,   "CVidTheoraPlayer", NULL);
 	CSysClassRegistry::GetInstance()->EnumInstances(AfterLoadFont,     "CBFontTT",   NULL);
 	CSysClassRegistry::GetInstance()->EnumInstances(AfterLoadScript,   "CScScript",  NULL);
 
@@ -3507,6 +3547,11 @@ void CBGame::AfterLoadScript(void* script, void* data)
 	((CScScript*)script)->AfterLoad();
 }
 
+//////////////////////////////////////////////////////////////////////////
+void CBGame::AfterLoadTheora(void* Theora, void* Data)
+{
+	((CVidTheoraPlayer*)Theora)->InitializeSimple();
+}
 
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBGame::DisplayWindows(bool InGame)
@@ -3930,6 +3975,12 @@ HRESULT CBGame::Unfreeze()
 //////////////////////////////////////////////////////////////////////////
 bool CBGame::HandleKeypress(SDL_Event* event)
 {
+	if(IsVideoPlaying())
+	{
+		if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_ESCAPE) StopVideo();
+		return true;
+	}
+
 #ifdef __WIN32__
 	// handle Alt+F4 on windows
 	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_F4 && (event->key.keysym.mod == KMOD_LALT || event->key.keysym.mod == KMOD_RALT))
@@ -4421,6 +4472,24 @@ HRESULT CBGame::SetWaitCursor(char* Filename)
 
 
 //////////////////////////////////////////////////////////////////////////
+bool CBGame::IsVideoPlaying()
+{
+	if(m_TheoraPlayer && m_TheoraPlayer->IsPlaying()) return true;
+	return false;
+}
+
+//////////////////////////////////////////////////////////////////////////
+HRESULT CBGame::StopVideo()
+{
+	if(m_TheoraPlayer && m_TheoraPlayer->IsPlaying())
+	{
+		m_TheoraPlayer->Stop();
+		SAFE_DELETE(m_TheoraPlayer);
+	}
+	return S_OK;
+}
+
+//////////////////////////////////////////////////////////////////////////
 HRESULT CBGame::DrawCursor(CBSprite* Cursor)
 {
 	if(!Cursor) return E_FAIL;
@@ -4457,6 +4526,12 @@ HRESULT CBGame::OnActivate(bool Activate, bool RefreshMouse)
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBGame::OnMouseLeftDown()
 {
+	if (IsVideoPlaying())
+	{
+		StopVideo();
+		return S_OK;
+	}
+
 	if(m_ActiveObject) m_ActiveObject->HandleMouse(MOUSE_CLICK, MOUSE_BUTTON_LEFT);
 
 	bool Handled = m_State==GAME_RUNNING && SUCCEEDED(ApplyEvent("LeftClick"));
@@ -4478,6 +4553,8 @@ HRESULT CBGame::OnMouseLeftDown()
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBGame::OnMouseLeftUp()
 {
+	if (IsVideoPlaying()) return S_OK;
+
 	if(m_ActiveObject) m_ActiveObject->HandleMouse(MOUSE_RELEASE, MOUSE_BUTTON_LEFT);
 
 	CBPlatform::ReleaseCapture();
@@ -4498,6 +4575,8 @@ HRESULT CBGame::OnMouseLeftUp()
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBGame::OnMouseLeftDblClick() 
 {
+	if(IsVideoPlaying()) return S_OK;
+
 	if(m_State==GAME_RUNNING && !m_Interactive) return S_OK;
 
 	if(m_ActiveObject) m_ActiveObject->HandleMouse(MOUSE_DBLCLICK, MOUSE_BUTTON_LEFT);
@@ -4516,6 +4595,8 @@ HRESULT CBGame::OnMouseLeftDblClick()
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBGame::OnMouseRightDblClick()
 {
+	if (IsVideoPlaying()) return S_OK;
+
 	if(m_State==GAME_RUNNING && !m_Interactive) return S_OK;
 
 	if(m_ActiveObject) m_ActiveObject->HandleMouse(MOUSE_DBLCLICK, MOUSE_BUTTON_RIGHT);
@@ -4534,6 +4615,8 @@ HRESULT CBGame::OnMouseRightDblClick()
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBGame::OnMouseRightDown()
 {
+	if (IsVideoPlaying()) return S_OK;
+
 	if(m_ActiveObject) m_ActiveObject->HandleMouse(MOUSE_CLICK, MOUSE_BUTTON_RIGHT);
 
 	bool Handled = m_State==GAME_RUNNING && SUCCEEDED(ApplyEvent("RightClick"));
@@ -4550,6 +4633,8 @@ HRESULT CBGame::OnMouseRightDown()
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBGame::OnMouseRightUp() 
 {
+	if (IsVideoPlaying()) return S_OK;
+
 	if(m_ActiveObject) m_ActiveObject->HandleMouse(MOUSE_RELEASE, MOUSE_BUTTON_RIGHT);
 
 	bool Handled = m_State==GAME_RUNNING && SUCCEEDED(ApplyEvent("RightRelease"));
@@ -4566,6 +4651,8 @@ HRESULT CBGame::OnMouseRightUp()
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBGame::OnMouseMiddleDown() 
 {
+	if (IsVideoPlaying()) return S_OK;
+
 	if(m_State==GAME_RUNNING && !m_Interactive) return S_OK;
 
 	if(m_ActiveObject) m_ActiveObject->HandleMouse(MOUSE_CLICK, MOUSE_BUTTON_MIDDLE);
@@ -4584,6 +4671,8 @@ HRESULT CBGame::OnMouseMiddleDown()
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBGame::OnMouseMiddleUp() 
 {
+	if (IsVideoPlaying()) return S_OK;
+
 	if(m_ActiveObject) m_ActiveObject->HandleMouse(MOUSE_RELEASE, MOUSE_BUTTON_MIDDLE);
 
 	bool Handled = m_State==GAME_RUNNING && SUCCEEDED(ApplyEvent("MiddleRelease"));

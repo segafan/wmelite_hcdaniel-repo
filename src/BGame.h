@@ -151,6 +151,7 @@ public:
 	void LOG(HRESULT res, LPCSTR fmt, ...);
 	CBRenderer* m_Renderer;
 	CBSoundMgr* m_SoundMgr;
+	CVidManager* m_VideoMgr;
 	CScEngine* m_ScEngine;
 	CSXMath* m_MathClass;
 	CSXStore* m_Store;
@@ -233,6 +234,7 @@ public:
 	HRESULT Unfreeze();
 	HRESULT Freeze(bool IncludingMusic=true);
 	HRESULT FocusWindow(CUIWindow* Window);
+	CVidTheoraPlayer* m_TheoraPlayer;
 	bool m_LoadInProgress;
 	CUIWindow* m_FocusedWindow;
 	bool m_EditorForceScripts;
@@ -241,6 +243,7 @@ public:
 	static void AfterLoadSound(void* Sound, void* Data);
 	static void AfterLoadFont(void* Font, void* Data);
 	static void AfterLoadScript(void* script, void* data);
+	static void AfterLoadTheora(void* Theora, void* Data);
 	static void InvalidateValues(void* Value, void* Data);
 	HRESULT LoadSettings(char* Filename);
 	HRESULT ResumeMusic(int Channel);
@@ -288,6 +291,9 @@ public:
 	HRESULT DisplayQuickMsg();
 	DWORD m_Fps;
 	HRESULT UpdateMusicCrossfade();
+
+	bool IsVideoPlaying();
+	HRESULT StopVideo();
 
 	CBArray<CBObject*, CBObject*> m_RegObjects;
 	

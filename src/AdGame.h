@@ -90,6 +90,7 @@ public:
 	int m_TexTalkLifeTime;
 
 	TTalkSkipButton m_TalkSkipButton;
+	TVideoSkipButton m_VideoSkipButton;
 
 	virtual HRESULT GetVersion(BYTE* VerMajor, BYTE* VerMinor, BYTE* ExtMajor, BYTE* ExtMinor);
 	HRESULT ScheduleChangeScene(char *Filename, bool FadeIn);

@@ -30,7 +30,7 @@ THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////
 #define DCGF_VER_MAJOR 1
 #define DCGF_VER_MINOR 0
-#define DCGF_VER_BUILD 1
+#define DCGF_VER_BUILD 2
 #define DCGF_VER_SUFFIX "beta"
 #define DCGF_VER_BETA true
 
@@ -194,6 +194,10 @@ typedef void (*SYS_INSTANCE_CALLBACK)(void* Instance, void* Data);
 #include "ScStack.h"
 #include "ScScript.h"
 #include "ScEngine.h"
+
+// video classes
+#include "VidManager.h"
+#include "VidTheoraPlayer.h"
 
 #include "AdTypes.h"
 

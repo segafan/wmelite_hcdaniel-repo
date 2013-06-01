@@ -245,7 +245,7 @@ Uint32 CBSurfaceSDL::GetPixel(SDL_Surface *surface, int x, int y)
 HRESULT CBSurfaceSDL::Create(int Width, int Height)
 {
 	CBRenderSDL* renderer = static_cast<CBRenderSDL*>(Game->m_Renderer);
-	m_Texture = SDL_CreateTexture(renderer->GetSdlRenderer(), SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, Width, Height);
+	m_Texture = SDL_CreateTexture(renderer->GetSdlRenderer(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, Width, Height);
 
 	m_Width = Width;
 	m_Height = Height;
@@ -449,4 +449,10 @@ long CBSurfaceSDL::TellProc(fi_handle handle)
 {
 	CBFile* file = static_cast<CBFile*>(handle);
 	return file->GetPos();
+}
+
+//////////////////////////////////////////////////////////////////////////
+void CBSurfaceSDL::FillTexture(const void* pixelData, int pitch)
+{
+	SDL_UpdateTexture(m_Texture, NULL, pixelData, pitch);
 }
