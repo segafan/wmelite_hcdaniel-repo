@@ -36,6 +36,7 @@ THE SOFTWARE.
 		static AnsiString GetFileName(const AnsiString& path);
 		static AnsiString GetFileNameWithoutExtension(const AnsiString& path);
 		static AnsiString GetExtension(const AnsiString& path);
+		static AnsiString GetAbsolutePath(const AnsiString& path);
 		static bool CreateDirectory(const AnsiString& path);
 		static bool MatchesMask(const AnsiString& fileName, const AnsiString& mask);
 
@@ -43,6 +44,8 @@ THE SOFTWARE.
 
 		static AnsiString GetSafeLogFileName();
 		static AnsiString GetUserDirectory();
+
+		static void GetFilesInDirectory(const AnsiString& path, const AnsiString& mask, AnsiStringList& files);
 	};
 
 #endif // __WmePathUtils_H__

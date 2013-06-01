@@ -27,8 +27,6 @@ THE SOFTWARE.
 #include <algorithm>
 #include <string>
 #include <sstream>
-#include <boost/lexical_cast.hpp>
-#include <boost/tokenizer.hpp>
 #include "StringUtil.h"
 #include "ConvertUTF.h"
 
@@ -334,21 +332,4 @@ AnsiString StringUtil::ToString(double val)
 	std::ostringstream str;
 	str << val;
 	return str.str();
-}
-
-
-//////////////////////////////////////////////////////////////////////////
-void StringUtil::Split(const AnsiString& list, const AnsiString& delimiters, AnsiStringArray& result, bool keepEmptyItems)
-{
-	result.clear();
-
-	typedef boost::char_separator<char> separator_t;
-	typedef boost::tokenizer<separator_t, AnsiString::const_iterator, AnsiString> tokenizer_t;
-
-	separator_t del(delimiters.c_str(), "", keepEmptyItems ? boost::keep_empty_tokens : boost::drop_empty_tokens);
-	tokenizer_t tokens(list, del);
-	for (tokenizer_t::iterator it = tokens.begin(); it != tokens.end(); it++)
-	{
-		result.push_back(*it);
-	}
 }

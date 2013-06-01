@@ -24,10 +24,8 @@ THE SOFTWARE.
 */
 
 #include "dcgf.h"
+#include "PlatformSDL.h"
 #include "PathUtil.h"
-#include "boost/filesystem.hpp"
-
-using namespace boost::filesystem;
 
 //////////////////////////////////////////////////////////////////////
 static inline unsigned Sqr (int x)
@@ -103,14 +101,29 @@ void CBUtils::CreatePath(const char* Path, bool PathOnly)
 	if (!PathOnly) path = PathUtil::GetDirectoryName(Path);
 	else path = Path;
 
-	try
+	path = PathUtil::UnifySeparators(path);
+
+	char* fpath = new char[path.length() + 1];
+	strcpy(fpath, path.c_str());
+
+	char* chPtr;
+	chPtr = fpath;
+
+	bool atEnd = false;
+	do
 	{
-		create_directories(path);
-	}
-	catch (...)
-	{
-		return;
-	}
+		if (*chPtr == '\\' || *chPtr == '/' || *chPtr == 0)
+		{
+			if (*chPtr == 0) atEnd = true;
+
+			*chPtr = 0;
+			CBPlatform::CreateDirectory(fpath);
+			*chPtr = '\\';
+		}
+		chPtr++;
+	} while (!atEnd);
+
+	delete [] fpath;
 }
 
 
@@ -263,11 +276,13 @@ bool CBUtils::MatchesPattern(const char* Pattern, const char* String)
 char* CBUtils::GetPath(char* Filename)
 {
 	AnsiString path = PathUtil::GetDirectoryName(Filename);
-	path = system_complete(path).string();
 
-	char* ret = new char[path.length() + 1];
-	strcpy(ret, path.c_str());
-
+	char* ret = new char[MAX_PATH];
+#ifdef _WIN32
+	_fullpath(ret, path.c_str(), MAX_PATH);
+#else
+	realpath(path.c_str(), ret);
+#endif
 	return ret;
 }
 

@@ -341,6 +341,8 @@ private:
 	bool IsDoubleClick(int buttonIndex);
 	DWORD m_UsedMem;
 
+	void FileSystemTests();
+
 
 
 protected:

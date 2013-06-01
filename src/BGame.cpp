@@ -242,6 +242,8 @@ CBGame::CBGame():CBObject(this)
 #endif
 
 	m_Store = NULL;
+
+	//FileSystemTests();
 }
 
 
@@ -4809,4 +4811,22 @@ AnsiString CBGame::GetDeviceType() const
 #else
 	return "computer";
 #endif
+}
+
+//////////////////////////////////////////////////////////////////////////
+void CBGame::FileSystemTests()
+{
+	bool b = CBPlatform::FileExists("D:\\temp\\index.xml");
+	b = CBPlatform::CopyFile("D:\\temp\\index.xml", "D:\\temp\\index2.xml", false);
+	b = CBPlatform::CreateDirectory("D:\\temp\\whatever2");
+	b = CBPlatform::DirectoryExists("D:\\temp\\whatever2\\");
+	CBUtils::CreatePath("D:\\temp\\whatever\\whenever\\whoever", true);
+
+	AnsiStringList files;
+	PathUtil::GetFilesInDirectory("D:\\temp", "*.xml", files);
+
+	char* path = CBUtils::GetPath("D:\\temp\\index.xml");
+	delete [] path;
+
+	int i = 10;
 }

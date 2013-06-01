@@ -67,6 +67,9 @@ public:
 	static BOOL ShowWindow(HWND hWnd, int nCmdShow);
 	static bool DeleteFile(const char* lpFileName);
 	static bool CopyFile(const char* from, const char* to, bool failIfExists);
+	static bool FileExists(const char* fileName);
+	static bool DirectoryExists(const char* path);
+	static bool CreateDirectory(const char* path);
 	static HWND SetCapture(HWND hWnd);
 	static BOOL ReleaseCapture();
 	static BOOL SetForegroundWindow(HWND hWnd);

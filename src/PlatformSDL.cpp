@@ -27,18 +27,14 @@ THE SOFTWARE.
 #include "PlatformSDL.h"
 #include "BRenderSDL.h"
 #include "PathUtil.h"
-#include <boost/filesystem.hpp>
 
 #ifdef __WIN32__
 #	include <dbghelp.h>
 #	include <direct.h>
 #else
 #	include <unistd.h>
+#	include <dirent.h>
 #endif
-
-
-
-using namespace boost::filesystem;
 
 
 CBGame* CBPlatform::Game = NULL;
@@ -424,16 +420,74 @@ bool CBPlatform::DeleteFile(const char* lpFileName)
 //////////////////////////////////////////////////////////////////////////
 bool CBPlatform::CopyFile(const char* from, const char* to, bool failIfExists)
 {
-	try
+	if (FileExists(to)) return false;
+
+	FILE* source = fopen(from, "rb");
+	if (!source) return false;
+
+	FILE* target = fopen(to, "wb");
+	if (!target)
 	{
-		if (failIfExists && exists(to)) return false;
-		copy_file(from, to);
-		return true;
-	}
-	catch (...)
-	{
+		fclose(source);
 		return false;
 	}
+
+	bool ret = true;
+
+	char buf[4096];
+	size_t numBytes;
+
+	while ((numBytes = fread(buf, sizeof(char), sizeof(buf), source)) > 0)
+	{
+		if (fwrite(buf, sizeof(char), numBytes, target) != numBytes)
+		{
+			ret = false;
+			break;
+		}
+	}
+	fclose(source);
+	fclose(target);
+
+	return ret;
+}
+
+//////////////////////////////////////////////////////////////////////////
+bool CBPlatform::FileExists(const char* fileName)
+{
+	FILE* file = fopen(fileName, "rb");
+	if (!file) return false;
+
+	fclose(file);
+	return true;
+}
+
+//////////////////////////////////////////////////////////////////////////
+bool CBPlatform::DirectoryExists(const char* path)
+{
+	bool ret = false;
+#ifdef _WIN32
+	DWORD attr = GetFileAttributes(path);
+	ret = (attr != INVALID_FILE_ATTRIBUTES && (attr & FILE_ATTRIBUTE_DIRECTORY));
+#else
+	DIR* dir = opendir(path);
+	if (dir != NULL)
+	{
+		ret = true;
+		closedir(dir);
+	}
+#endif
+	return ret;
+}
+
+//////////////////////////////////////////////////////////////////////////
+bool CBPlatform::CreateDirectory(const char* path)
+{
+#ifdef _WIN32
+	int ret = _mkdir(path);
+#else
+	int ret = mkdir(path, S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IWGRP | S_IXGRP | S_IROTH | S_IXOTH);
+#endif
+	return (ret == 0);
 }
 
 //////////////////////////////////////////////////////////////////////////

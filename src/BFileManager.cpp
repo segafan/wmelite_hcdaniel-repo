@@ -27,7 +27,6 @@ THE SOFTWARE.
 #include "BFileManager.h"
 #include "StringUtil.h"
 #include "PathUtil.h"
-#include <boost/filesystem.hpp>
 
 #ifdef __WIN32__
 #	include <direct.h>
@@ -38,8 +37,6 @@ THE SOFTWARE.
 #ifdef __APPLE__
 #	include <CoreFoundation/CoreFoundation.h>
 #endif
-
-using namespace boost::filesystem;
 
 
 #if _DEBUG
@@ -364,36 +361,22 @@ HRESULT CBFileManager::RegisterPackages()
 
 	Game->LOG(0, "Scanning packages...");
 
-
-	AnsiString extension = AnsiString(".") + AnsiString(PACKAGE_EXTENSION);
-
-	for(int i=0; i<m_PackagePaths.GetSize(); i++)
+	AnsiString mask = AnsiString("*.") + AnsiString(PACKAGE_EXTENSION);
+	
+	for (int i = 0; i < m_PackagePaths.GetSize(); i++)
 	{
-		path absPath = system_complete(m_PackagePaths[i]);
+		AnsiString fullPath = PathUtil::GetAbsolutePath(m_PackagePaths[i]);
+		if (!CBPlatform::DirectoryExists(fullPath.c_str())) continue;
 
-		//Game->LOG(0, "Scanning: %s", absPath.string().c_str());
-		//printf("Scanning: %s\n", absPath.string().c_str());
+		AnsiStringList files;
+		PathUtil::GetFilesInDirectory(fullPath, mask, files);
 
-		if (!exists(absPath)) continue;
-
-		// scan files
-		directory_iterator endIter;
-		for (directory_iterator dit(absPath); dit != endIter; ++dit)
+		for (AnsiStringList::iterator it = files.begin(); it != files.end(); ++it)
 		{
-			if (!is_directory((*dit).status()))
-			{
-				AnsiString fileName = (*dit).path().string();
-
-				if (!IsValidPackage(fileName)) continue;
-
-				//printf("%s\n", fileName.c_str());
-				if (!StringUtil::CompareNoCase(extension, PathUtil::GetExtension(fileName))) continue;
-				RegisterPackage(absPath.string().c_str(), dit->path().filename().string().c_str());
-			}
+			if (!IsValidPackage(PathUtil::Combine(fullPath, (*it)))) continue;
+			RegisterPackage(fullPath.c_str(), (*it).c_str());
 		}
 	}
-
-
 	Game->LOG(0, "  Registered %d files in %d package(s)", m_Files.size(), m_Packages.GetSize());
 
 	return S_OK;
