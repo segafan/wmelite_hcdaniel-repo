@@ -33,6 +33,8 @@ THE SOFTWARE.
 #ifdef __WIN32__
 #	include <shlobj.h>
 #	include <io.h>
+#else
+#   include <dirent.h>
 #endif
 
 #ifdef __MACOSX__
@@ -205,13 +207,14 @@ AnsiString PathUtil::GetUserDirectory()
 	return userDir;
 }
 
+//////////////////////////////////////////////////////////////////////////
 AnsiString PathUtil::GetAbsolutePath(const AnsiString& path)
 {
 	char fullPath[MAX_PATH];
 #ifdef _WIN32
 	_fullpath(fullPath, path.c_str(), MAX_PATH);
 #else
-	realpath(path.c_str(), ret);
+	realpath(path.c_str(), fullPath);
 #endif
 	return AnsiString(fullPath);
 }
@@ -238,5 +241,20 @@ void PathUtil::GetFilesInDirectory(const AnsiString& path, const AnsiString& mas
 		_findclose(hFile);
 	}
 #else
+    DIR* dir;
+    struct dirent* entry;
+    
+    dir = opendir(path.c_str());
+    if (dir)
+    {
+        while ((entry = readdir(dir)) != NULL)
+        {
+            if (CBUtils::MatchesPattern(mask.c_str(), entry->d_name))
+            {
+                files.push_back(entry->d_name);
+            }
+        }
+        closedir(dir);
+    }
 #endif
 }

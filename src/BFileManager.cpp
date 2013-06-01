@@ -384,22 +384,21 @@ HRESULT CBFileManager::RegisterPackages()
 
 
 //////////////////////////////////////////////////////////////////////////
-HRESULT CBFileManager::RegisterPackage(const char* Path, const char* Name, bool SearchSignature)
+HRESULT CBFileManager::RegisterPackage(const AnsiString& path, const AnsiString& name, bool searchSignature)
 {
-	char Filename[MAX_PATH];
-	sprintf(Filename, "%s%s", Path, Name);
+    AnsiString fileName = PathUtil::Combine(path, name);
 
-	FILE* f = fopen(Filename, "rb");
+	FILE* f = fopen(fileName.c_str(), "rb");
 	if(!f)
 	{
-		Game->LOG(0, "  Error opening package file '%s'. Ignoring.", Filename);
+		Game->LOG(0, "  Error opening package file '%s'. Ignoring.", fileName.c_str());
 		return S_OK;
 	}
 
 	DWORD AbosulteOffset = 0;
 	bool BoundToExe = false;
 
-	if(SearchSignature)
+	if(searchSignature)
 	{
 		DWORD Offset;
 		if(!FindPackageSignature(f, &Offset))
@@ -419,14 +418,14 @@ HRESULT CBFileManager::RegisterPackage(const char* Path, const char* Name, bool 
 	fread(&hdr, sizeof(TPackageHeader), 1, f);
 	if(hdr.Magic1 != PACKAGE_MAGIC_1 || hdr.Magic2 != PACKAGE_MAGIC_2 || hdr.PackageVersion > PACKAGE_VERSION)
 	{
-		Game->LOG(0, "  Invalid header in package file '%s'. Ignoring.", Filename);
+		Game->LOG(0, "  Invalid header in package file '%s'. Ignoring.", fileName.c_str());
 		fclose(f);
 		return S_OK;
 	}
 
 	if(hdr.PackageVersion != PACKAGE_VERSION)
 	{
-		Game->LOG(0, "  Warning: package file '%s' is outdated.", Filename);
+		Game->LOG(0, "  Warning: package file '%s' is outdated.", fileName.c_str());
 	}
 
 	// new in v2

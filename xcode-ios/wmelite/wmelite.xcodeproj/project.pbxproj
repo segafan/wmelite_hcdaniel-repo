@@ -19,8 +19,6 @@
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
 		461507A813520AFD000E96C4 /* libbass.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 461507A713520AFD000E96C4 /* libbass.a */; };
-		461507AA13520B13000E96C4 /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 461507A913520B13000E96C4 /* libboost_filesystem.a */; };
-		461507AC13520B13000E96C4 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 461507AB13520B13000E96C4 /* libboost_system.a */; };
 		4615089A13520B93000E96C4 /* AdActor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 461507B313520B93000E96C4 /* AdActor.cpp */; };
 		4615089B13520B93000E96C4 /* AdActorDir.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 461507B513520B93000E96C4 /* AdActorDir.cpp */; };
 		4615089C13520B93000E96C4 /* AdEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 461507B713520B93000E96C4 /* AdEntity.cpp */; };
@@ -170,8 +168,6 @@
 		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		461507A713520AFD000E96C4 /* libbass.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbass.a; path = ../dep/bass/lib/libbass.a; sourceTree = SOURCE_ROOT; };
-		461507A913520B13000E96C4 /* libboost_filesystem.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_filesystem.a; path = ../dep/boost/lib/libboost_filesystem.a; sourceTree = SOURCE_ROOT; };
-		461507AB13520B13000E96C4 /* libboost_system.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_system.a; path = ../dep/boost/lib/libboost_system.a; sourceTree = SOURCE_ROOT; };
 		461507B313520B93000E96C4 /* AdActor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AdActor.cpp; path = ../../src/AdActor.cpp; sourceTree = SOURCE_ROOT; };
 		461507B413520B93000E96C4 /* AdActor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AdActor.h; path = ../../src/AdActor.h; sourceTree = SOURCE_ROOT; };
 		461507B513520B93000E96C4 /* AdActorDir.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AdActorDir.cpp; path = ../../src/AdActorDir.cpp; sourceTree = SOURCE_ROOT; };
@@ -447,8 +443,6 @@
 				FD77A0850E26BDB800F39101 /* AudioToolbox.framework in Frameworks */,
 				FDB8BFC60E5A0F6A00980157 /* CoreGraphics.framework in Frameworks */,
 				461507A813520AFD000E96C4 /* libbass.a in Frameworks */,
-				461507AA13520B13000E96C4 /* libboost_filesystem.a in Frameworks */,
-				461507AC13520B13000E96C4 /* libboost_system.a in Frameworks */,
 				4615094013521059000E96C4 /* CFNetwork.framework in Frameworks */,
 				461509531352207F000E96C4 /* libfreetype.a in Frameworks */,
 				46EA217415C01C2E00A18708 /* libfreeimage-iphone.a in Frameworks */,
@@ -484,8 +478,6 @@
 				46EA217315C01C2E00A18708 /* libfreeimage-iphonesimulator.a */,
 				46EA217215C01C2E00A18708 /* libfreeimage-iphone.a */,
 				461507A713520AFD000E96C4 /* libbass.a */,
-				461507A913520B13000E96C4 /* libboost_filesystem.a */,
-				461507AB13520B13000E96C4 /* libboost_system.a */,
 				1EE8C09A174FFDB7000B5435 /* libogg.a */,
 				1EE8C09B174FFDB7000B5435 /* libtheora.a */,
 				1EE8C09C174FFDB7000B5435 /* libtheoraplayer.a */,
@@ -982,7 +974,6 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../dep/bass/include\"",
-					"\"$(SRCROOT)/../dep/boost/include\"",
 					"\"$(SRCROOT)/../dep/FreeImage/include\"",
 					"\"$(SRCROOT)/../dep/freetype/include\"",
 					"\"$(SRCROOT)/../dep/SDL/include\"",
@@ -993,7 +984,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../dep/bass/lib\"",
-					"\"$(SRCROOT)/../dep/boost/lib\"",
 					"\"$(SRCROOT)/../dep/FreeImage/lib\"",
 					"\"$(SRCROOT)/../dep/freetype/lib\"",
 					"\"$(SRCROOT)/../dep/SDL/lib\"",
@@ -1023,7 +1013,6 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../dep/bass/include\"",
-					"\"$(SRCROOT)/../dep/boost/include\"",
 					"\"$(SRCROOT)/../dep/FreeImage/include\"",
 					"\"$(SRCROOT)/../dep/freetype/include\"",
 					"\"$(SRCROOT)/../dep/SDL/include\"",
@@ -1034,7 +1023,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../dep/bass/lib\"",
-					"\"$(SRCROOT)/../dep/boost/lib\"",
 					"\"$(SRCROOT)/../dep/FreeImage/lib\"",
 					"\"$(SRCROOT)/../dep/freetype/lib\"",
 					"\"$(SRCROOT)/../dep/SDL/lib\"",

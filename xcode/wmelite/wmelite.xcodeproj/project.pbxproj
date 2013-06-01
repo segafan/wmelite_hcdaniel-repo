@@ -138,8 +138,6 @@
 		46D40F72134A5D45002829D8 /* libfreeimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46D40F71134A5D45002829D8 /* libfreeimage.a */; };
 		46D40F77134A5D67002829D8 /* libbass.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 46D40F76134A5D67002829D8 /* libbass.dylib */; };
 		46D40F79134A5D92002829D8 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46D40F78134A5D92002829D8 /* libfreetype.a */; };
-		46D40F7E134A5DBA002829D8 /* libboost_filesystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46D40F7D134A5DBA002829D8 /* libboost_filesystem.a */; };
-		46D40F80134A5DBA002829D8 /* libboost_system.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46D40F7F134A5DBA002829D8 /* libboost_system.a */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
@@ -414,8 +412,6 @@
 		46D40F71134A5D45002829D8 /* libfreeimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreeimage.a; path = ../dep/FreeImage/lib/libfreeimage.a; sourceTree = SOURCE_ROOT; };
 		46D40F76134A5D67002829D8 /* libbass.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbass.dylib; path = ../dep/bass/lib/libbass.dylib; sourceTree = SOURCE_ROOT; };
 		46D40F78134A5D92002829D8 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../dep/freetype/lib/libfreetype.a; sourceTree = SOURCE_ROOT; };
-		46D40F7D134A5DBA002829D8 /* libboost_filesystem.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_filesystem.a; path = ../dep/boost/lib/libboost_filesystem.a; sourceTree = SOURCE_ROOT; };
-		46D40F7F134A5DBA002829D8 /* libboost_system.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libboost_system.a; path = ../dep/boost/lib/libboost_system.a; sourceTree = SOURCE_ROOT; };
 		8D1107310486CEB800E47090 /* wmelite-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "wmelite-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* WME Lite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WME Lite.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -430,8 +426,6 @@
 				46D40F72134A5D45002829D8 /* libfreeimage.a in Frameworks */,
 				46D40F77134A5D67002829D8 /* libbass.dylib in Frameworks */,
 				46D40F79134A5D92002829D8 /* libfreetype.a in Frameworks */,
-				46D40F7E134A5DBA002829D8 /* libboost_filesystem.a in Frameworks */,
-				46D40F80134A5DBA002829D8 /* libboost_system.a in Frameworks */,
 				1EDECB6817456DB5008020C3 /* SDL2.framework in Frameworks */,
 				1EDECB6E17456EE4008020C3 /* Ogg.framework in Frameworks */,
 				1EDECB6F17456EE4008020C3 /* Theora.framework in Frameworks */,
@@ -754,8 +748,6 @@
 				46D40F6B134A5D0F002829D8 /* libz.a */,
 				46D40F71134A5D45002829D8 /* libfreeimage.a */,
 				46D40F78134A5D92002829D8 /* libfreetype.a */,
-				46D40F7D134A5DBA002829D8 /* libboost_filesystem.a */,
-				46D40F7F134A5DBA002829D8 /* libboost_system.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1008,7 +1000,6 @@
 					../dep/freetype/include,
 					../dep/FreeImage/include,
 					../dep/zlib/include,
-					../dep/boost/include,
 					../dep/libtheoraplayer/theoraplayer.framework/Headers,
 				);
 				INFOPLIST_FILE = "wmelite-Info.plist";
@@ -1019,7 +1010,6 @@
 					"\"$(SRCROOT)/../dep/FreeImage/lib\"",
 					"\"$(SRCROOT)/../dep/bass/lib\"",
 					"\"$(SRCROOT)/../dep/freetype/lib\"",
-					"\"$(SRCROOT)/../dep/boost/lib\"",
 				);
 				PRODUCT_NAME = "WME Lite";
 				SDKROOT = "";
@@ -1051,7 +1041,6 @@
 					../dep/freetype/include,
 					../dep/FreeImage/include,
 					../dep/zlib/include,
-					../dep/boost/include,
 					../dep/libtheoraplayer/theoraplayer.framework/Headers,
 				);
 				INFOPLIST_FILE = "wmelite-Info.plist";
@@ -1062,7 +1051,6 @@
 					"\"$(SRCROOT)/../dep/FreeImage/lib\"",
 					"\"$(SRCROOT)/../dep/bass/lib\"",
 					"\"$(SRCROOT)/../dep/freetype/lib\"",
-					"\"$(SRCROOT)/../dep/boost/lib\"",
 				);
 				PRODUCT_NAME = "WME Lite";
 				SDKROOT = "";

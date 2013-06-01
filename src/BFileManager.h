@@ -64,7 +64,7 @@ public:
 
 	map<string, CBFileEntry*> m_Files;
 private:
-	HRESULT RegisterPackage(const char* Path, const char* Name, bool SearchSignature=false);	
+	HRESULT RegisterPackage(const AnsiString& path, const AnsiString& name, bool searchSignature = false);
 	map<string, CBFileEntry*>::iterator m_FilesIter;
 	bool IsValidPackage(const AnsiString& fileName) const;
 	

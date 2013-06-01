@@ -118,7 +118,7 @@ void CBUtils::CreatePath(const char* Path, bool PathOnly)
 
 			*chPtr = 0;
 			CBPlatform::CreateDirectory(fpath);
-			*chPtr = '\\';
+			*chPtr = '/';
 		}
 		chPtr++;
 	} while (!atEnd);

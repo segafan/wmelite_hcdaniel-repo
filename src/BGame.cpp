@@ -4812,10 +4812,11 @@ AnsiString CBGame::GetDeviceType() const
 	return "computer";
 #endif
 }
-
+/*
 //////////////////////////////////////////////////////////////////////////
 void CBGame::FileSystemTests()
 {
+#ifdef _WIN32
 	bool b = CBPlatform::FileExists("D:\\temp\\index.xml");
 	b = CBPlatform::CopyFile("D:\\temp\\index.xml", "D:\\temp\\index2.xml", false);
 	b = CBPlatform::CreateDirectory("D:\\temp\\whatever2");
@@ -4827,6 +4828,19 @@ void CBGame::FileSystemTests()
 
 	char* path = CBUtils::GetPath("D:\\temp\\index.xml");
 	delete [] path;
+#else
+	bool b = CBPlatform::FileExists("/tmp/index.xml");
+	b = CBPlatform::CopyFile("/tmp/index.xml", "/tmp/index2.xml", false);
+	b = CBPlatform::CreateDirectory("/tmp/whatever2");
+	b = CBPlatform::DirectoryExists("/tmp/whatever2/");
+	CBUtils::CreatePath("/tmp/whatever/whenever/whoever", true);
+    
+	AnsiStringList files;
+	PathUtil::GetFilesInDirectory("/tmp", "*.xml", files);
+    
+	char* path = CBUtils::GetPath("/tmp/index.xml");
+	delete [] path;
+    #endif
 
-	int i = 10;
 }
+*/
