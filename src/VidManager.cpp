@@ -25,6 +25,7 @@ THE SOFTWARE.
 
 #include "dcgf.h"
 #include "VidManager.h"
+#include "VidTheoraPlayer.h"
 #include <theoraplayer/TheoraPlayer.h>
 
 
@@ -60,5 +61,48 @@ HRESULT CVidManager::InitLoop()
 HRESULT CVidManager::Initialize()
 {
 	m_Theora = new TheoraVideoManager();
+	return S_OK;
+}
+
+//////////////////////////////////////////////////////////////////////////
+void CVidManager::RegisterPlayer(CVidTheoraPlayer* player)
+{
+	m_Players.insert(player);
+}
+
+//////////////////////////////////////////////////////////////////////////
+void CVidManager::UnregisterPlayer(CVidTheoraPlayer* player)
+{
+	m_Players.erase(player);
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+HRESULT CVidManager::PauseAll()
+{
+	for (PlayerSet::iterator it = m_Players.begin(); it != m_Players.end(); ++it)
+	{
+		CVidTheoraPlayer* player = *it;
+		if (player->IsPlaying())
+		{
+			player->Pause();
+			player->SetFreezePaused(true);
+		}
+	}
+	return S_OK;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+HRESULT CVidManager::ResumeAll()
+{
+	for (PlayerSet::iterator it = m_Players.begin(); it != m_Players.end(); ++it)
+	{
+		CVidTheoraPlayer* player = *it;
+		if (player->IsFreezePaused())
+		{
+			player->Resume();
+		}
+	}
 	return S_OK;
 }

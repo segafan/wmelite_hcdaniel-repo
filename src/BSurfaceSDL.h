@@ -45,6 +45,7 @@ public:
 
 	bool IsTransparentAt(int X, int Y);
 	bool IsTransparentAtLite(int X, int Y);
+	BYTE GetAlphaAt(int x, int y);
 
 	HRESULT StartPixelOp();
 	HRESULT EndPixelOp();
@@ -61,7 +62,7 @@ public:
 	static int DLL_CALLCONV SeekProc(fi_handle handle, long offset, int origin);
 	static long DLL_CALLCONV TellProc(fi_handle handle);
 
-	void FillTexture(const void* pixelData, int pitch);
+	void FillTexture(const void* pixelData, int pitch, CBSurfaceSDL* alphaTexture = NULL);
 
 private:
 	SDL_Texture* m_Texture;

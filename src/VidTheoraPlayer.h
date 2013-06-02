@@ -58,6 +58,9 @@ public:
 
 	HRESULT SetAlphaImage(char* filename);
 
+	void SetFreezePaused(bool val) { m_FreezePaused = val; }
+	bool IsFreezePaused() const { return m_FreezePaused; }
+
 	int m_PosX;
 	int m_PosY;
 
@@ -67,9 +70,11 @@ private:
 	HRESULT SeekToTime(DWORD time);
 	float GetMovieTime();
 
+	bool m_FreezePaused;
+
 	CBFile* m_File;
 	char* m_Filename;
-	CBSurfaceSDL* m_Texture;
+	CBSurfaceSDL* m_Texture;	
 	int m_State;
 	TVideoPlayback m_PlaybackType;
 	float m_PlayZoom;
@@ -79,8 +84,8 @@ private:
 	bool m_FreezeGame;
 	DWORD m_CurrentTime;
 
-	CBImage* m_AlphaImage;
 	char* m_AlphaFilename;
+	CBSurfaceSDL* m_AlphaTexture;
 
 	int m_SavedState;
 	DWORD m_SavedPos;

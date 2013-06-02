@@ -299,23 +299,23 @@ bool CBSurfaceSDL::IsTransparentAtLite(int X, int Y)
 	int access;
 	int width, height;
 	SDL_QueryTexture(m_Texture, &format, &access, &width, &height);
-	//if (access != SDL_TEXTUREACCESS_STREAMING) return false;
 	if (X < 0 || X >= width || Y < 0 || Y >= height) return true;
 
 	if (!m_AlphaMask) return false;
 	else return m_AlphaMask[Y * width + X] <= 128;
+}
 
-	/*
-	Uint32* dst = (Uint32*)((Uint8*)m_LockPixels + Y * m_LockPitch);
-	Uint32 pixel = dst[X];
+//////////////////////////////////////////////////////////////////////////
+BYTE CBSurfaceSDL::GetAlphaAt(int x, int y)
+{
+	Uint32 format;
+	int access;
+	int width, height;
+	SDL_QueryTexture(m_Texture, &format, &access, &width, &height);
+	if (x < 0 || x >= width || y < 0 || y >= height) return 0;
 
-	SDL_PixelFormat* pixelFormat = SDL_AllocFormat(format);
-	Uint8 r, g, b, a;
-	SDL_GetRGBA(pixel, pixelFormat, &r, &g, &b, &a);
-	SDL_FreeFormat(pixelFormat);	
-
-	return a <= 128;
-	*/
+	if (!m_AlphaMask) return 0;
+	else return m_AlphaMask[y * width + x];
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -452,7 +452,28 @@ long CBSurfaceSDL::TellProc(fi_handle handle)
 }
 
 //////////////////////////////////////////////////////////////////////////
-void CBSurfaceSDL::FillTexture(const void* pixelData, int pitch)
+void CBSurfaceSDL::FillTexture(const void* pixelData, int pitch, CBSurfaceSDL* alphaTexture)
 {
-	SDL_UpdateTexture(m_Texture, NULL, pixelData, pitch);
+	if (!alphaTexture) SDL_UpdateTexture(m_Texture, NULL, pixelData, pitch);
+	else
+	{
+		BYTE* texPixels;
+		int texPitch;
+		SDL_LockTexture(m_Texture, NULL, (void**)&texPixels, &texPitch);
+
+		for (int row = 0; row < m_Height; row++)
+		{
+			for (int col = 0; col < m_Width; col++)
+			{
+				BYTE* source = &((BYTE*)pixelData)[row * pitch + 4 * col];
+				BYTE* target = &texPixels[row * texPitch + 4 * col];
+
+				target[0] = alphaTexture->GetAlphaAt(col, row);
+				target[1] = source[1];
+				target[2] = source[2];
+				target[3] = source[3];
+			}
+		}
+		SDL_UnlockTexture(m_Texture);
+	}
 }

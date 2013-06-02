@@ -3943,6 +3943,7 @@ HRESULT CBGame::Freeze(bool IncludingMusic)
 	{
 		m_ScEngine->PauseAll();
 		m_SoundMgr->PauseAll(IncludingMusic);
+		m_VideoMgr->PauseAll();
 		m_OrigState = m_State;
 		m_OrigInteractive = m_Interactive;
 		m_Interactive = true;
@@ -3966,6 +3967,7 @@ HRESULT CBGame::Unfreeze()
 		m_Interactive = m_OrigInteractive;
 		m_ScEngine->ResumeAll();
 		m_SoundMgr->ResumeAll();
+		m_VideoMgr->ResumeAll();
 	}
 
 	return S_OK;
@@ -4517,8 +4519,16 @@ HRESULT CBGame::OnActivate(bool Activate, bool RefreshMouse)
 		SetActiveObject(m_Renderer->GetObjectAt(p.x, p.y));
 	}
 
-	if(Activate) m_SoundMgr->ResumeAll();
-	else m_SoundMgr->PauseAll();
+	if(Activate)
+	{
+		m_SoundMgr->ResumeAll();
+		m_VideoMgr->ResumeAll();
+	}
+	else
+	{
+		m_SoundMgr->PauseAll();
+		m_VideoMgr->PauseAll();
+	}
 
 	return S_OK;
 }

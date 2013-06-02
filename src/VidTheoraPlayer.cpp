@@ -46,7 +46,7 @@ CVidTheoraPlayer::~CVidTheoraPlayer()
 	SAFE_DELETE_ARRAY(m_Filename);
 	SAFE_DELETE_ARRAY(m_AlphaFilename);
 	SAFE_DELETE(m_Texture);
-	SAFE_DELETE(m_AlphaImage);
+	SAFE_DELETE(m_AlphaTexture);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -58,11 +58,12 @@ void CVidTheoraPlayer::SetDefaults()
 	m_Looping = false;
 	//m_Sound = NULL;
 	m_FreezeGame = false;
+	m_FreezePaused = false;
 	m_CurrentTime = 0;
 
 	m_State = THEORA_STATE_NONE;
 	m_Texture = NULL;
-	m_AlphaImage = NULL;
+	m_AlphaTexture = NULL;
 	m_AlphaFilename = NULL;
 
 	m_SavedState = THEORA_STATE_NONE;
@@ -88,6 +89,8 @@ void CVidTheoraPlayer::Cleanup()
 		m_Sound = NULL;
 	}
 	*/
+
+	Game->m_VideoMgr->UnregisterPlayer(this);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -107,6 +110,8 @@ HRESULT CVidTheoraPlayer::Initialize(char* filename, char* subtitleFile)
 		m_Texture = new CBSurfaceSDL(Game);
 		m_Texture->Create(m_Clip->getWidth(), m_Clip->getHeight());
 	}
+
+	Game->m_VideoMgr->RegisterPlayer(this);
 
 	return S_OK;
 }
@@ -139,7 +144,7 @@ HRESULT CVidTheoraPlayer::Update()
 	if (frame)
 	{
 		// transfer the frame pixels to your display device, texure, graphical context or whatever you use.
-		m_Texture->FillTexture(frame->getBuffer(), frame->getStride() * 4);
+		m_Texture->FillTexture(frame->getBuffer(), frame->getStride() * 4, m_AlphaTexture);
 		m_Clip->popFrame();
 	}
 	return S_OK;
@@ -255,6 +260,7 @@ HRESULT CVidTheoraPlayer::Resume()
 		m_State = THEORA_STATE_PLAYING;
 		if (m_Clip) m_Clip->play();
 		//if (m_Sound) m_Sound->Resume();
+		m_FreezePaused = false;
 		return S_OK;
 	}
 	else return E_FAIL;
@@ -263,17 +269,17 @@ HRESULT CVidTheoraPlayer::Resume()
 //////////////////////////////////////////////////////////////////////////
 HRESULT CVidTheoraPlayer::SetAlphaImage(char* filename)
 {
-	/*
-	SAFE_DELETE(m_AlphaImage);
-	m_AlphaImage = new CBImage(Game);
-	if (!m_AlphaImage || FAILED(m_AlphaImage->LoadFile(filename)))
+	SAFE_DELETE(m_AlphaTexture);
+
+	m_AlphaTexture = new CBSurfaceSDL(Game);
+	if (FAILED(m_AlphaTexture->Create(filename, false, 0, 0, 0)))
 	{
-		SAFE_DELETE(m_AlphaImage);
+		SAFE_DELETE(m_AlphaTexture);
 		SAFE_DELETE_ARRAY(m_AlphaFilename);
 		return E_FAIL;
 	}
 	if (m_AlphaFilename != filename) CBUtils::SetString(&m_AlphaFilename, filename);
-	*/
+
 	return S_OK;
 }
 
@@ -312,6 +318,7 @@ HRESULT CVidTheoraPlayer::Persist(CBPersistMgr* persistMgr)
 	persistMgr->Transfer(TMEMBER_INT(m_PlaybackType));
 	persistMgr->Transfer(TMEMBER(m_Looping));
 	persistMgr->Transfer(TMEMBER(m_Volume));
+	persistMgr->Transfer(TMEMBER(m_FreezePaused));
 
 	return S_OK;
 
