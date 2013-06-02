@@ -636,7 +636,11 @@ HRESULT CBFontTT::InitFont()
 	if (!file)
 	{
 		// the requested font file is not in wme file space; try loading a system font
+#ifdef __IPHONEOS__
+        AnsiString fontFileName = "DejaVuSans.ttf"; // on iOS use a fallback font we copy to app bundle
+#else
 		AnsiString fontFileName = PathUtil::Combine(CBPlatform::GetSystemFontPath(), PathUtil::GetFileName(m_FontFile));
+#endif
 		file = Game->m_FileManager->OpenFile((char*)fontFileName.c_str(), false);
 
 		if (!file)

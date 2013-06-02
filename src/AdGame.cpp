@@ -1263,8 +1263,8 @@ HRESULT CAdGame::LoadBuffer(BYTE * Buffer, bool Complete)
 						break;
 
 						case TOKEN_VIDEO_SKIP_BUTTON:
-							if(stricmp((char*)params2, "right")==0) m_VideoSkipButton = VIDEO_SKIP_RIGHT;
-							else if(stricmp((char*)params2, "both")==0) m_VideoSkipButton = VIDEO_SKIP_BOTH;
+							if (CBPlatform::stricmp((char*)params2, "right")==0) m_VideoSkipButton = VIDEO_SKIP_RIGHT;
+							else if (CBPlatform::stricmp((char*)params2, "both")==0) m_VideoSkipButton = VIDEO_SKIP_BOTH;
 							else m_VideoSkipButton = VIDEO_SKIP_LEFT;
 						break;
 

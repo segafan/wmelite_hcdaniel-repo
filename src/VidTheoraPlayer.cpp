@@ -230,7 +230,7 @@ HRESULT CVidTheoraPlayer::Display(DWORD alpha)
 
 	if (m_Texture)
 	{
-		SetRect(&rc, 0, 0, m_Texture->GetWidth(), m_Texture->GetHeight());
+        CBPlatform::SetRect(&rc, 0, 0, m_Texture->GetWidth(), m_Texture->GetHeight());
 		if (m_PlayZoom == 100.0f) Res = m_Texture->DisplayTrans(m_PosX, m_PosY, rc, alpha);
 		else Res = m_Texture->DisplayTransZoom(m_PosX, m_PosY, rc, m_PlayZoom, m_PlayZoom, alpha);
 	}

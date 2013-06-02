@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
+		1E3C29F2175B54D200B79FCB /* VidDataSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3C29EC175B54D200B79FCB /* VidDataSource.cpp */; };
+		1E3C29F3175B54D200B79FCB /* VidManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3C29EE175B54D200B79FCB /* VidManager.cpp */; };
+		1E3C29F4175B54D200B79FCB /* VidTheoraPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3C29F0175B54D200B79FCB /* VidTheoraPlayer.cpp */; };
 		1E3D7C3A1743F0F20038FD9C /* SXStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3D7C381743F0F20038FD9C /* SXStore.cpp */; };
 		1E3D7C3C1743F21F0038FD9C /* data.dcp in Resources */ = {isa = PBXBuildFile; fileRef = 1E3D7C3B1743F21F0038FD9C /* data.dcp */; };
 		1EDECB6817456DB5008020C3 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6717456DB5008020C3 /* SDL2.framework */; };
@@ -166,6 +169,12 @@
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		1E3C29EC175B54D200B79FCB /* VidDataSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VidDataSource.cpp; path = ../../src/VidDataSource.cpp; sourceTree = "<group>"; };
+		1E3C29ED175B54D200B79FCB /* VidDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VidDataSource.h; path = ../../src/VidDataSource.h; sourceTree = "<group>"; };
+		1E3C29EE175B54D200B79FCB /* VidManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VidManager.cpp; path = ../../src/VidManager.cpp; sourceTree = "<group>"; };
+		1E3C29EF175B54D200B79FCB /* VidManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VidManager.h; path = ../../src/VidManager.h; sourceTree = "<group>"; };
+		1E3C29F0175B54D200B79FCB /* VidTheoraPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VidTheoraPlayer.cpp; path = ../../src/VidTheoraPlayer.cpp; sourceTree = "<group>"; };
+		1E3C29F1175B54D200B79FCB /* VidTheoraPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VidTheoraPlayer.h; path = ../../src/VidTheoraPlayer.h; sourceTree = "<group>"; };
 		1E3D7C381743F0F20038FD9C /* SXStore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SXStore.cpp; path = ../../src/SXStore.cpp; sourceTree = "<group>"; };
 		1E3D7C391743F0F20038FD9C /* SXStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SXStore.h; path = ../../src/SXStore.h; sourceTree = "<group>"; };
 		1E3D7C3B1743F21F0038FD9C /* data.dcp */ = {isa = PBXFileReference; lastKnownFileType = file; path = data.dcp; sourceTree = "<group>"; };
@@ -440,6 +449,12 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				1E3C29EC175B54D200B79FCB /* VidDataSource.cpp */,
+				1E3C29ED175B54D200B79FCB /* VidDataSource.h */,
+				1E3C29EE175B54D200B79FCB /* VidManager.cpp */,
+				1E3C29EF175B54D200B79FCB /* VidManager.h */,
+				1E3C29F0175B54D200B79FCB /* VidTheoraPlayer.cpp */,
+				1E3C29F1175B54D200B79FCB /* VidTheoraPlayer.h */,
 				1E3D7C381743F0F20038FD9C /* SXStore.cpp */,
 				1E3D7C391743F0F20038FD9C /* SXStore.h */,
 				46D40D66134A44DB002829D8 /* AdActor.cpp */,
@@ -950,6 +965,9 @@
 				46D40EBC134A44DC002829D8 /* utils.cpp in Sources */,
 				46D40EBD134A44DC002829D8 /* Vector2.cpp in Sources */,
 				1E3D7C3A1743F0F20038FD9C /* SXStore.cpp in Sources */,
+				1E3C29F2175B54D200B79FCB /* VidDataSource.cpp in Sources */,
+				1E3C29F3175B54D200B79FCB /* VidManager.cpp in Sources */,
+				1E3C29F4175B54D200B79FCB /* VidTheoraPlayer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1411,7 +1411,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 		int X = Stack->Pop()->GetInt();
 		int Y = Stack->Pop()->GetInt();
 		bool FreezeMusic = Stack->Pop()->GetBool(true);
-		bool DropFrames = Stack->Pop()->GetBool(true);
+		Stack->Pop()->GetBool(true); // drop frames - unused
 
 		CScValue* valSub = Stack->Pop();
 		char* SubtitleFile = valSub->IsNULL()?NULL:valSub->GetString();
@@ -1419,6 +1419,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 
 		if(Type < (int)VID_PLAY_POS || Type > (int)VID_PLAY_CENTER) Type = (int)VID_PLAY_STRETCH;
 
+        bool videoLoaded = false;
 		SAFE_DELETE(m_TheoraPlayer);
 		m_TheoraPlayer = new CVidTheoraPlayer(this);
 		if(m_TheoraPlayer && SUCCEEDED(m_TheoraPlayer->Initialize(Filename, SubtitleFile)))
@@ -1427,10 +1428,16 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 			{
 				Stack->PushBool(true);
 				Script->Sleep(0);
+                videoLoaded = true;
 			}
 			else Stack->PushBool(false);
 		}
 		else Stack->PushBool(false);
+        
+        if (!videoLoaded)
+        {
+            SAFE_DELETE(m_TheoraPlayer);
+        }
 
 		return S_OK;
 	}

@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		1E3C29FB175B5B6900B79FCB /* VidDataSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3C29F5175B5A7B00B79FCB /* VidDataSource.cpp */; };
+		1E3C29FC175B5B6900B79FCB /* VidManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3C29F7175B5A7B00B79FCB /* VidManager.cpp */; };
+		1E3C29FD175B5B6900B79FCB /* VidTheoraPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3C29F9175B5A7B00B79FCB /* VidTheoraPlayer.cpp */; };
+		1E3C2A03175B604300B79FCB /* DejaVuSans.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1E3C2A02175B603200B79FCB /* DejaVuSans.ttf */; };
 		1EE8C095174FFBD4000B5435 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EE8C094174FFBD4000B5435 /* AVFoundation.framework */; };
 		1EE8C097174FFC2C000B5435 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EE8C096174FFC2C000B5435 /* CoreMedia.framework */; };
 		1EE8C099174FFC65000B5435 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EE8C098174FFC65000B5435 /* CoreVideo.framework */; };
@@ -158,6 +162,13 @@
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* wmelite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wmelite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		1E3C29F5175B5A7B00B79FCB /* VidDataSource.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = VidDataSource.cpp; path = ../../src/VidDataSource.cpp; sourceTree = "<group>"; };
+		1E3C29F6175B5A7B00B79FCB /* VidDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VidDataSource.h; path = ../../src/VidDataSource.h; sourceTree = "<group>"; };
+		1E3C29F7175B5A7B00B79FCB /* VidManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = VidManager.cpp; path = ../../src/VidManager.cpp; sourceTree = "<group>"; };
+		1E3C29F8175B5A7B00B79FCB /* VidManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VidManager.h; path = ../../src/VidManager.h; sourceTree = "<group>"; };
+		1E3C29F9175B5A7B00B79FCB /* VidTheoraPlayer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = VidTheoraPlayer.cpp; path = ../../src/VidTheoraPlayer.cpp; sourceTree = "<group>"; };
+		1E3C29FA175B5A7B00B79FCB /* VidTheoraPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VidTheoraPlayer.h; path = ../../src/VidTheoraPlayer.h; sourceTree = "<group>"; };
+		1E3C2A02175B603200B79FCB /* DejaVuSans.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = DejaVuSans.ttf; sourceTree = "<group>"; };
 		1EE8C094174FFBD4000B5435 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		1EE8C096174FFC2C000B5435 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		1EE8C098174FFC65000B5435 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
@@ -469,19 +480,10 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				1EE8C098174FFC65000B5435 /* CoreVideo.framework */,
-				46EA218015C03A2200A18708 /* libSDL.a */,
 				29B97315FDCFA39411CA2CEA /* Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				46EA217315C01C2E00A18708 /* libfreeimage-iphonesimulator.a */,
-				46EA217215C01C2E00A18708 /* libfreeimage-iphone.a */,
-				461507A713520AFD000E96C4 /* libbass.a */,
-				1EE8C09A174FFDB7000B5435 /* libogg.a */,
-				1EE8C09B174FFDB7000B5435 /* libtheora.a */,
-				1EE8C09C174FFDB7000B5435 /* libtheoraplayer.a */,
-				1EE8C09D174FFDB7000B5435 /* libtremor.a */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -489,6 +491,12 @@
 		29B97315FDCFA39411CA2CEA /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				1E3C29F5175B5A7B00B79FCB /* VidDataSource.cpp */,
+				1E3C29F6175B5A7B00B79FCB /* VidDataSource.h */,
+				1E3C29F7175B5A7B00B79FCB /* VidManager.cpp */,
+				1E3C29F8175B5A7B00B79FCB /* VidManager.h */,
+				1E3C29F9175B5A7B00B79FCB /* VidTheoraPlayer.cpp */,
+				1E3C29FA175B5A7B00B79FCB /* VidTheoraPlayer.h */,
 				46D0ADFB13E1A39A00CBDA40 /* SXStore.cpp */,
 				46D0AE0613E1A8DB00CBDA40 /* IOS_StoreKit_interface.h */,
 				46D0ADFC13E1A39A00CBDA40 /* SXStore.h */,
@@ -743,6 +751,7 @@
 				FD77A07E0E26BDA900F39101 /* Default.png */,
 				FD77A07C0E26BD8C00F39101 /* Icon.png */,
 				8D1107310486CEB800E47090 /* Info.plist */,
+				1E3C2A02175B603200B79FCB /* DejaVuSans.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -750,6 +759,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1EE8C098174FFC65000B5435 /* CoreVideo.framework */,
 				1EE8C096174FFC2C000B5435 /* CoreMedia.framework */,
 				1EE8C094174FFBD4000B5435 /* AVFoundation.framework */,
 				4615093F13521059000E96C4 /* CFNetwork.framework */,
@@ -762,6 +772,14 @@
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				461509521352207F000E96C4 /* libfreetype.a */,
+				46EA218015C03A2200A18708 /* libSDL.a */,
+				46EA217315C01C2E00A18708 /* libfreeimage-iphonesimulator.a */,
+				46EA217215C01C2E00A18708 /* libfreeimage-iphone.a */,
+				461507A713520AFD000E96C4 /* libbass.a */,
+				1EE8C09A174FFDB7000B5435 /* libogg.a */,
+				1EE8C09B174FFDB7000B5435 /* libtheora.a */,
+				1EE8C09C174FFDB7000B5435 /* libtheoraplayer.a */,
+				1EE8C09D174FFDB7000B5435 /* libtremor.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -818,6 +836,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E3C2A03175B604300B79FCB /* DejaVuSans.ttf in Resources */,
 				FD77A07D0E26BD8C00F39101 /* Icon.png in Resources */,
 				FD77A07F0E26BDA900F39101 /* Default.png in Resources */,
 				46EB701A1359B54A00E280F6 /* data.dcp in Resources */,
@@ -836,6 +855,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E3C29FB175B5B6900B79FCB /* VidDataSource.cpp in Sources */,
+				1E3C29FC175B5B6900B79FCB /* VidManager.cpp in Sources */,
+				1E3C29FD175B5B6900B79FCB /* VidTheoraPlayer.cpp in Sources */,
 				4615089A13520B93000E96C4 /* AdActor.cpp in Sources */,
 				4615089B13520B93000E96C4 /* AdActorDir.cpp in Sources */,
 				4615089C13520B93000E96C4 /* AdEntity.cpp in Sources */,

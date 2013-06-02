@@ -421,7 +421,9 @@ DWORD CScScript::GetDWORD()
 //////////////////////////////////////////////////////////////////////////
 double CScScript::GetFloat()
 {
-	double ret = *(double*)(m_Buffer+m_IP);
+    double ret;
+    memcpy(&ret, m_Buffer+m_IP, sizeof(double));
+    
 	m_IP += sizeof(double);
 
 	return ret;
