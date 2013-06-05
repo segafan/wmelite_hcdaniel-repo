@@ -45,6 +45,9 @@ THE SOFTWARE.
 #	include "ios_utils.h"
 #endif
 
+#ifdef __ANDROID__
+#	include "android.h"
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 AnsiString PathUtil::UnifySeparators(const AnsiString& path)
@@ -123,6 +126,8 @@ AnsiString PathUtil::GetExtension(const AnsiString& path)
 //////////////////////////////////////////////////////////////////////////
 AnsiString PathUtil::GetSafeLogFileName()
 {
+#ifndef __ANDROID__
+
 	AnsiString logFileName = GetUserDirectory();
 
 #ifdef __WIN32__
@@ -136,6 +141,15 @@ AnsiString PathUtil::GetSafeLogFileName()
 #else
 	// !PORTME	
 	logFileName = Combine(logFileName, "/Wintermute Engine/wme.log");
+#endif
+
+#else
+	char androidPath[1024];
+	android_getLogFileDirectory(androidPath, 1024);
+	// use a storage path in Android that is easily available
+	// typically that would be the external storage path
+	AnsiString logFileName = Combine(androidPath, "/wme.log");
+
 #endif
 
 	CreateDirectory(GetDirectoryName(logFileName));
@@ -202,6 +216,11 @@ AnsiString PathUtil::GetUserDirectory()
 	char path[MAX_PATH];
 	IOS_GetDataDir(path);
 	userDir = AnsiString(path);
+#elif __ANDROID__
+	char androidPath[1024];
+	android_getPrivateFilesPath(androidPath, 1024);
+	userDir = AnsiString(androidPath);
+
 #endif
 	
 	return userDir;
@@ -210,10 +229,11 @@ AnsiString PathUtil::GetUserDirectory()
 //////////////////////////////////////////////////////////////////////////
 AnsiString PathUtil::GetAbsolutePath(const AnsiString& path)
 {
-	char fullPath[MAX_PATH];
 #ifdef _WIN32
+	char fullPath[MAX_PATH];
 	_fullpath(fullPath, path.c_str(), MAX_PATH);
 #else
+	char fullPath[32768]; // UNIX paths can be longer
 	realpath(path.c_str(), fullPath);
 #endif
 	return AnsiString(fullPath);

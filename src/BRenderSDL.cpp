@@ -29,7 +29,6 @@ THE SOFTWARE.
 #include "FreeImage.h"
 #include "MathUtil.h"
 
-
 //////////////////////////////////////////////////////////////////////////
 CBRenderSDL::CBRenderSDL(CBGame* inGame) : CBRenderer(inGame)
 {
@@ -67,7 +66,7 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed)
 
 
 	// find suitable resolution
-#ifdef __IPHONEOS__
+#if defined(__IPHONEOS__) || defined(__ANDROID__)
 	m_RealWidth = 480;
 	m_RealHeight = 320;
 
@@ -126,6 +125,10 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed)
 #ifdef __IPHONEOS__
 	flags |= SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS;
 #else
+#ifdef __ANDROID__
+	// just do the same IOS does
+	flags |= SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS;
+#endif
 	//m_Windowed = Game->m_Registry->ReadBool("Video", "Windowed", true);
     // as of Novmber 2012 using SDL_WINDOW_FULLSCREEN causes iOS glitch when returning back to the app (the image is shifted several pixels up)
 	if (!windowed) flags |= SDL_WINDOW_FULLSCREEN;

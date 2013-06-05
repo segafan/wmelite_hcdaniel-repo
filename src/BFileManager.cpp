@@ -38,6 +38,9 @@ THE SOFTWARE.
 #	include <CoreFoundation/CoreFoundation.h>
 #endif
 
+#ifdef __ANDROID__
+#	include "android.h"
+#endif
 
 #if _DEBUG
 	#pragma comment(lib, "zlib_d.lib")
@@ -333,6 +336,12 @@ HRESULT CBFileManager::InitPaths()
 	CFRelease(appUrlRef);
 	CFRelease(macPath);
 #endif
+#elif __ANDROID__
+	char androidPath[1024];
+	android_getGamePackagePath(androidPath, 1024);
+	AddPath(PATH_PACKAGE, androidPath);
+	android_getGameFilePath(androidPath, 1024);
+	AddPath(PATH_SINGLE, androidPath);
 #endif
 	
 

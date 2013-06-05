@@ -30,7 +30,9 @@ THE SOFTWARE.
 class CAdEntity : public CAdTalkHolder
 {
 public:
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 	CVidTheoraPlayer* m_Theora;
+#endif
 	HRESULT SetSprite(char* Filename);
 	int m_WalkToX;
 	int m_WalkToY;

@@ -42,6 +42,10 @@ THE SOFTWARE.
 #	include "ios_utils.h"
 #endif
 
+#ifdef __ANDROID__
+#	include <android/log.h>
+#	include "android.h"
+#endif
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -66,7 +70,9 @@ CBGame::CBGame():CBObject(this)
 	m_FontStorage = NULL;
 	m_Renderer = NULL;
 	m_SoundMgr = NULL;
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 	m_VideoMgr = NULL;
+#endif
 	m_FileManager = NULL;
 	m_TransMgr = NULL;
 	m_DebugMgr = NULL;
@@ -83,7 +89,9 @@ CBGame::CBGame():CBObject(this)
 	m_SystemFont = NULL;
 	m_VideoFont = NULL;
 
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 	m_TheoraPlayer = NULL;
+#endif
 
 	m_MainObject = NULL;
 	m_ActiveObject = NULL;
@@ -239,6 +247,9 @@ CBGame::CBGame():CBObject(this)
 #ifdef __IPHONEOS__
 	m_TouchInterface = true;
 	m_ConstrainedMemory = true; // TODO differentiate old and new iOS devices
+#elif __ANDROID__
+	m_TouchInterface = true;
+	m_ConstrainedMemory = false;
 #else
 	m_TouchInterface = false;
 	m_ConstrainedMemory = false;
@@ -277,8 +288,10 @@ CBGame::~CBGame()
 	SAFE_DELETE(m_ScEngine);
 	SAFE_DELETE(m_FontStorage);
 	SAFE_DELETE(m_SurfaceStorage);
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 	SAFE_DELETE(m_TheoraPlayer);
 	SAFE_DELETE(m_VideoMgr);
+#endif
 	SAFE_DELETE(m_SoundMgr);
 	SAFE_DELETE(m_DebugMgr);
 	//SAFE_DELETE(m_KeyboardState);
@@ -385,9 +398,11 @@ HRESULT CBGame::Initialize1()
 	m_SoundMgr = new CBSoundMgr(this);
 	if(m_SoundMgr==NULL) goto init_fail;
 
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 	m_VideoMgr = new CVidManager(this);
 	if(m_VideoMgr==NULL) goto init_fail;
 	m_VideoMgr->Initialize();
+#endif
 
 	m_DebugMgr = new CBDebugger(this);
 	if(m_DebugMgr==NULL) goto init_fail;
@@ -422,7 +437,9 @@ init_fail:
 	if(m_DebugMgr) delete m_DebugMgr;
 	if(m_SurfaceStorage) delete m_SurfaceStorage;
 	if(m_FontStorage) delete m_FontStorage;
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 	if(m_VideoMgr) delete m_VideoMgr;
+#endif
 	if(m_SoundMgr) delete m_SoundMgr;
 	if(m_FileManager) delete m_FileManager;
 	if(m_ScEngine) delete m_ScEngine;
@@ -511,7 +528,7 @@ void CBGame::DEBUG_DebugDisable()
 //////////////////////////////////////////////////////////////////////
 void CBGame::LOG(HRESULT res, LPCSTR fmt, ...)
 {
-#ifndef __IPHONEOS__
+#if !defined(__IPHONEOS__) && !defined(__ANDROID__)
 	if(!m_DEBUG_DebugMode) return;
 #endif
 	time_t timeNow;
@@ -529,6 +546,12 @@ void CBGame::LOG(HRESULT res, LPCSTR fmt, ...)
 	printf("%02d:%02d:%02d: %s\n", tm->tm_hour, tm->tm_min, tm->tm_sec, buff);
 	fflush(stdout);
 #else
+
+#ifdef __ANDROID__
+	// that one should not have performance impact
+	__android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "%02d:%02d:%02d: %s\n", tm->tm_hour, tm->tm_min, tm->tm_sec, buff);
+#endif
+
 	if (m_DEBUG_LogFile == NULL) return;
 
 	// redirect to an engine's own callback
@@ -540,7 +563,7 @@ void CBGame::LOG(HRESULT res, LPCSTR fmt, ...)
 
 	fprintf(m_DEBUG_LogFile, "%02d:%02d: %s\n", tm->tm_hour, tm->tm_min, buff);
 	fflush(m_DEBUG_LogFile);
-#endif	
+#endif
 
 	//QuickMessage(buff);
 }
@@ -563,7 +586,9 @@ HRESULT CBGame::InitLoop()
 	
 	GetDebugMgr()->OnGameTick();
 	m_Renderer->InitLoop();
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 	m_VideoMgr->InitLoop();
+#endif
 	m_SoundMgr->InitLoop();
 	UpdateMusicCrossfade();
 	
@@ -1385,6 +1410,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 		return S_OK;
 	}
 
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 	//////////////////////////////////////////////////////////////////////////
 	// PlayVideo
 	//////////////////////////////////////////////////////////////////////////
@@ -1441,6 +1467,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 
 		return S_OK;
 	}
+#endif
 
 	//////////////////////////////////////////////////////////////////////////
 	// QuitGame
@@ -3557,7 +3584,9 @@ void CBGame::AfterLoadScript(void* script, void* data)
 //////////////////////////////////////////////////////////////////////////
 void CBGame::AfterLoadTheora(void* Theora, void* Data)
 {
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 	((CVidTheoraPlayer*)Theora)->InitializeSimple();
+#endif
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -3950,7 +3979,9 @@ HRESULT CBGame::Freeze(bool IncludingMusic)
 	{
 		m_ScEngine->PauseAll();
 		m_SoundMgr->PauseAll(IncludingMusic);
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 		m_VideoMgr->PauseAll();
+#endif
 		m_OrigState = m_State;
 		m_OrigInteractive = m_Interactive;
 		m_Interactive = true;
@@ -3974,7 +4005,9 @@ HRESULT CBGame::Unfreeze()
 		m_Interactive = m_OrigInteractive;
 		m_ScEngine->ResumeAll();
 		m_SoundMgr->ResumeAll();
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 		m_VideoMgr->ResumeAll();
+#endif
 	}
 
 	return S_OK;
@@ -4126,7 +4159,7 @@ HRESULT CBGame::GetSaveSlotFilename(int Slot, char *Buffer)
 AnsiString CBGame::GetDataDir()
 {
 	AnsiString userDir = PathUtil::GetUserDirectory();
-#ifdef __IPHONEOS__
+#if defined(__IPHONEOS__) || defined(__ANDROID__)
 	return userDir;
 #else
 	AnsiString baseDir = m_Registry->GetBasePath();
@@ -4483,18 +4516,22 @@ HRESULT CBGame::SetWaitCursor(char* Filename)
 //////////////////////////////////////////////////////////////////////////
 bool CBGame::IsVideoPlaying()
 {
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 	if(m_TheoraPlayer && m_TheoraPlayer->IsPlaying()) return true;
+#endif
 	return false;
 }
 
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBGame::StopVideo()
 {
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 	if(m_TheoraPlayer && m_TheoraPlayer->IsPlaying())
 	{
 		m_TheoraPlayer->Stop();
 		SAFE_DELETE(m_TheoraPlayer);
 	}
+#endif
 	return S_OK;
 }
 
@@ -4529,12 +4566,16 @@ HRESULT CBGame::OnActivate(bool Activate, bool RefreshMouse)
 	if(Activate)
 	{
 		m_SoundMgr->ResumeAll();
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 		m_VideoMgr->ResumeAll();
+#endif
 	}
 	else
 	{
 		m_SoundMgr->PauseAll();
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 		m_VideoMgr->PauseAll();
+#endif
 	}
 
 	return S_OK;
@@ -4866,6 +4907,10 @@ bool CBGame::IsDoubleClick(int buttonIndex)
 #elif __IPHONEOS__
 	maxMoveX = 16;
 	maxMoveY = 16;
+#elif __ANDROID__
+	// do the same as IOS does
+	maxMoveX = 16;
+	maxMoveY = 16;
 #endif
 
 	POINT pos;
@@ -4914,6 +4959,10 @@ AnsiString CBGame::GetDeviceType() const
 	char devType[128];
 	IOS_GetDeviceType(devType);
 	return AnsiString(devType);
+#elif __ANDROID__
+	char androidPath[1024];
+	android_getDeviceTypeHint(androidPath, 1024);
+	return AnsiString(androidPath);
 #else
 	return "computer";
 #endif

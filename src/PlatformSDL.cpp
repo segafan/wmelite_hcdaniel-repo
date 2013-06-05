@@ -37,6 +37,9 @@ THE SOFTWARE.
 #   include <sys/stat.h>
 #endif
 
+#ifdef __ANDROID__
+#	include "android.h"
+#endif
 
 CBGame* CBPlatform::Game = NULL;
 
@@ -234,7 +237,7 @@ void CBPlatform::HandleEvent(SDL_Event* event)
 
 	case SDL_MOUSEBUTTONDOWN:
 
-#ifdef __IPHONEOS__
+#if defined(__IPHONEOS__) || defined(__ANDROID)
 		{
 			CBRenderSDL* renderer = static_cast<CBRenderSDL*>(Game->m_Renderer);
 			POINT p;
@@ -304,7 +307,7 @@ void CBPlatform::HandleEvent(SDL_Event* event)
 			break;
 		case SDL_WINDOWEVENT_FOCUS_LOST:
 		case SDL_WINDOWEVENT_MINIMIZED:
-#ifndef __IPHONEOS__
+#if !defined(__IPHONEOS__) && !defined(__ANDROID__)
 			if (Game) Game->OnActivate(false, false);
 			SDL_ShowCursor(SDL_ENABLE);
 #endif
@@ -317,7 +320,7 @@ void CBPlatform::HandleEvent(SDL_Event* event)
 		break;
 
 	case SDL_QUIT:
-#ifdef __IPHONEOS__
+#if defined(__IPHONEOS__) || defined(__ANDROID)
 		if (Game)
 		{
 			Game->AutoSaveOnExit();
@@ -640,6 +643,12 @@ AnsiString CBPlatform::GetSystemFontPath()
 	winDir[MAX_PATH] = '\0';
 	::GetWindowsDirectory(winDir, MAX_PATH);
 	return PathUtil::Combine(AnsiString(winDir), "fonts");
+#elif __ANDROID__
+	// there is no system font path but an app can bring
+	// custom fonts which could be referenced
+	char androidPath[1024];
+	android_getFontPath(androidPath, 1024);
+	return AnsiString(androidPath);
 #else
 	// !PORTME
 	return "/Library/Fonts/";

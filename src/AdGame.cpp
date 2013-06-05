@@ -1787,6 +1787,7 @@ HRESULT CAdGame::DisplayContent(bool Update, bool DisplayAll)
 	if(!m_EditorMode) m_Renderer->SetScreenViewport();
 
 	// playing exclusive video?
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 	if (m_TheoraPlayer)
 	{
 		if(m_TheoraPlayer->IsPlaying())
@@ -1800,6 +1801,7 @@ HRESULT CAdGame::DisplayContent(bool Update, bool DisplayAll)
 		}
 	}
 	else
+#endif
 	{
 		// process scripts
 		if(Update) m_ScEngine->Tick();

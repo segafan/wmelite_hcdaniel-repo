@@ -40,7 +40,9 @@ CAdEntity::CAdEntity(CBGame* inGame):CAdTalkHolder(inGame)
 	m_WalkToX = m_WalkToY = 0;
 	m_WalkToDir = DI_NONE;
 
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 	m_Theora = NULL;
+#endif
 }
 
 
@@ -48,7 +50,9 @@ CAdEntity::CAdEntity(CBGame* inGame):CAdTalkHolder(inGame)
 CAdEntity::~CAdEntity()
 {
 	Game->UnregisterObject(m_Region);
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 	SAFE_DELETE(m_Theora);
+#endif
 
 	SAFE_DELETE_ARRAY(m_Item);
 }
@@ -503,21 +507,26 @@ HRESULT CAdEntity::Display()
 		}
 
 		DisplaySpriteAttachments(true);
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 		if(m_Theora && (m_Theora->IsPlaying() || m_Theora->IsPaused()))
 		{
 			m_Theora->Display(Alpha);
 		}
-		else if(m_CurrentSprite)
+		else 
+#endif
 		{
-			m_CurrentSprite->Display(m_PosX,
-										m_PosY,
-										(Reg||m_EditorAlwaysRegister)?m_RegisterAlias:NULL,
-										ScaleX,
-										ScaleY,
-										Alpha,
-										Rotate,
-										m_BlendMode);
-		}
+			if(m_CurrentSprite)
+			{
+				m_CurrentSprite->Display(m_PosX,
+											m_PosY,
+											(Reg||m_EditorAlwaysRegister)?m_RegisterAlias:NULL,
+											ScaleX,
+											ScaleY,
+											Alpha,
+											Rotate,
+											m_BlendMode);
+			}
+		}	
 		DisplaySpriteAttachments(false);
 
 		if(m_PartEmitter) m_PartEmitter->Display(m_Region);
@@ -611,6 +620,7 @@ HRESULT CAdEntity::Update()
 	UpdateBlockRegion();
 	m_Ready = (m_State == STATE_READY);
 
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 	if (m_Theora)
 	{
 		int OffsetX, OffsetY;
@@ -625,6 +635,7 @@ HRESULT CAdEntity::Update()
 			SAFE_DELETE(m_Theora);
 		}
 	}
+#endif
 
 	UpdatePartEmitter();
 	UpdateSpriteAttachments();
@@ -650,6 +661,7 @@ HRESULT CAdEntity::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *Th
 		return S_OK;
 	}
 
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 	//////////////////////////////////////////////////////////////////////////
 	// PlayTheora
 	//////////////////////////////////////////////////////////////////////////
@@ -752,6 +764,7 @@ HRESULT CAdEntity::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *Th
 		return S_OK;
 	}
 
+#endif
 
 	//////////////////////////////////////////////////////////////////////////
 	// CreateRegion
@@ -1048,10 +1061,12 @@ HRESULT CAdEntity::Persist(CBPersistMgr *PersistMgr)
 	PersistMgr->Transfer(TMEMBER(m_WalkToY));
 	PersistMgr->Transfer(TMEMBER_INT(m_WalkToDir));
 
+#if !defined(__LINUX__) && !defined(__ANDROID__)
 	if (PersistMgr->CheckVersion(1, 0, 2))
 		PersistMgr->Transfer(TMEMBER(m_Theora));
 	else
 		m_Theora = NULL;
+#endif
 
 	return S_OK;
 }
