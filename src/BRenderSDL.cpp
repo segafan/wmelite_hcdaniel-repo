@@ -120,6 +120,13 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed)
 	m_RatioX = (float)(m_RealWidth - m_BorderLeft - m_BorderRight) / (float)m_Width;
 	m_RatioY = (float)(m_RealHeight - m_BorderTop - m_BorderBottom) / (float)m_Height;
 
+#ifdef __ANDROID__
+	Game->LOG(0, "Orig w=%d h=%d Transformed w=%d h=%d ratiox=%.02f ratioy=%.02f",
+			m_Width, m_Height, m_RealWidth, m_RealHeight,
+			m_RatioX, m_RatioY);
+	Game->LOG(0, "BorderLeft=%d BorderRight=%d BorderTop=%d BorderBottom=%d",
+			m_BorderLeft, m_BorderRight, m_BorderTop, m_BorderBottom);
+#endif
 
 	Uint32 flags = SDL_WINDOW_SHOWN;
 #ifdef __IPHONEOS__
