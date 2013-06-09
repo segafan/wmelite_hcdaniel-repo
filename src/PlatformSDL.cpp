@@ -91,6 +91,13 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 
 	if(Game->m_Registry->ReadBool("Debug", "DebugMode")) Game->DEBUG_DebugEnable("./wme.log");
 
+#ifdef __ANDROID__
+
+	// debug mode can be forced here until the mechanism with the settings file works
+	// Game->DEBUG_DebugEnable("/mnt/sdcard/wme.log");
+
+#endif
+
 	Game->m_DEBUG_ShowFPS = Game->m_Registry->ReadBool("Debug", "ShowFPS");
 
 	if(Game->m_Registry->ReadBool("Debug", "DisableSmartCache"))

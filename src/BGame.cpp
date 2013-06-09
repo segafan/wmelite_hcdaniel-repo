@@ -552,19 +552,7 @@ void CBGame::LOG(HRESULT res, LPCSTR fmt, ...)
 	__android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "%02d:%02d:%02d: %s\n", tm->tm_hour, tm->tm_min, tm->tm_sec, buff);
 #endif
 
-#ifdef __ANDROID__
-	// unconditionally create log file for Android for the moment
-	if (m_DEBUG_LogFile == NULL)
-	{
-		AnsiString safeLogFileName = PathUtil::GetSafeLogFileName();
-		m_DEBUG_LogFile = fopen(safeLogFileName.c_str(), "a+");
-	}
-
-#else
-
 	if (m_DEBUG_LogFile == NULL) return;
-
-#endif
 
 	// redirect to an engine's own callback
 	if(m_EngineLogCallback)
