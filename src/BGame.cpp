@@ -44,7 +44,7 @@ THE SOFTWARE.
 
 #ifdef __ANDROID__
 #	include <android/log.h>
-#	include "android.h"
+#	include "android/android.h"
 #endif
 
 //////////////////////////////////////////////////////////////////////

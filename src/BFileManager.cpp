@@ -39,7 +39,7 @@ THE SOFTWARE.
 #endif
 
 #ifdef __ANDROID__
-#	include "android.h"
+#	include "android/android.h"
 #endif
 
 #if _DEBUG

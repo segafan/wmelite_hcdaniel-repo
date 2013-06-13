@@ -38,8 +38,8 @@ LOCAL_CPPFLAGS += -fexceptions -frtti -Wno-write-strings -Wno-conversion-null
 LOCAL_ARM_MODE := arm
 
 # Add your application source files here...
-LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.cpp \
-../../../src/android.c \
+LOCAL_SRC_FILES := ../../../src/android/SDL_android_main.cpp \
+../../../src/android/android.c \
 ../../../src/utils.cpp \
 ../../../src/BFileManager.cpp \
 ../../../src/PlatformSDL.cpp \

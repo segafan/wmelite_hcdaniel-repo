@@ -6,7 +6,7 @@
 /* Include the SDL main definition header */
 #include "SDL_main.h"
 
-#include "android.h"
+#include "android/android.h"
 
 /*******************************************************************************
                  Functions called by JNI

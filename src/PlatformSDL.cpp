@@ -38,7 +38,7 @@ THE SOFTWARE.
 #endif
 
 #ifdef __ANDROID__
-#	include "android.h"
+#	include "android/android.h"
 #endif
 
 CBGame* CBPlatform::Game = NULL;
@@ -94,7 +94,7 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 #ifdef __ANDROID__
 
 	// debug mode can be forced here until the mechanism with the settings file works
-	// Game->DEBUG_DebugEnable("/mnt/sdcard/wme.log");
+	Game->DEBUG_DebugEnable("/mnt/sdcard/wme.log");
 
 #endif
 
@@ -389,11 +389,32 @@ BOOL CBPlatform::GetCursorPos(LPPOINT lpPoint)
 	CBRenderSDL* renderer = static_cast<CBRenderSDL*>(Game->m_Renderer);
 
 	int x, y;
+
+#ifdef __ANDROID__
+	static int debugCtr = 0;
+#endif
+
 	SDL_GetMouseState(&x, &y);
 	lpPoint->x = x;
 	lpPoint->y = y;
 
+#ifdef __ANDROID__
+	debugCtr++;
+	if (debugCtr == 100)
+	{
+		Game->LOG(0, "Cursor point from screen x=%d y=%d", x, y);
+	}
+#endif
+
 	renderer->PointFromScreen(lpPoint);
+
+#ifdef __ANDROID__
+	if (debugCtr == 100)
+	{
+		Game->LOG(0, "Cursor point transformed x=%d y=%d", lpPoint->x, lpPoint->y);
+		debugCtr = 0;
+	}
+#endif
 
 	return TRUE;
 }
