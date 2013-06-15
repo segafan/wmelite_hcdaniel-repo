@@ -47,6 +47,7 @@ public class WMELiteFunctions {
 		// return Environment.getExternalStorageDirectory().getAbsolutePath();
 		
 		return "/mnt/sdcard/";
+		// return "/mnt/sdcard/demo/";
 	}
 
 	public String getGameFilePath() {
@@ -54,6 +55,7 @@ public class WMELiteFunctions {
 		// return Environment.getExternalStorageDirectory().getAbsolutePath();
 		
 		return "/mnt/sdcard/";
+		// return "/mnt/sdcard/demo/";
 	}
 
 	public String getFontPath() {
