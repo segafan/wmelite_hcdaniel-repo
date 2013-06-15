@@ -390,31 +390,11 @@ BOOL CBPlatform::GetCursorPos(LPPOINT lpPoint)
 
 	int x, y;
 
-#ifdef __ANDROID__
-	static int debugCtr = 0;
-#endif
-
 	SDL_GetMouseState(&x, &y);
 	lpPoint->x = x;
 	lpPoint->y = y;
 
-#ifdef __ANDROID__
-	debugCtr++;
-	if (debugCtr == 100)
-	{
-		Game->LOG(0, "Cursor point from screen x=%d y=%d", x, y);
-	}
-#endif
-
 	renderer->PointFromScreen(lpPoint);
-
-#ifdef __ANDROID__
-	if (debugCtr == 100)
-	{
-		Game->LOG(0, "Cursor point transformed x=%d y=%d", lpPoint->x, lpPoint->y);
-		debugCtr = 0;
-	}
-#endif
 
 	return TRUE;
 }

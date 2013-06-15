@@ -237,3 +237,55 @@ void android_getEncodedString(char *inputString, char *encoding, char *buffer, i
 	}
 }
 
+void android_getUTFString(char *inputString, char *encoding, char *buffer, int *length)
+{
+	JNIEnv *env = localEnv;
+	jclass cls = (*env)->GetObjectClass(env, callbackObject);
+	jmethodID callbackID = (*env)->GetMethodID(env, cls, "getUTFString", "([BLjava/lang/String;)Ljava/lang/String;");
+
+	size_t inLen = strnlen(inputString, 32768);
+	jbyteArray input = (*env)->NewByteArray(env, inLen);
+	jbyte *inputBuffer = (*env)->GetByteArrayElements(env, input, NULL);
+	memcpy(inputBuffer, inputString, inLen);
+	(*env)->ReleaseByteArrayElements(env, input, inputBuffer, 0);
+
+	jstring enc = NULL;
+	if (encoding != NULL) {
+		enc = (*env)->NewStringUTF(env, encoding);
+	}
+
+	jstring result = (jstring) (*env)->CallObjectMethod(env, callbackObject, callbackID, input, enc);
+
+	// for debugging
+	// (*env)->ExceptionDescribe(env);
+	// (*env)->ExceptionClear(env);
+
+	if (result != NULL) {
+		jsize retLen = (*env)->GetStringUTFLength(env, result);
+		jbyte *retBuffer = (*env)->GetStringUTFChars(env, result, NULL);
+
+		if (retBuffer != NULL) {
+			if (retLen < (*length)) {
+				memcpy(buffer, retBuffer, retLen);
+				buffer[retLen] = 0;
+				*length = retLen;
+			} else {
+				__android_log_print(ANDROID_LOG_ERROR, "org.libsdl.app", "android_getUTFString() length %d out of range!", retLen);
+			}
+			(*env)->ReleaseStringUTFChars(env, result, retBuffer);
+		} else {
+			__android_log_print(ANDROID_LOG_ERROR, "org.libsdl.app", "android_getUTFString() buffer not accessible!");
+		}
+	} else {
+		__android_log_print(ANDROID_LOG_ERROR, "org.libsdl.app", "android_getUTFString() returns NULL!");
+	}
+
+	(*env)->DeleteLocalRef(env, cls);
+	(*env)->DeleteLocalRef(env, input);
+	if (encoding != NULL) {
+		(*env)->DeleteLocalRef(env, enc);
+	}
+	if (result != NULL) {
+		(*env)->DeleteLocalRef(env, result);
+	}
+}

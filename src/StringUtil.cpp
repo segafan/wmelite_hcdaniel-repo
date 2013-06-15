@@ -30,6 +30,9 @@ THE SOFTWARE.
 #include "StringUtil.h"
 #include "ConvertUTF.h"
 
+#ifdef __ANDROID__
+#include	"android/android.h"
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 void StringUtil::ToLowerCase(AnsiString& str)
@@ -192,6 +195,26 @@ Utf8String StringUtil::WideToUtf8(const WideString& WideStr)
 //////////////////////////////////////////////////////////////////////////
 WideString StringUtil::AnsiToWide(const AnsiString& str)
 {
+#ifdef __ANDROID__
+	// the Android NDK does not properly support wchar_t,
+	// and especially string conversions don't work as expected
+	WideString ResultString;
+	char tmp[32768];
+	int length = 32768;
+
+	// bitmap fonts might support encoding info in the future, then the
+	// second argument shall be the name of the encoding
+	android_getUTFString((char *) str.c_str(), NULL, tmp, &length);
+
+	if (length < 32768)
+	{
+		ResultString = Utf8ToWide(tmp);
+	}
+	else
+	{
+		ResultString = Utf8ToWide("Encoding failure!");
+	}
+#else
 	// using default os locale!
 	setlocale(LC_CTYPE, "");
 	size_t WideSize = mbstowcs(NULL, str.c_str(), 0) + 1;
@@ -199,12 +222,33 @@ WideString StringUtil::AnsiToWide(const AnsiString& str)
 	mbstowcs(wstr, str.c_str(), WideSize);
 	WideString ResultString(wstr);
 	delete [] wstr;
+#endif
 	return ResultString;
 }
 
 //////////////////////////////////////////////////////////////////////////
 AnsiString StringUtil::WideToAnsi(const WideString& wstr)
 {
+#ifdef __ANDROID__
+	// the Android NDK does not properly support wchar_t,
+	// and especially string conversions don't work as expected
+	AnsiString ResultString;
+	char tmp[32768];
+	int length = 32768;
+
+	// bitmap fonts might support encoding info in the future, then the
+	// second argument shall be the name of the encoding
+	android_getEncodedString((char *) WideToUtf8(wstr).c_str(), NULL, tmp, &length);
+
+	if (length < 32768)
+	{
+		ResultString = AnsiString(tmp);
+	}
+	else
+	{
+		ResultString = AnsiString("Encoding failure!");
+	}
+#else
 	// using default os locale!
 	setlocale(LC_CTYPE, "");
 	size_t WideSize = wcstombs(NULL, wstr.c_str(), 0) + 1;
@@ -212,6 +256,7 @@ AnsiString StringUtil::WideToAnsi(const WideString& wstr)
 	wcstombs(str, wstr.c_str(), WideSize);
 	AnsiString ResultString(str);
 	delete [] str;
+#endif
 	return ResultString;
 }
 

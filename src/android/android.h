@@ -26,6 +26,8 @@ void android_getFontPath(char *buffer, int length);
 
 void android_getEncodedString(char *inputString, char *encoding, char *buffer, int *length);
 
+void android_getUTFString(char *inputString, char *encoding, char *buffer, int *length);
+
 #ifdef __cplusplus
 }
 #endif
