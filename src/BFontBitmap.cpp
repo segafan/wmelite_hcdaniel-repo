@@ -27,6 +27,9 @@ THE SOFTWARE.
 #include "BFontBitmap.h"
 #include "StringUtil.h"
 
+#ifdef __ANDROID__
+#include	"android/android.h"
+#endif
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -77,8 +80,32 @@ int CBFontBitmap::GetTextWidth(BYTE* text, int MaxLength)
 
 	if (Game->m_TextEncoding==TEXT_UTF8)
 	{
+#ifdef __ANDROID__
+		// the Android NDK does not properly support wchar_t,
+		// and especially string conversions don't work as expected
+		char tmp[32768];
+		int length = 32768;
+
+		// bitmap fonts might support encoding info in the future, then the
+		// second argument shall be the name of the encoding
+		android_getEncodedString((char *) text, NULL, tmp, &length);
+
+		if (length < 32768)
+		{
+			str = AnsiString(tmp);
+		}
+		else
+		{
+			Game->LOG(0, "String encoding for bitmap font failed! Falling back to standard implementation!");
+
+			// this doesn't give the proper result on Android currently, but at least does something
+			WideString wstr = StringUtil::Utf8ToWide(Utf8String((char*)text));
+			str = StringUtil::WideToAnsi(wstr);
+		}
+#else
 		WideString wstr = StringUtil::Utf8ToWide(Utf8String((char*)text));
 		str = StringUtil::WideToAnsi(wstr);
+#endif
 	}
 	else
 	{
@@ -110,8 +137,32 @@ int CBFontBitmap::TextHeightDraw(BYTE* text, int x, int y, int width, TTextAlign
 
 	if (Game->m_TextEncoding==TEXT_UTF8)
 	{
+#ifdef __ANDROID__
+		// the Android NDK does not properly support wchar_t,
+		// and especially string conversions don't work as expected
+		char tmp[32768];
+		int length = 32768;
+
+		// bitmap fonts might support encoding info in the future, then the
+		// second argument shall be the name of the encoding
+		android_getEncodedString((char *) text, NULL, tmp, &length);
+
+		if (length < 32768)
+		{
+			str = AnsiString(tmp);
+		}
+		else
+		{
+			Game->LOG(0, "String encoding for bitmap font failed! Falling back to standard implementation!");
+
+			// this doesn't give the proper result on Android currently, but at least does something
+			WideString wstr = StringUtil::Utf8ToWide(Utf8String((char*)text));
+			str = StringUtil::WideToAnsi(wstr);
+		}
+#else
 		WideString wstr = StringUtil::Utf8ToWide(Utf8String((char*)text));
 		str = StringUtil::WideToAnsi(wstr);
+#endif
 	}
 	else
 	{

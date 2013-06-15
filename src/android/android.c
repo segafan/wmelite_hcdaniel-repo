@@ -189,3 +189,51 @@ void android_getFontPath(char *buffer, int length)
 	(*env)->DeleteLocalRef(env, cls);
 	(*env)->DeleteLocalRef(env, str);
 }
+
+void android_getEncodedString(char *inputString, char *encoding, char *buffer, int *length)
+{
+	JNIEnv *env = localEnv;
+	jclass cls = (*env)->GetObjectClass(env, callbackObject);
+	jmethodID callbackID = (*env)->GetMethodID(env, cls, "getEncodedString", "(Ljava/lang/String;Ljava/lang/String;)[B");
+	jstring input = (*env)->NewStringUTF(env, inputString);
+	jstring enc = NULL;
+	if (encoding != NULL) {
+		enc = (*env)->NewStringUTF(env, encoding);
+	}
+
+	jbyteArray result = (jbyteArray) (*env)->CallObjectMethod(env, callbackObject, callbackID, input, enc);
+
+	// for debugging
+	// (*env)->ExceptionDescribe(env);
+	// (*env)->ExceptionClear(env);
+
+	if (result != NULL) {
+		jsize retLen = (*env)->GetArrayLength(env, result);
+		jbyte *retBuffer = (*env)->GetByteArrayElements(env, result, NULL);
+
+		if (retBuffer != NULL) {
+			if (retLen < (*length)) {
+				memcpy(buffer, retBuffer, retLen);
+				buffer[retLen] = 0;
+				*length = retLen;
+			} else {
+				__android_log_print(ANDROID_LOG_ERROR, "org.libsdl.app", "android_getEncodedString() length %d out of range!", retLen);
+			}
+			(*env)->ReleaseByteArrayElements(env, result, retBuffer, 0);
+		} else {
+			__android_log_print(ANDROID_LOG_ERROR, "org.libsdl.app", "android_getEncodedString() buffer not accessible!");
+		}
+	} else {
+		__android_log_print(ANDROID_LOG_ERROR, "org.libsdl.app", "android_getEncodedString() returns NULL!");
+	}
+
+	(*env)->DeleteLocalRef(env, cls);
+	(*env)->DeleteLocalRef(env, input);
+	if (encoding != NULL) {
+		(*env)->DeleteLocalRef(env, enc);
+	}
+	if (result != NULL) {
+		(*env)->DeleteLocalRef(env, result);
+	}
+}
+

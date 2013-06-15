@@ -1,8 +1,11 @@
 package org.deadcode.wmelite;
 
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
+
 import android.content.Context;
 import android.content.res.Configuration;
-import android.os.Environment;
 
 public class WMELiteFunctions {
 
@@ -60,5 +63,29 @@ public class WMELiteFunctions {
 		} else {
 			return ".";
 		}
+	}
+	
+	public byte[] getEncodedString(String inputString, String charsetName) {
+		
+		// change the default here if all the bitmap fonts have the same encoding
+		Charset charset = Charset.forName("US-ASCII");
+		
+		if (charsetName != null) {
+			try {
+				charset = Charset.forName(charsetName);
+			} catch (IllegalCharsetNameException e1) {
+				System.err.println("Charset name " + charsetName + " is illegal, using default!");
+			} catch (UnsupportedCharsetException e2) {
+				System.err.println("Charset name " + charsetName + " is not supported, using default!");
+			}
+		}
+		
+		// System.out.println("Encoding string '" + inputString + "' to charset " + charset.name());
+		
+		byte[] res = inputString.getBytes(charset);
+		
+		// System.out.println("Input len=" + inputString.length() + " to output byte array len=" + res.length);
+		
+		return res; 
 	}
 }
