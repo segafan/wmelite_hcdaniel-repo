@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include "BFileManager.h"
 #include "StringUtil.h"
 #include "PathUtil.h"
+#include "FileOperations.h"
 
 #ifdef __WIN32__
 #	include <direct.h>

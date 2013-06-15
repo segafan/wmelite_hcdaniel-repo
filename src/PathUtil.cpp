@@ -28,6 +28,7 @@ THE SOFTWARE.
 #include <fstream>
 #include "PathUtil.h"
 #include "StringUtil.h"
+#include "DirectoryOperations.h"
 
 
 #ifdef __WIN32__
