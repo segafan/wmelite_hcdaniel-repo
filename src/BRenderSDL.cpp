@@ -88,11 +88,8 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed)
 	m_RealHeight = Game->m_Registry->ReadInt("Debug", "ForceResHeight", m_Height);
 #endif
 
-	/*
-	m_RealWidth = 1024;
-	m_RealHeight = 768;
-	*/
-	
+	// m_RealWidth = 1024;
+	// m_RealHeight = 768;
 
 	float origAspect = (float)m_Width / (float)m_Height;
 	float realAspect = (float)m_RealWidth / (float)m_RealHeight;
@@ -395,23 +392,32 @@ void CBRenderSDL::ModOrigin(SDL_Point* origin)
 //////////////////////////////////////////////////////////////////////////
 void CBRenderSDL::PointFromScreen(POINT* point)
 {
+#ifdef __ANDROID__
+	point->x = point->x / m_RatioX - m_BorderLeft / m_RatioX;
+	point->y = point->y / m_RatioY - m_BorderTop / m_RatioY;
+#else
 	SDL_Rect viewportRect;
 	SDL_RenderGetViewport(GetSdlRenderer(), &viewportRect);
 
 	point->x = point->x / m_RatioX - m_BorderLeft / m_RatioX + viewportRect.x;
 	point->y = point->y / m_RatioY - m_BorderTop / m_RatioY + viewportRect.y;
+#endif
 }
 
 
 //////////////////////////////////////////////////////////////////////////
 void CBRenderSDL::PointToScreen(POINT* point)
 {
+#ifdef __ANDROID__
+	point->x = MathUtil::RoundUp(point->x * m_RatioX) + MathUtil::RoundUp(m_BorderLeft * m_RatioX);
+	point->y = MathUtil::RoundUp(point->y * m_RatioY) + MathUtil::RoundUp(m_BorderTop * m_RatioY);
+#else
 	SDL_Rect viewportRect;
 	SDL_RenderGetViewport(GetSdlRenderer(), &viewportRect);
 
-	point->x = MathUtil::RoundUp(point->x * m_RatioX) + m_BorderLeft - viewportRect.x;
-	point->y = MathUtil::RoundUp(point->y * m_RatioY) + m_BorderTop - viewportRect.y;
-
+	point->x = MathUtil::RoundUp(point->x * m_RatioX) + MathUtil::RoundUp(m_BorderLeft * m_RatioX)  - viewportRect.x;
+	point->y = MathUtil::RoundUp(point->y * m_RatioY) + MathUtil::RoundUp(m_BorderTop * m_RatioY) - viewportRect.y;
+#endif
 }
 
 //////////////////////////////////////////////////////////////////////////
