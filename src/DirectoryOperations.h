@@ -13,13 +13,23 @@
 extern "C" {
 #endif
 
+typedef void* DIRHANDLE;
+
+typedef enum dir_access_variant_t
+{
+	DIR_ACCESS_VARIANT_PLAIN             = 0,
+	DIR_ACCESS_VARIANT_ANDROID_ASSET     = 1
+} dir_access_variant;
+
 typedef struct generic_directory_ops_t
 {
-	void *(*dir_open)  (const char *path);
-	char *(*dir_read)  (void *handle);
-	int   (*dir_close) (void *handle);
+	DIRHANDLE (*dir_open)  (const char *path);
+	char     *(*dir_read)  (DIRHANDLE handle);
+	int       (*dir_close) (DIRHANDLE handle);
+	char     *(*dir_get_package_extension) (void);
 } generic_directory_ops;
 
+generic_directory_ops get_directory_operations(dir_access_variant access_variant);
 
 #ifdef __cplusplus
 }
