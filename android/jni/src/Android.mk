@@ -120,6 +120,8 @@ LOCAL_SRC_FILES := ../../../src/android/SDL_android_main.cpp \
 ../../../src/BTransitionMgr.cpp \
 ../../../src/BViewport.cpp \
 ../../../src/crc.cpp \
+../../../src/DirectoryOperations.c \
+../../../src/FileOperations.c \
 ../../../src/FontGlyphCache.cpp \
 ../../../src/main.cpp \
 ../../../src/MathUtil.cpp \

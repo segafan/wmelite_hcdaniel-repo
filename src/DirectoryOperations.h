@@ -29,7 +29,7 @@ typedef struct generic_directory_ops_t
 	char     *(*dir_get_package_extension) (void);
 } generic_directory_ops;
 
-generic_directory_ops get_directory_operations(dir_access_variant access_variant);
+generic_directory_ops *get_directory_operations(dir_access_variant access_variant);
 
 #ifdef __cplusplus
 }

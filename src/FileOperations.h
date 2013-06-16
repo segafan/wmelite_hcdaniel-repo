@@ -34,7 +34,7 @@ typedef struct generic_file_ops_t
 	int        (*file_close)  (FILEHANDLE handle);
 } generic_file_ops;
 
-generic_file_ops get_file_operations(file_access_variant access_variant);
+generic_file_ops *get_file_operations(file_access_variant access_variant);
 
 #ifdef __cplusplus
 }
