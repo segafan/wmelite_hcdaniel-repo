@@ -54,7 +54,21 @@ generic_directory_ops directory_ops_android_asset =
 
 generic_directory_ops *get_directory_operations(dir_access_variant access_variant)
 {
-	return &directory_ops_plain;
+  if (access_variant == DIR_ACCESS_VARIANT_PLAIN)
+  {
+    return &directory_ops_plain;
+  }
+  
+#ifdef __ANDROID__
+
+  if (access_variant == DIR_ACCESS_VARIANT_ANDROID_ASSET)
+  {
+    return &directory_ops_android_asset;
+  }
+  
+#endif
+  
+  return NULL;
 }
 
 static DIRHANDLE  dir_open_plain(const char *path)
@@ -92,7 +106,7 @@ static char     *dir_read_android_asset(DIRHANDLE handle)
 
 static int        dir_close_android_asset(DIRHANDLE handle)
 {
-    // AAssetDir_Close((AAssetDir *) handle);
+    AAssetDir_close((AAssetDir *) handle);
     return 0;
 }
 

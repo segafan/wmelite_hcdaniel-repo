@@ -67,7 +67,21 @@ generic_file_ops file_ops_android_asset =
 
 generic_file_ops *get_file_operations(file_access_variant access_variant)
 {
-	return &file_ops_plain;
+  if (access_variant == FILE_ACCESS_VARIANT_PLAIN)
+  {
+    return &file_ops_plain;
+  }
+  
+#ifdef __ANDROID__
+
+  if (access_variant == FILE_ACCESS_VARIANT_ANDROID_ASSET)
+  {
+    return &file_ops_plain;
+  }
+  
+#endif
+
+  return NULL;
 }
 
 static int        file_exists_plain(const char *name)
