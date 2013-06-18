@@ -26,6 +26,8 @@ static int        file_close_plain(FILEHANDLE handle);
 
 #ifdef __ANDROID__
 
+static AAssetManager *assetManager;
+
 static int        file_exists_android_asset(const char *name);
 static FILEHANDLE file_open_android_asset(const char *name, const char *mode);
 static long       file_read_android_asset(char *buffer, long size, FILEHANDLE handle);
@@ -107,37 +109,51 @@ static int        file_close_plain(FILEHANDLE handle)
 
 static int        file_exists_android_asset(const char *name)
 {
+    int retval = 0;
+    AAsset *asset = AAssetManager_open(assetManager, name, AASSET_MODE_BUFFER);
+    if (asset == NULL)
+    {
+        retval = -1;
+    }
+    else
+    {
+        AAsset_close(asset);   
+    }
     
+    return retval;
 }
 
 static FILEHANDLE file_open_android_asset(const char *name, const char *mode)
 {
-    
+    // ignore the supplied mode flags
+    return (FILEHANDLE) AAssetManager_open(assetManager, name, AASSET_MODE_BUFFER);
 }
 
 static long       file_read_android_asset(char *buffer, long size, FILEHANDLE handle)
 {
-    
+    return AAsset_read((AAsset *) handle, buffer, size);
 }
 
 static long       file_write_android_asset(const char *buffer, long size, FILEHANDLE handle)
 {
-    
+    // writing is not possible
+    return 0;
 }
 
 static int        file_seek_android_asset(FILEHANDLE handle, long offset, int whence)
 {
-    
+    return AAsset_seek((AAsset *) handle, offset, whence);
 }
 
 static long       file_tell_android_asset(FILEHANDLE handle)
 {
-    
+    return (AAsset_getLength((AAsset *) handle) - AAsset_getRemainingLength((AAsset *) handle));
 }
 
 static int        file_close_android_asset(FILEHANDLE handle)
 {
-    
+    AAsset_close((AAsset *) handle);
+    return 0;
 }
 
 #endif

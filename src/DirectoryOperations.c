@@ -23,6 +23,8 @@ static char     *dir_get_package_extension_plain(void);
 
 #ifdef __ANDROID__
 
+static AAssetManager *assetManager;
+
 static DIRHANDLE  dir_open_android_asset(const char *path);
 static char     *dir_read_android_asset(DIRHANDLE handle);
 static int        dir_close_android_asset(DIRHANDLE handle);
@@ -80,17 +82,18 @@ static char     *dir_get_package_extension_plain(void)
 
 static DIRHANDLE  dir_open_android_asset(const char *path)
 {
-    
+    return (DIRHANDLE) AAssetManager_openDir(assetManager, path);
 }
 
 static char     *dir_read_android_asset(DIRHANDLE handle)
 {
-    
+    return AAssetDir_getNextFileName((AAssetDir *) handle);
 }
 
 static int        dir_close_android_asset(DIRHANDLE handle)
 {
-    
+    // AAssetDir_Close((AAssetDir *) handle);
+    return 0;
 }
 
 static char     *dir_get_package_extension_android_asset(void)

@@ -71,7 +71,7 @@ HRESULT CBKeyboardState::ScCallMethod(CScScript* Script, CScStack *Stack, CScSta
 		}
 		else vKey = val->GetInt();
 
-		Uint8* state = SDL_GetKeyboardState(NULL);
+    	const Uint8* state = SDL_GetKeyboardState(NULL);
 		SDL_Scancode scanCode = SDL_GetScancodeFromKey(VKeyToKeyCode(vKey));
 		bool isDown = state[scanCode] > 0;
 
