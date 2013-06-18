@@ -22,6 +22,8 @@ extern "C" void Java_org_libsdl_app_SDLActivity_nativeInit(JNIEnv* env, jclass c
     /* This interface could expand with ABI negotiation, calbacks, etc. */
     SDL_Android_Init(env, cls);
     android_setLocalEnv(env);
+    SDL_SetMainReady();
+
     /* Run the application code! */
     int status;
     char *argv[2];

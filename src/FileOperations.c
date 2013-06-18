@@ -11,6 +11,11 @@
 
 #include "FileOperations.h"
 
+#ifdef __ANDROID__
+#include <android/asset_manager.h>
+#include <android/asset_manager_jni.h>
+#endif
+
 static int        file_exists_plain(const char *name);
 static FILEHANDLE file_open_plain(const char *name, const char *mode);
 static long       file_read_plain(char *buffer, long size, FILEHANDLE handle);
@@ -18,6 +23,18 @@ static long       file_write_plain(const char *buffer, long size, FILEHANDLE han
 static int        file_seek_plain(FILEHANDLE handle, long offset, int whence);
 static long       file_tell_plain(FILEHANDLE handle);
 static int        file_close_plain(FILEHANDLE handle);
+
+#ifdef __ANDROID__
+
+static int        file_exists_android_asset(const char *name);
+static FILEHANDLE file_open_android_asset(const char *name, const char *mode);
+static long       file_read_android_asset(char *buffer, long size, FILEHANDLE handle);
+static long       file_write_android_asset(const char *buffer, long size, FILEHANDLE handle);
+static int        file_seek_android_asset(FILEHANDLE handle, long offset, int whence);
+static long       file_tell_android_asset(FILEHANDLE handle);
+static int        file_close_android_asset(FILEHANDLE handle);
+
+#endif
 
 
 generic_file_ops file_ops_plain =
@@ -30,6 +47,21 @@ generic_file_ops file_ops_plain =
 	.file_tell   = file_tell_plain,
 	.file_close  = file_close_plain
 };
+
+#ifdef __ANDROID__
+
+generic_file_ops file_ops_android_asset =
+{
+	.file_exists = file_exists_android_asset,
+	.file_open   = file_open_android_asset,
+	.file_read   = file_read_android_asset,
+	.file_write  = file_write_android_asset,
+	.file_seek   = file_seek_android_asset,
+	.file_tell   = file_tell_android_asset,
+	.file_close  = file_close_android_asset
+};
+
+#endif
 
 generic_file_ops *get_file_operations(file_access_variant access_variant)
 {
@@ -70,3 +102,44 @@ static int        file_close_plain(FILEHANDLE handle)
 {
 	return fclose((FILE*) handle);
 }
+
+#ifdef __ANDROID__
+
+static int        file_exists_android_asset(const char *name)
+{
+    
+}
+
+static FILEHANDLE file_open_android_asset(const char *name, const char *mode)
+{
+    
+}
+
+static long       file_read_android_asset(char *buffer, long size, FILEHANDLE handle)
+{
+    
+}
+
+static long       file_write_android_asset(const char *buffer, long size, FILEHANDLE handle)
+{
+    
+}
+
+static int        file_seek_android_asset(FILEHANDLE handle, long offset, int whence)
+{
+    
+}
+
+static long       file_tell_android_asset(FILEHANDLE handle)
+{
+    
+}
+
+static int        file_close_android_asset(FILEHANDLE handle)
+{
+    
+}
+
+#endif
+
+
