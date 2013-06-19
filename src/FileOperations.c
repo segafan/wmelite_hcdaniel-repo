@@ -7,7 +7,15 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
+
+#include "SDL.h"
+
+#ifdef __WIN32__
+#	include <direct.h>
+#	include <io.h>
+#else
+#	include <unistd.h>
+#endif
 
 #include "FileOperations.h"
 
@@ -86,7 +94,11 @@ generic_file_ops *get_file_operations(file_access_variant access_variant)
 
 static int        file_exists_plain(const char *name)
 {
+#ifdef __WIN32__
+	return _access(name, 0);
+#else
 	return access(name, R_OK);
+#endif
 }
 
 static FILEHANDLE file_open_plain(const char *name, const char *mode)

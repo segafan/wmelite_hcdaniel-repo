@@ -5,9 +5,16 @@
  *      Author: daniel
  */
 
-#include <stdlib.h>
-#include <sys/types.h>
-#include <dirent.h>
+#include "SDL.h"
+
+#ifdef __WIN32__
+#	include <shlobj.h>
+#	include <io.h>
+#else
+#	include <stdlib.h>
+#	include <sys/types.h>
+#	include <dirent.h>
+#endif
 
 #include "DirectoryOperations.h"
 
