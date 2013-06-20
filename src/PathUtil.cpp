@@ -279,3 +279,23 @@ void PathUtil::GetFilesInDirectory(const AnsiString& path, const AnsiString& mas
     }
 #endif
 }
+
+//////////////////////////////////////////////////////////////////////////
+generic_directory_ops* PathUtil::GetDirectoryAccessMethod(const AnsiString &path)
+{
+#ifdef _WIN32
+	return get_directory_operations(DIR_ACCESS_VARIANT_PLAIN);
+#else
+
+#endif
+}
+
+//////////////////////////////////////////////////////////////////////////
+generic_file_ops* PathUtil::GetFileAccessMethod(const AnsiString &path)
+{
+#ifdef _WIN32
+	return get_file_operations(FILE_ACCESS_VARIANT_PLAIN);
+#else
+
+#endif
+}

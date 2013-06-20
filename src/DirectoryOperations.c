@@ -24,7 +24,7 @@
 #endif
 
 static DIRHANDLE  dir_open_plain(const char *path);
-static char     *dir_read_plain(DIRHANDLE handle);
+static char     *dir_find_plain(DIRHANDLE handle);
 static int        dir_close_plain(DIRHANDLE handle);
 static char     *dir_get_package_extension_plain(void);
 
@@ -33,7 +33,7 @@ static char     *dir_get_package_extension_plain(void);
 static AAssetManager *assetManager;
 
 static DIRHANDLE  dir_open_android_asset(const char *path);
-static char     *dir_read_android_asset(DIRHANDLE handle);
+static char     *dir_find_android_asset(DIRHANDLE handle, const char *path, const char *mask, const char *combinedPathMask);
 static int        dir_close_android_asset(DIRHANDLE handle);
 static char     *dir_get_package_extension_android_asset(void);
 
@@ -41,10 +41,10 @@ static char     *dir_get_package_extension_android_asset(void);
 
 generic_directory_ops directory_ops_plain =
 {
-	.dir_open                  = dir_open_plain,
-	.dir_read                  = dir_read_plain,
-	.dir_close                 = dir_close_plain,
-	.dir_get_package_extension = dir_get_package_extension_plain
+	dir_open_plain,
+	dir_find_plain,
+	dir_close_plain,
+	dir_get_package_extension_plain
 };
 
 #ifdef __ANDROID__
@@ -52,7 +52,7 @@ generic_directory_ops directory_ops_plain =
 generic_directory_ops directory_ops_android_asset =
 {
 	.dir_open                  = dir_open_android_asset,
-	.dir_read                  = dir_read_android_asset,
+	.dir_find                  = dir_find_android_asset,
 	.dir_close                 = dir_close_android_asset,
 	.dir_get_package_extension = dir_get_package_extension_android_asset
 };
@@ -80,18 +80,30 @@ generic_directory_ops *get_directory_operations(dir_access_variant access_varian
 
 static DIRHANDLE  dir_open_plain(const char *path)
 {
+#ifndef _WIN32
 	return (DIRHANDLE) opendir(path);
+#else
+	return NULL;
+#endif
 }
 
-static char     *dir_read_plain(DIRHANDLE handle)
+static char     *dir_find_plain(DIRHANDLE handle)
 {
+#ifndef _WIN32
 	struct dirent* ent = readdir((DIR*) handle);
 	return ent->d_name;
+#else
+	return NULL;
+#endif
 }
 
 static int        dir_close_plain(DIRHANDLE handle)
 {
+#ifndef _WIN32
 	return closedir((DIR*) handle);
+#else
+	return -1;
+#endif
 }
 
 static char     *dir_get_package_extension_plain(void)
@@ -106,7 +118,7 @@ static DIRHANDLE  dir_open_android_asset(const char *path)
     return (DIRHANDLE) AAssetManager_openDir(assetManager, path);
 }
 
-static char     *dir_read_android_asset(DIRHANDLE handle)
+static char     *dir_find_android_asset(DIRHANDLE handle)
 {
     return AAssetDir_getNextFileName((AAssetDir *) handle);
 }

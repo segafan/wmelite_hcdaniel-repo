@@ -24,7 +24,7 @@ typedef enum dir_access_variant_t
 typedef struct generic_directory_ops_t
 {
 	DIRHANDLE (*dir_open)  (const char *path);
-	char     *(*dir_read)  (DIRHANDLE handle);
+	char     *(*dir_find)  (DIRHANDLE handle);
 	int       (*dir_close) (DIRHANDLE handle);
 	char     *(*dir_get_package_extension) (void);
 } generic_directory_ops;

@@ -26,6 +26,9 @@ THE SOFTWARE.
 #ifndef __WmePathUtils_H__
 #define __WmePathUtils_H__
 
+#include "DirectoryOperations.h"
+#include "FileOperations.h"
+
 	class PathUtil
 	{
 	public:
@@ -46,6 +49,8 @@ THE SOFTWARE.
 		static AnsiString GetUserDirectory();
 
 		static void GetFilesInDirectory(const AnsiString& path, const AnsiString& mask, AnsiStringList& files);
+		static generic_directory_ops* GetDirectoryAccessMethod(const AnsiString &path);
+		static generic_file_ops* GetFileAccessMethod(const AnsiString &path);
 	};
 
 #endif // __WmePathUtils_H__

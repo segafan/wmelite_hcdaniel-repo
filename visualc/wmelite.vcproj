@@ -1841,6 +1841,14 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\src\DirectoryOperations.c"
+				>
+			</File>
+			<File
+				RelativePath="..\src\FileOperations.c"
+				>
+			</File>
+			<File
 				RelativePath="..\src\FontGlyphCache.cpp"
 				>
 				<FileConfiguration
@@ -2948,6 +2956,14 @@
 			</File>
 			<File
 				RelativePath="..\src\dctypes.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\DirectoryOperations.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\FileOperations.h"
 				>
 			</File>
 			<File

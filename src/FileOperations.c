@@ -49,13 +49,13 @@ static int        file_close_android_asset(FILEHANDLE handle);
 
 generic_file_ops file_ops_plain =
 {
-	.file_exists = file_exists_plain,
-	.file_open   = file_open_plain,
-	.file_read   = file_read_plain,
-	.file_write  = file_write_plain,
-	.file_seek   = file_seek_plain,
-	.file_tell   = file_tell_plain,
-	.file_close  = file_close_plain
+	file_exists_plain,
+	file_open_plain,
+	file_read_plain,
+	file_write_plain,
+	file_seek_plain,
+	file_tell_plain,
+	file_close_plain
 };
 
 #ifdef __ANDROID__
