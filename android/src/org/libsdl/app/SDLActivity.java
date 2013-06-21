@@ -10,6 +10,7 @@ import org.deadcode.wmelite.WMELiteFunctions;
 
 import android.app.*;
 import android.content.*;
+import android.content.res.AssetManager;
 import android.view.*;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
@@ -497,7 +498,7 @@ class SDLMain implements Runnable {
     public void run() {
     	
     	// init wmelite Java callbacks
-    	SDLActivity.wmeLiteFuncs.nativeInit();
+    	SDLActivity.wmeLiteFuncs.init();
     	
     	// Runs SDL_main()
         SDLActivity.nativeInit();

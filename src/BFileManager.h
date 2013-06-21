@@ -29,11 +29,12 @@ THE SOFTWARE.
 
 #include <map>
 #include "coll_templ.h"
+#include "FileOperations.h"
 
 class CBFileManager:CBBase
 {
 public:	
-	bool FindPackageSignature(FILE* f, DWORD* Offset);
+	bool FindPackageSignature(generic_file_ops *ops, FILEHANDLE f, DWORD* Offset);
 	HRESULT Cleanup();
 	HRESULT SetBasePath(char* Path);
 	HRESULT RestoreCurrentDir();
@@ -43,8 +44,8 @@ public:
 	HRESULT CloseFile(CBFile* File);
 	CBFile* OpenFile(const char* Filename, bool AbsPathWarning=true);
 	CBFileEntry* GetPackageEntry(const char* Filename);
-	FILE* OpenSingleFile(char* Name);
-	FILE* OpenPackage(char* Name);
+	FILEHANDLE OpenSingleFile(char* Name);
+	FILEHANDLE OpenPackage(char* Name, generic_file_ops **ops);
 	HRESULT RegisterPackages();	
 	HRESULT InitPaths();
 	HRESULT ReloadPaths();

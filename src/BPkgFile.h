@@ -29,6 +29,7 @@ THE SOFTWARE.
 
 #include "BFile.h"
 #include "zlib.h"	// Added by ClassView
+#include "FileOperations.h"
 
 #define COMPRESSED_BUFFER_SIZE 4096
 
@@ -48,7 +49,7 @@ private:
 	CBFileEntry* m_FileEntry;
 	z_stream m_Stream;
 	BYTE m_CompBuffer[COMPRESSED_BUFFER_SIZE];
-	FILE* m_File;
+	FILEHANDLE m_File;
 };
 
 #endif

@@ -28,23 +28,26 @@ THE SOFTWARE.
 
 
 #include "BBase.h"
+#include "FileOperations.h"
 
 class CBPackage : public CBBase  
 {
 public:
-	FILE* GetFilePointer();
-	void CloseFilePointer(FILE*& file);
+	FILEHANDLE GetFilePointer();
+	void CloseFilePointer(FILEHANDLE file);
 
 	bool m_BoundToExe;
 	BYTE m_Priority;
-	HRESULT Read(FILE* file, DWORD offset, BYTE* buffer, DWORD size);
+	HRESULT Read(FILEHANDLE file, DWORD offset, BYTE* buffer, DWORD size);
 	HRESULT Close();
 	HRESULT Open();
 	char* m_Name;
 	int m_CD;
-	FILE* m_File;
 	CBPackage(CBGame* inGame);
 	virtual ~CBPackage();
+private:
+	FILEHANDLE m_File;
+	generic_file_ops *ops;
 
 };
 

@@ -27,7 +27,6 @@ THE SOFTWARE.
 #include "BFileManager.h"
 #include "StringUtil.h"
 #include "PathUtil.h"
-#include "FileOperations.h"
 
 #ifdef __WIN32__
 #	include <direct.h>
@@ -41,6 +40,7 @@ THE SOFTWARE.
 
 #ifdef __ANDROID__
 #	include "android/android.h"
+#	include <android/log.h>
 #endif
 
 #if _DEBUG
@@ -251,14 +251,11 @@ HRESULT CBFileManager::AddPath(TPathType Type, const char *Path)
 {
 	if(Path==NULL || strlen(Path) < 1) return E_FAIL;
 
-	bool slashed = (Path[strlen(Path)-1] == '\\' || Path[strlen(Path)-1] == '/');
+	AnsiString slashedPath = PathUtil::AppendSlashToPlainDir(Path);
+	const char *cpath = slashedPath.c_str();
 
-	char* buffer = new char [strlen(Path) + 1 + (slashed?0:1)];
-	if(buffer==NULL) return E_FAIL;
-
-	strcpy(buffer, Path);
-	if(!slashed) strcat(buffer, "\\");
-	//CBPlatform::strlwr(buffer);
+	char *buffer = new char [strlen(cpath) + 1];
+	strcpy(buffer, cpath);
 
 	switch(Type)
 	{
@@ -376,7 +373,7 @@ HRESULT CBFileManager::RegisterPackages()
 	for (int i = 0; i < m_PackagePaths.GetSize(); i++)
 	{
 		AnsiString fullPath = PathUtil::GetAbsolutePath(m_PackagePaths[i]);
-		if (!CBPlatform::DirectoryExists(fullPath.c_str())) continue;
+		if (!PathUtil::DirectoryExists(fullPath.c_str())) continue;
 
 		AnsiStringList files;
 		PathUtil::GetFilesInDirectory(fullPath, mask, files);
@@ -398,7 +395,9 @@ HRESULT CBFileManager::RegisterPackage(const AnsiString& path, const AnsiString&
 {
     AnsiString fileName = PathUtil::Combine(path, name);
 
-	FILE* f = fopen(fileName.c_str(), "rb");
+    generic_file_ops *ops = PathUtil::GetFileAccessMethod(fileName);
+
+	FILEHANDLE f = ops->file_open(fileName.c_str(), "rb");
 	if(!f)
 	{
 		Game->LOG(0, "  Error opening package file '%s'. Ignoring.", fileName.c_str());
@@ -411,25 +410,25 @@ HRESULT CBFileManager::RegisterPackage(const AnsiString& path, const AnsiString&
 	if(searchSignature)
 	{
 		DWORD Offset;
-		if(!FindPackageSignature(f, &Offset))
+		if(!FindPackageSignature(ops, f, &Offset))
 		{
-			fclose(f);
+			ops->file_close(f);
 			return S_OK;
 		}
 		else
 		{
-			fseek(f, Offset, SEEK_SET);
+			ops->file_seek(f, Offset, SEEK_SET);
 			AbosulteOffset = Offset;
 			BoundToExe = true;
 		}
 	}
 
 	TPackageHeader hdr;
-	fread(&hdr, sizeof(TPackageHeader), 1, f);
+	ops->file_read((char *) (&hdr), sizeof(TPackageHeader), f);
 	if(hdr.Magic1 != PACKAGE_MAGIC_1 || hdr.Magic2 != PACKAGE_MAGIC_2 || hdr.PackageVersion > PACKAGE_VERSION)
 	{
 		Game->LOG(0, "  Invalid header in package file '%s'. Ignoring.", fileName.c_str());
-		fclose(f);
+		ops->file_close(f);
 		return S_OK;
 	}
 
@@ -442,9 +441,9 @@ HRESULT CBFileManager::RegisterPackage(const AnsiString& path, const AnsiString&
 	if(hdr.PackageVersion==PACKAGE_VERSION)
 	{
 		DWORD DirOffset;
-		fread(&DirOffset, sizeof(DWORD), 1, f);
+		ops->file_read((char *) (&DirOffset), sizeof(DWORD), f);
 		DirOffset+=AbosulteOffset;
-		fseek(f, DirOffset, SEEK_SET);
+		ops->file_seek(f, DirOffset, SEEK_SET);
 	}
 
 	for(int i=0; i<hdr.NumDirs; i++)
@@ -456,10 +455,10 @@ HRESULT CBFileManager::RegisterPackage(const AnsiString& path, const AnsiString&
 
 		// read package info
 		BYTE NameLength;
-		fread(&NameLength, sizeof(BYTE), 1, f);
+		ops->file_read((char *) (&NameLength), sizeof(BYTE), f);
 		pkg->m_Name = new char[NameLength];
-		fread(pkg->m_Name, NameLength, 1, f);
-		fread(&pkg->m_CD, sizeof(BYTE), 1, f);
+		ops->file_read(pkg->m_Name, NameLength, f);
+		ops->file_read((char *) (&pkg->m_CD), sizeof(BYTE), f);
 		pkg->m_Priority = hdr.Priority;
 
 		if(!hdr.MasterIndex) pkg->m_CD = 0; // override CD to fixed disk
@@ -468,16 +467,16 @@ HRESULT CBFileManager::RegisterPackage(const AnsiString& path, const AnsiString&
 
 		// read file entries
 		DWORD NumFiles;
-		fread(&NumFiles, sizeof(DWORD), 1, f);
+		ops->file_read((char *) (&NumFiles), sizeof(DWORD), f);
 
 		for(int j=0; j<NumFiles; j++)
 		{
 			char* Name;
 			DWORD Offset, Length, CompLength, Flags, TimeDate1, TimeDate2;
 
-			fread(&NameLength, sizeof(BYTE), 1, f);
+			ops->file_read((char *) (&NameLength), sizeof(BYTE), f);
 			Name = new char[NameLength];
-			fread(Name, NameLength, 1, f);
+			ops->file_read(Name, NameLength, f);
 			
 			// v2 - xor name
 			if(hdr.PackageVersion==PACKAGE_VERSION)
@@ -495,17 +494,23 @@ HRESULT CBFileManager::RegisterPackage(const AnsiString& path, const AnsiString&
 
 			CBPlatform::strupr(Name);
 
-			fread(&Offset, sizeof(DWORD), 1, f);
+			ops->file_read((char *) (&Offset), sizeof(DWORD), f);
 			Offset+=AbosulteOffset;
-			fread(&Length, sizeof(DWORD), 1, f);
-			fread(&CompLength, sizeof(DWORD), 1, f);
-			fread(&Flags, sizeof(DWORD), 1, f);
+			ops->file_read((char *) (&Length), sizeof(DWORD), f);
+			ops->file_read((char *) (&CompLength), sizeof(DWORD), f);
+			ops->file_read((char *) (&Flags), sizeof(DWORD), f);
 
 			if(hdr.PackageVersion==PACKAGE_VERSION)
 			{
-				fread(&TimeDate1, sizeof(DWORD), 1, f);
-				fread(&TimeDate2, sizeof(DWORD), 1, f);
+				ops->file_read((char *) (&TimeDate1), sizeof(DWORD), f);
+				ops->file_read((char *) (&TimeDate2), sizeof(DWORD), f);
 			}
+
+			/*
+			__android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app",
+					"File %s off=%d len=%d complen=%d flags=%d time1=%d time2=%d",
+					Name, Offset, Length, CompLength, Flags, TimeDate1, TimeDate2);
+					*/
 
 			m_FilesIter = m_Files.find(Name);
 			if (m_FilesIter == m_Files.end())
@@ -536,7 +541,7 @@ HRESULT CBFileManager::RegisterPackage(const AnsiString& path, const AnsiString&
 	}
 
 
-	fclose(f);
+	ops->file_close(f);
 
 	return S_OK;
 }
@@ -555,17 +560,18 @@ bool CBFileManager::IsValidPackage(const AnsiString& fileName) const
 }
 
 //////////////////////////////////////////////////////////////////////////
-FILE* CBFileManager::OpenPackage(char *Name)
+FILEHANDLE CBFileManager::OpenPackage(char *Name, generic_file_ops **ops)
 {
 	RestoreCurrentDir();
 
-	FILE* ret = NULL;
+	FILEHANDLE ret = NULL;
 	char Filename[MAX_PATH];
 
 	for(int i=0; i<m_PackagePaths.GetSize(); i++)
 	{
 		sprintf(Filename, "%s%s.%s", m_PackagePaths[i], Name, PACKAGE_EXTENSION);
-		ret = fopen(Filename, "rb");
+		*ops = PathUtil::GetFileAccessMethod(Filename);
+		ret = (*ops)->file_open(Filename, "rb");
 		if(ret!=NULL) return ret;
 	}
 	return NULL;
@@ -573,22 +579,25 @@ FILE* CBFileManager::OpenPackage(char *Name)
 
 
 //////////////////////////////////////////////////////////////////////////
-FILE* CBFileManager::OpenSingleFile(char* Name)
+FILEHANDLE CBFileManager::OpenSingleFile(char* Name)
 {
 	RestoreCurrentDir();
 
-	FILE* ret = NULL;
+	FILEHANDLE ret = NULL;
 	char Filename[MAX_PATH];
+	generic_file_ops *ops;
 
 	for(int i=0; i<m_SinglePaths.GetSize(); i++)
 	{
 		sprintf(Filename, "%s%s", m_SinglePaths[i], Name);
-		ret = fopen(Filename, "rb");
+		ops = PathUtil::GetFileAccessMethod(Filename);
+		ret = ops->file_open(Filename, "rb");
 		if(ret!=NULL) return ret;
 	}
 
 	// didn't find in search paths, try to open directly
-	return fopen(Name, "rb");
+	ops = PathUtil::GetFileAccessMethod(Name);
+	return ops->file_open(Name, "rb");
 }
 
 
@@ -597,16 +606,18 @@ bool CBFileManager::GetFullPath(char *Filename, char *Fullname)
 {
 	RestoreCurrentDir();
 
-	FILE* f = NULL;
+	FILEHANDLE f = NULL;
 	bool found = false;
+	generic_file_ops *ops;
 
 	for(int i=0; i<m_SinglePaths.GetSize(); i++)
 	{
 		sprintf(Fullname, "%s%s", m_SinglePaths[i], Filename);
-		f = fopen(Fullname, "rb");
+		ops = PathUtil::GetFileAccessMethod(Fullname);
+		f = ops->file_open(Fullname, "rb");
 		if(f)
 		{
-			fclose(f);
+			ops->file_close(f);
 			found = true;
 			break;
 		}
@@ -614,10 +625,11 @@ bool CBFileManager::GetFullPath(char *Filename, char *Fullname)
 
 	if(!found)
 	{
-		f = fopen(Filename, "rb");
+		ops = PathUtil::GetFileAccessMethod(Filename);
+		f = ops->file_open(Filename, "rb");
 		if(f)
 		{
-			fclose(f);
+			ops->file_close(f);
 			found = true;
 			strcpy(Fullname, Filename);
 		}
@@ -750,7 +762,7 @@ HRESULT CBFileManager::SetBasePath(char *Path)
 
 
 //////////////////////////////////////////////////////////////////////////
-bool CBFileManager::FindPackageSignature(FILE *f, DWORD *Offset)
+bool CBFileManager::FindPackageSignature(generic_file_ops *ops, FILEHANDLE f, DWORD *Offset)
 {
 	BYTE buf[32768];
 	
@@ -758,8 +770,8 @@ bool CBFileManager::FindPackageSignature(FILE *f, DWORD *Offset)
 	((DWORD*)Signature)[0] = PACKAGE_MAGIC_1;
 	((DWORD*)Signature)[1] = PACKAGE_MAGIC_2;
 
-	fseek(f, 0, SEEK_END);
-	DWORD FileSize = ftell(f);
+	ops->file_seek(f, 0, SEEK_END);
+	DWORD FileSize = ops->file_tell(f);
 
 	int StartPos = 1024*1024;
 	
@@ -768,8 +780,8 @@ bool CBFileManager::FindPackageSignature(FILE *f, DWORD *Offset)
 	while(BytesRead<FileSize-16)
 	{
 		int ToRead = MIN(32768, FileSize - BytesRead);
-		fseek(f, StartPos, SEEK_SET);
-		int ActuallyRead = fread(buf, 1, ToRead, f);
+		ops->file_seek(f, StartPos, SEEK_SET);
+		int ActuallyRead = ops->file_read((char *) buf, ToRead, f);
 		if(ActuallyRead != ToRead) return false;
 
 		for (int i = 0; i<ToRead-8; i++)

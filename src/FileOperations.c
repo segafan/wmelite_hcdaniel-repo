@@ -21,7 +21,7 @@
 
 #ifdef __ANDROID__
 #include <android/asset_manager.h>
-#include <android/asset_manager_jni.h>
+#include <android/log.h>
 #endif
 
 static int        file_exists_plain(const char *name);
@@ -34,7 +34,7 @@ static int        file_close_plain(FILEHANDLE handle);
 
 #ifdef __ANDROID__
 
-static AAssetManager *assetManager;
+extern AAssetManager *assetManager;
 
 static int        file_exists_android_asset(const char *name);
 static FILEHANDLE file_open_android_asset(const char *name, const char *mode);
@@ -77,6 +77,9 @@ generic_file_ops *get_file_operations(file_access_variant access_variant)
 {
   if (access_variant == FILE_ACCESS_VARIANT_PLAIN)
   {
+#ifdef __ANDROID__
+	__android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "FileOperations: Requested PLAIN access.");
+#endif
     return &file_ops_plain;
   }
   
@@ -84,7 +87,8 @@ generic_file_ops *get_file_operations(file_access_variant access_variant)
 
   if (access_variant == FILE_ACCESS_VARIANT_ANDROID_ASSET)
   {
-    return &file_ops_plain;
+		// __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "FileOperations: Requested ANDROID ASSET access.");
+    return &file_ops_android_asset;
   }
   
 #endif
@@ -108,12 +112,12 @@ static FILEHANDLE file_open_plain(const char *name, const char *mode)
 
 static long       file_read_plain(char *buffer, long size, FILEHANDLE handle)
 {
-	return fread(buffer, size, 1, (FILE*) handle);
+	return fread(buffer, 1, size, (FILE*) handle);
 }
 
 static long       file_write_plain(const char *buffer, long size, FILEHANDLE handle)
 {
-	return fwrite(buffer, size, 1, (FILE*) handle);
+	return fwrite(buffer, 1, size, (FILE*) handle);
 }
 
 static int        file_seek_plain(FILEHANDLE handle, long offset, int whence)
@@ -133,16 +137,38 @@ static int        file_close_plain(FILEHANDLE handle)
 
 #ifdef __ANDROID__
 
+char buffer[32768];
+
 static int        file_exists_android_asset(const char *name)
 {
-    int retval = 0;
-    AAsset *asset = AAssetManager_open(assetManager, name, AASSET_MODE_BUFFER);
+	int i;
+	int retval = 0;
+
+    // skip the "asset://" prefix and remove a possible trailing slash
+	int len = strlen(name);
+	strcpy(buffer, name + 8);
+	len = len - 8;
+	if ((buffer[len - 1] == '/') || (buffer[len - 1] == '\\'))
+	{
+		buffer[len - 1] = 0;
+	}
+	for (i = 0; i < len; i++)
+	{
+		if (buffer[i] == '\\')
+		{
+			buffer[i] = '/';
+		}
+	}
+
+	AAsset *asset = AAssetManager_open(assetManager, buffer, AASSET_MODE_BUFFER);
     if (asset == NULL)
     {
-        retval = -1;
+    	// __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "AssetFile: Request to open asset at path: %s FAILED", buffer);
+       retval = -1;
     }
     else
     {
+    	// __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "AssetFile: Request to open asset at path: %s OK", buffer);
         AAsset_close(asset);   
     }
     
@@ -152,12 +178,34 @@ static int        file_exists_android_asset(const char *name)
 static FILEHANDLE file_open_android_asset(const char *name, const char *mode)
 {
     // ignore the supplied mode flags
-    return (FILEHANDLE) AAssetManager_open(assetManager, name, AASSET_MODE_BUFFER);
+
+    // skip the "asset://" prefix and remove a possible trailing slash
+	int i;
+	int len = strlen(name);
+	strcpy(buffer, name + 8);
+	len = len - 8;
+	if ((buffer[len - 1] == '/') || (buffer[len - 1] == '\\'))
+	{
+		buffer[len - 1] = 0;
+	}
+	for (i = 0; i < len; i++)
+	{
+		if (buffer[i] == '\\')
+		{
+			buffer[i] = '/';
+		}
+	}
+
+	FILEHANDLE handle = (FILEHANDLE) AAssetManager_open(assetManager, buffer, AASSET_MODE_BUFFER);
+	// __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "AssetFile: Request to open asset at path: %s success=%s", buffer, (handle == NULL) ? "FALSE" : "TRUE");
+    return handle;
 }
 
 static long       file_read_android_asset(char *buffer, long size, FILEHANDLE handle)
 {
-    return AAsset_read((AAsset *) handle, buffer, size);
+	long retval = AAsset_read((AAsset *) handle, buffer, size);
+	// __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "AssetFile: read=%ld", retval);
+    return retval;
 }
 
 static long       file_write_android_asset(const char *buffer, long size, FILEHANDLE handle)
@@ -168,12 +216,35 @@ static long       file_write_android_asset(const char *buffer, long size, FILEHA
 
 static int        file_seek_android_asset(FILEHANDLE handle, long offset, int whence)
 {
-    return AAsset_seek((AAsset *) handle, offset, whence);
+    int retval = AAsset_seek((AAsset *) handle, offset, whence);
+	// __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "AssetFile: seek=%d", retval);
+
+	// need to align to original fseek() return value
+	if (retval >= 0)
+	{
+		retval = 0;
+	}
+
+	return retval;
 }
 
 static long       file_tell_android_asset(FILEHANDLE handle)
 {
-    return (AAsset_getLength((AAsset *) handle) - AAsset_getRemainingLength((AAsset *) handle));
+	off_t length;
+	off_t remainingLength;
+	long retval;
+
+	length = AAsset_getLength((AAsset *) handle);
+	remainingLength = AAsset_getRemainingLength((AAsset *) handle);
+
+	retval = length - remainingLength;
+
+	/*
+	__android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "AssetFile: tell len=%d remainingLen=%d tell=%ld",
+			length, remainingLength, retval);
+	*/
+
+	return retval;
 }
 
 static int        file_close_android_asset(FILEHANDLE handle)

@@ -8,7 +8,7 @@ extern "C" {
 
 #include <jni.h>
 
-void Java_org_deadcode_wmelite_WMELiteFunctions_nativeInit(JNIEnv* env, jobject o);
+void Java_org_deadcode_wmelite_WMELiteFunctions_nativeInit(JNIEnv* env, jobject o, jobject assetMgr);
 
 void android_setLocalEnv(JNIEnv *env);
 

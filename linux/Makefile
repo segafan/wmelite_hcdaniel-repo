@@ -1,7 +1,7 @@
 IDIR =../src
 CC=gcc
 
-CFLAGS=-I$(IDIR) -O2 -m32
+CFLAGS=-I$(IDIR) -O2 -m32 -I/usr/local/include/SDL2/ 
 
 CPP=g++
 CPPFLAGS=-I$(IDIR) -O2 -m32 -Wno-write-strings -Wno-conversion-null -I/usr/local/include/SDL2/ -I/usr/local/bass/ -I/usr/include/freetype2/

@@ -20,7 +20,7 @@
 
 #ifdef __ANDROID__
 #include <android/asset_manager.h>
-#include <android/asset_manager_jni.h>
+#include <android/log.h>
 #endif
 
 static DIRHANDLE  dir_open_plain(const char *path);
@@ -30,10 +30,10 @@ static char     *dir_get_package_extension_plain(void);
 
 #ifdef __ANDROID__
 
-static AAssetManager *assetManager;
+extern AAssetManager *assetManager;
 
 static DIRHANDLE  dir_open_android_asset(const char *path);
-static char     *dir_find_android_asset(DIRHANDLE handle, const char *path, const char *mask, const char *combinedPathMask);
+static char     *dir_find_android_asset(DIRHANDLE handle);
 static int        dir_close_android_asset(DIRHANDLE handle);
 static char     *dir_get_package_extension_android_asset(void);
 
@@ -63,13 +63,17 @@ generic_directory_ops *get_directory_operations(dir_access_variant access_varian
 {
   if (access_variant == DIR_ACCESS_VARIANT_PLAIN)
   {
-    return &directory_ops_plain;
+#ifdef __ANDROID__
+	__android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "DirectoryOperations: Requested PLAIN access.");
+#endif
+	return &directory_ops_plain;
   }
   
 #ifdef __ANDROID__
 
   if (access_variant == DIR_ACCESS_VARIANT_ANDROID_ASSET)
   {
+		__android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "DirectoryOperations: Requested ANDROID ASSET access.");
     return &directory_ops_android_asset;
   }
   
@@ -81,7 +85,11 @@ generic_directory_ops *get_directory_operations(dir_access_variant access_varian
 static DIRHANDLE  dir_open_plain(const char *path)
 {
 #ifndef _WIN32
-	return (DIRHANDLE) opendir(path);
+	DIRHANDLE handle = (DIRHANDLE) opendir(path);
+#ifdef __ANDROID__
+	__android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "DirectoryOperations: opendir(%s) success=%s", path, (handle == NULL) ? "FALSE" : "TRUE");
+#endif
+	return handle;
 #else
 	return NULL;
 #endif
@@ -91,7 +99,13 @@ static char     *dir_find_plain(DIRHANDLE handle)
 {
 #ifndef _WIN32
 	struct dirent* ent = readdir((DIR*) handle);
-	return ent->d_name;
+#ifdef __ANDROID__
+	__android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "DirectoryOperations: readdir returns=%s", (ent == NULL) ? "NULL" : ent->d_name);
+#endif
+	if (ent != NULL) {
+		return ent->d_name;
+	}
+	return NULL;
 #else
 	return NULL;
 #endif
@@ -113,19 +127,34 @@ static char     *dir_get_package_extension_plain(void)
 
 #ifdef __ANDROID__
 
+char buffer[32768];
+
 static DIRHANDLE  dir_open_android_asset(const char *path)
 {
-    return (DIRHANDLE) AAssetManager_openDir(assetManager, path);
+	// skip the "asset://" prefix and remove a possible trailing slash
+	int len = strlen(path);
+	strcpy(buffer, path + 8);
+	len = len - 8;
+	if ((buffer[len - 1] == '/') || (buffer[len - 1] == '\\'))
+	{
+		buffer[len - 1] = 0;
+	}
+	DIRHANDLE handle = (DIRHANDLE) AAssetManager_openDir(assetManager, buffer);
+	__android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "AssetDir: Request to open asset at path: %s success=%s", buffer, (handle == NULL) ? "FALSE" : "TRUE");
+    return handle;
 }
 
 static char     *dir_find_android_asset(DIRHANDLE handle)
 {
-    return AAssetDir_getNextFileName((AAssetDir *) handle);
+	char *next = AAssetDir_getNextFileName((AAssetDir *) handle);
+	__android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "AssetDir: next filename=%s", (next == NULL) ? "NULL" : next);
+    return next;
 }
 
 static int        dir_close_android_asset(DIRHANDLE handle)
 {
     AAssetDir_close((AAssetDir *) handle);
+    __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "AssetDir: close handle");
     return 0;
 }
 

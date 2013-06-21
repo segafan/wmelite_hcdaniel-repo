@@ -432,7 +432,7 @@ bool CBPlatform::DeleteFile(const char* lpFileName)
 //////////////////////////////////////////////////////////////////////////
 bool CBPlatform::CopyFile(const char* from, const char* to, bool failIfExists)
 {
-	if (FileExists(to)) return false;
+	if (PathUtil::FileExists(to)) return false;
 
 	FILE* source = fopen(from, "rb");
 	if (!source) return false;
@@ -460,34 +460,6 @@ bool CBPlatform::CopyFile(const char* from, const char* to, bool failIfExists)
 	fclose(source);
 	fclose(target);
 
-	return ret;
-}
-
-//////////////////////////////////////////////////////////////////////////
-bool CBPlatform::FileExists(const char* fileName)
-{
-	FILE* file = fopen(fileName, "rb");
-	if (!file) return false;
-
-	fclose(file);
-	return true;
-}
-
-//////////////////////////////////////////////////////////////////////////
-bool CBPlatform::DirectoryExists(const char* path)
-{
-	bool ret = false;
-#ifdef _WIN32
-	DWORD attr = GetFileAttributes(path);
-	ret = (attr != INVALID_FILE_ATTRIBUTES && (attr & FILE_ATTRIBUTE_DIRECTORY));
-#else
-	DIR* dir = opendir(path);
-	if (dir != NULL)
-	{
-		ret = true;
-		closedir(dir);
-	}
-#endif
 	return ret;
 }
 

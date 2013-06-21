@@ -28,6 +28,7 @@ THE SOFTWARE.
 
 
 #include "BFile.h"
+#include "FileOperations.h"
 
 class CBDiskFile : public CBFile  
 {
@@ -40,10 +41,11 @@ public:
     virtual HRESULT Open(const char* Filename);
 private:
 	void CorrectSlashes(char* fileName);
-	FILE* m_File;
+	FILEHANDLE m_File;
 	BYTE* m_Data;
 	bool m_Compressed;
 	DWORD m_PrefixSize;
+	generic_file_ops *ops;
 };
 
 #endif

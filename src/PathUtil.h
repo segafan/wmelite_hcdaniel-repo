@@ -32,6 +32,7 @@ THE SOFTWARE.
 	class PathUtil
 	{
 	public:
+		static AnsiString AppendSlashToPlainDir(const AnsiString& path);
 		static AnsiString UnifySeparators(const AnsiString& path);
 		static AnsiString NormalizeFileName(const AnsiString& path);
 		static AnsiString Combine(const AnsiString& path1, const AnsiString& path2);
@@ -43,7 +44,8 @@ THE SOFTWARE.
 		static bool CreateDirectory(const AnsiString& path);
 		static bool MatchesMask(const AnsiString& fileName, const AnsiString& mask);
 
-		static bool FileExists(const AnsiString& fileName);
+		static bool FileExists(const char* fileName);
+		static bool DirectoryExists(const char* path);
 
 		static AnsiString GetSafeLogFileName();
 		static AnsiString GetUserDirectory();

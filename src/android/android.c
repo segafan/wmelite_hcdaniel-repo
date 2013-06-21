@@ -4,6 +4,7 @@
 #include "SDL_android.h"
 
 #include <android/log.h>
+#include <android/asset_manager_jni.h>
 
 const char* className_wmeliteFunctions = "org/deadcode/wmelite";
 
@@ -11,12 +12,17 @@ static jobject callbackObject;
 
 static JNIEnv *localEnv;
 
-void Java_org_deadcode_wmelite_WMELiteFunctions_nativeInit(JNIEnv* env, jobject o)
+AAssetManager *assetManager;
+
+void Java_org_deadcode_wmelite_WMELiteFunctions_nativeInit(JNIEnv* env, jobject o, jobject assetMgr)
 {
 
 	callbackObject = (*env)->NewGlobalRef(env, o);
 
+	assetManager = AAssetManager_fromJava(env, assetMgr);
+
 	__android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "Global ref to WMELITE=%s", (callbackObject == NULL) ? "NULL" : "OK");
+	__android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "Asset manager ref=%s", (assetManager == NULL) ? "NULL" : "OK");
 
 	// localEnv = env;
 }

@@ -5,6 +5,7 @@ import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.content.res.Configuration;
 
 public class WMELiteFunctions {
@@ -18,7 +19,11 @@ public class WMELiteFunctions {
 		this.c = c;
 	}
 	
-	public native void nativeInit();
+	public void init() {
+		nativeInit(c.getAssets());
+	}
+	
+	private native void nativeInit(AssetManager manager);
 	
 	public String getLogFileDirectory() {
 		// this assumed the "external" storage exists and is mounted r/w

@@ -50,6 +50,24 @@ THE SOFTWARE.
 #	include "android/android.h"
 #endif
 
+const AnsiString assetIdentifier = "asset://";
+
+//////////////////////////////////////////////////////////////////////////
+AnsiString PathUtil::AppendSlashToPlainDir(const AnsiString& path)
+{
+	const char *cpath = path.c_str();
+	bool slashed = (path[strlen(cpath)-1] == '\\' || path[strlen(cpath)-1] == '/');
+
+	char* buffer = new char [strlen(cpath) + 1 + (slashed ? 0 : 1)];
+	if(buffer==NULL) return NULL;
+
+	strcpy(buffer, cpath);
+	if(!slashed) strcat(buffer, "\\");
+	//CBPlatform::strlwr(buffer);
+
+	return AnsiString(buffer);
+}
+
 //////////////////////////////////////////////////////////////////////////
 AnsiString PathUtil::UnifySeparators(const AnsiString& path)
 {
@@ -170,17 +188,37 @@ bool PathUtil::MatchesMask(const AnsiString& fileName, const AnsiString& mask)
 }
 
 //////////////////////////////////////////////////////////////////////////
-bool PathUtil::FileExists(const AnsiString& fileName)
+bool PathUtil::FileExists(const char* fileName)
 {
-	std::ifstream stream;
+	FILEHANDLE file;
+	generic_file_ops *ops = GetFileAccessMethod(fileName);
 
-	stream.open(fileName.c_str());
-	bool ret = stream.is_open();
-	stream.close();
+	file = ops->file_open(fileName, "rb");
+	if (!file) return false;
 
-	return ret;
+	ops->file_close(file);
+	return true;
 }
 
+//////////////////////////////////////////////////////////////////////////
+bool PathUtil::DirectoryExists(const char* path)
+{
+	bool ret = false;
+#ifdef _WIN32
+	DWORD attr = GetFileAttributes(path);
+	ret = (attr != INVALID_FILE_ATTRIBUTES && (attr & FILE_ATTRIBUTE_DIRECTORY));
+#else
+	DIRHANDLE dir;
+	generic_directory_ops *ops = GetDirectoryAccessMethod(path);
+	dir = ops->dir_open(path);
+	if (dir != NULL)
+	{
+		ret = true;
+		ops->dir_close(dir);
+	}
+#endif
+	return ret;
+}
 
 //////////////////////////////////////////////////////////////////////////
 AnsiString PathUtil::GetUserDirectory()
@@ -235,7 +273,15 @@ AnsiString PathUtil::GetAbsolutePath(const AnsiString& path)
 	_fullpath(fullPath, path.c_str(), MAX_PATH);
 #else
 	char fullPath[32768]; // UNIX paths can be longer
+
+#ifdef __ANDROID__
+	if (StringUtil::StartsWith(path, assetIdentifier, false) == true) {
+		return path;
+	}
+#else
 	realpath(path.c_str(), fullPath);
+#endif
+
 #endif
 	return AnsiString(fullPath);
 }
@@ -262,40 +308,55 @@ void PathUtil::GetFilesInDirectory(const AnsiString& path, const AnsiString& mas
 		_findclose(hFile);
 	}
 #else
-    DIR* dir;
-    struct dirent* entry;
+    DIRHANDLE dir;
+    char* entry;
+    generic_directory_ops *ops = GetDirectoryAccessMethod(path);
     
-    dir = opendir(path.c_str());
+    dir = ops->dir_open(path.c_str());
     if (dir)
     {
-        while ((entry = readdir(dir)) != NULL)
+        while ((entry = ops->dir_find(dir)) != NULL)
         {
-            if (CBUtils::MatchesPattern(mask.c_str(), entry->d_name))
+            if (CBUtils::MatchesPattern(mask.c_str(), entry))
             {
-                files.push_back(entry->d_name);
+                files.push_back(entry);
             }
         }
-        closedir(dir);
+        ops->dir_close(dir);
     }
 #endif
 }
 
+//////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 generic_directory_ops* PathUtil::GetDirectoryAccessMethod(const AnsiString &path)
 {
 #ifdef _WIN32
 	return get_directory_operations(DIR_ACCESS_VARIANT_PLAIN);
 #else
+	dir_access_variant variant = DIR_ACCESS_VARIANT_PLAIN;
 
+	if (StringUtil::StartsWith(path, assetIdentifier, false) == true)
+	{
+		variant = DIR_ACCESS_VARIANT_ANDROID_ASSET;
+	}
+
+	return get_directory_operations(variant);
 #endif
 }
 
-//////////////////////////////////////////////////////////////////////////
 generic_file_ops* PathUtil::GetFileAccessMethod(const AnsiString &path)
 {
 #ifdef _WIN32
 	return get_file_operations(FILE_ACCESS_VARIANT_PLAIN);
 #else
+	file_access_variant variant = FILE_ACCESS_VARIANT_PLAIN;
 
+	if (StringUtil::StartsWith(path, assetIdentifier, false) == true)
+	{
+		variant = FILE_ACCESS_VARIANT_ANDROID_ASSET;
+	}
+
+	return get_file_operations(variant);
 #endif
 }
