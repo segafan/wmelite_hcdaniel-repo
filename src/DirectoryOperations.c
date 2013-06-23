@@ -160,7 +160,8 @@ static int        dir_close_android_asset(DIRHANDLE handle)
 
 static char     *dir_get_package_extension_android_asset(void)
 {
-    return "dcp";    
+	// choose an extension that will not be compressed by android build tools
+    return "png";
 }
 
 #endif

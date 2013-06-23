@@ -30,7 +30,7 @@ THE SOFTWARE.
 #define PACKAGE_MAGIC_1   0xDEC0ADDE
 #define PACKAGE_MAGIC_2   0x4B4E554A	// "JUNK"
 #define PACKAGE_VERSION   0x00000200
-#define PACKAGE_EXTENSION "dcp"
+// #define PACKAGE_EXTENSION "png"
 
 #include <time.h>
 

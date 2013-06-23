@@ -364,16 +364,18 @@ HRESULT CBFileManager::InitPaths()
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBFileManager::RegisterPackages()
 {
+	generic_directory_ops *dir_ops;
 	RestoreCurrentDir();
 
 	Game->LOG(0, "Scanning packages...");
-
-	AnsiString mask = AnsiString("*.") + AnsiString(PACKAGE_EXTENSION);
 	
 	for (int i = 0; i < m_PackagePaths.GetSize(); i++)
 	{
 		AnsiString fullPath = PathUtil::GetAbsolutePath(m_PackagePaths[i]);
 		if (!PathUtil::DirectoryExists(fullPath.c_str())) continue;
+
+		dir_ops = PathUtil::GetDirectoryAccessMethod(fullPath);
+		AnsiString mask = AnsiString("*.") + AnsiString(dir_ops->dir_get_package_extension());
 
 		AnsiStringList files;
 		PathUtil::GetFilesInDirectory(fullPath, mask, files);
@@ -566,10 +568,12 @@ FILEHANDLE CBFileManager::OpenPackage(char *Name, generic_file_ops **ops)
 
 	FILEHANDLE ret = NULL;
 	char Filename[MAX_PATH];
+	generic_directory_ops *dir_ops;
 
 	for(int i=0; i<m_PackagePaths.GetSize(); i++)
 	{
-		sprintf(Filename, "%s%s.%s", m_PackagePaths[i], Name, PACKAGE_EXTENSION);
+		dir_ops = PathUtil::GetDirectoryAccessMethod(m_PackagePaths[i]);
+		sprintf(Filename, "%s%s.%s", m_PackagePaths[i], Name, dir_ops->dir_get_package_extension());
 		*ops = PathUtil::GetFileAccessMethod(Filename);
 		ret = (*ops)->file_open(Filename, "rb");
 		if(ret!=NULL) return ret;
