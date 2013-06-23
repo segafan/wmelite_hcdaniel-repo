@@ -87,7 +87,7 @@ static DIRHANDLE  dir_open_plain(const char *path)
 #ifndef _WIN32
 	DIRHANDLE handle = (DIRHANDLE) opendir(path);
 #ifdef __ANDROID__
-	__android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "DirectoryOperations: opendir(%s) success=%s", path, (handle == NULL) ? "FALSE" : "TRUE");
+	__android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "DirectoryOperations: opendir('%s') success=%s", path, (handle == NULL) ? "FALSE" : "TRUE");
 #endif
 	return handle;
 #else

@@ -278,9 +278,9 @@ AnsiString PathUtil::GetAbsolutePath(const AnsiString& path)
 	if (StringUtil::StartsWith(path, assetIdentifier, false) == true) {
 		return path;
 	}
-#else
-	realpath(path.c_str(), fullPath);
 #endif
+
+	realpath(path.c_str(), fullPath);
 
 #endif
 	return AnsiString(fullPath);
