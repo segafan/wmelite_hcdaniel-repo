@@ -3,25 +3,25 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := freetype
-LOCAL_SRC_FILES := ../../../prebuilt/android/armeabi/libfreetype.a
+LOCAL_SRC_FILES := ../../../prebuilt/android/$(TARGET_ARCH_ABI)/libfreetype.a
 include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := SDL2
-LOCAL_SRC_FILES := ../../../prebuilt/android/armeabi/libSDL2.so
+LOCAL_SRC_FILES := ../../../prebuilt/android/$(TARGET_ARCH_ABI)/libSDL2.so
 
 include $(PREBUILT_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := bass
-LOCAL_SRC_FILES := ../../../prebuilt/android/armeabi/libbass.so
+LOCAL_SRC_FILES := ../../../prebuilt/android/$(TARGET_ARCH_ABI)/libbass.so
 
 include $(PREBUILT_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := freeimage
-LOCAL_SRC_FILES := ../../../prebuilt/android/armeabi/libfreeimage.so
+LOCAL_SRC_FILES := ../../../prebuilt/android/$(TARGET_ARCH_ABI)/libfreeimage.so
 
 include $(PREBUILT_SHARED_LIBRARY)
 
