@@ -4,12 +4,11 @@ CC=gcc
 CFLAGS=-I$(IDIR) -O2 -m32 -I/usr/local/include/SDL2/ 
 
 CPP=g++
-CPPFLAGS=-I$(IDIR) -O2 -m32 -Wno-write-strings -Wno-conversion-null -I/usr/local/include/SDL2/ -I/usr/local/bass/ -I/usr/include/freetype2/
+CPPFLAGS=-I$(IDIR) -O2 -m32 -Wno-write-strings -Wno-conversion-null -I/usr/local/include/SDL2/ -I/usr/local/include/bass/ -I/usr/include/freetype2/
 
 SRCDIR=../src
 
 ODIR=obj
-LDIR =/usr/local/bass/
 
 LIBS=-lSDL2 -lbass -lfreeimage -lfreetype
 
@@ -37,7 +36,7 @@ $(ODIR)/%.o: $(SRCDIR)/%.cpp
 	$(CPP) -c -o $@ $< $(CPPFLAGS)
 
 wmelite: $(OBJC) $(OBJCPP)
-	g++ -o $@ $^ $(CFLAGS) $(LIBS) -L$(LDIR)
+	g++ -o $@ $^ $(CFLAGS) $(LIBS)
 
 .PHONY: clean
 
