@@ -10,7 +10,7 @@ SRCDIR=../src
 
 ODIR=obj
 
-LIBS=-lSDL2 -lbass -lfreeimage -lfreetype
+LIBS=-lSDL2 -lbass -lfreeimage -lfreetype -lz
 
 _OBJC = ConvertUTF.o DirectoryOperations.o FileOperations.o
 OBJC = $(patsubst %,$(ODIR)/%,$(_OBJC))
