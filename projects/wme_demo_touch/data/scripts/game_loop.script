@@ -1,0 +1,86 @@
+#include "scripts\base.inc"
+
+// this script runs in an endless loop and does all the user-interface work
+// that needs to be periodically updated
+// such as the floating items captions display and positioning
+// and the sliding inventory window handling
+
+
+
+var ItemMenuDisplayTime = 1000;
+
+global WinCaption;
+global WinMenu;
+
+
+global g_IsDragging;
+global g_DragObject;
+global g_DragStart;
+
+
+
+// infinite loop
+while(true)
+{
+	if (!g_IsDragging)
+	{
+		WinCaption.Visible = false;
+	}
+  else
+  {
+    // save the active object for later
+    var ActObj = Game.ActiveObject;
+    
+    
+    if (g_DragObject != null)
+    {
+      if (g_DragObject != ActObj)
+      {
+      	g_DragObject = ActObj;
+      	g_DragStart = Game.CurrentTime;
+      }
+      else
+      {
+      	if (Game.CurrentTime - g_DragStart > ItemMenuDisplayTime && g_DragObject.Type == "item" && Game.SelectedItem == null)
+      	{
+      		if (Game.DisplayVerbMenu(ActObj)) g_IsDragging = false;
+      	}
+      } 
+    }
+    else
+    {
+     	g_DragObject = ActObj;
+    	g_DragStart = Game.CurrentTime;
+    }
+
+	  // hide the inventory
+	  if (Game.MouseY > 100) Game.InventoryVisible = false;
+
+    // handle the standard foating caption
+    if (Game.Interactive && ActObj != null)
+    {
+      WinCaption.X = 0;
+      WinCaption.Y = 600 - 40;
+      WinCaption.Width = Game.ScreenWidth;
+      WinCaption.TextAlign = TAL_CENTER;
+    	
+      if (Game.SelectedItem == null)
+      {
+        WinCaption.Text = ActObj.Caption;
+	    }
+      // handle the caption when you want to use an object with another
+      else
+      {
+        var Item = Game.SelectedItem;
+        WinCaption.Text = "Use " + Item.Caption + " with " + ActObj.Caption;
+      }
+      WinCaption.Visible = true;
+      WinCaption.Focus();
+    }
+    else WinCaption.Visible = false;
+  }
+
+  // go to sleep for 20 miliseconds to allow the engine to perform other tasks
+  // it is important for the "endless" scripts to call the Sleep command, otherwise the game will get stuck
+  Sleep(20);
+}

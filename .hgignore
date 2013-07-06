@@ -1,0 +1,19 @@
+syntax: glob
+xcode-ios/wmelite/wmelite.xcodeproj/xcuserdata/nedoma.xcuserdatad/xcdebugger/Breakpoints.xcbkptlist
+xcode-ios/wmelite/wmelite.xcodeproj/xcuserdata/nedoma.xcuserdatad/xcschemes/wmelite.xcscheme
+xcode-ios/wmelite/wmelite.xcodeproj/xcuserdata/nedoma.xcuserdatad/xcschemes/xcschememanagement.plist
+bin/Debug/*
+bin/Release/*
+visualc/Debug/*
+visualc/Release/*
+visualc/dep/*
+visualc/wmelite.vcproj.*.user 
+*.ncb
+*.suo
+xcode-ios/dep
+data.dcp
+xcode/dep
+xcode-ios/wmelite/wmelite.xcodeproj/project.xcworkspace
+xcode/wmelite/wmelite.xcodeproj/project.xcworkspace
+xcode-ios/wmelite/wmelite.xcodeproj/xcuserdata
+xcode/wmelite/wmelite.xcodeproj/xcuserdata
