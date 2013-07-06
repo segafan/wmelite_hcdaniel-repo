@@ -13,6 +13,8 @@
 		1E3C29FC175B5B6900B79FCB /* VidManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3C29F7175B5A7B00B79FCB /* VidManager.cpp */; };
 		1E3C29FD175B5B6900B79FCB /* VidTheoraPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3C29F9175B5A7B00B79FCB /* VidTheoraPlayer.cpp */; };
 		1E3C2A03175B604300B79FCB /* DejaVuSans.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1E3C2A02175B603200B79FCB /* DejaVuSans.ttf */; };
+		1E6BACA0178703630017D579 /* DirectoryOperations.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E6BAC9C178703630017D579 /* DirectoryOperations.c */; };
+		1E6BACA1178703630017D579 /* FileOperations.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E6BAC9E178703630017D579 /* FileOperations.c */; };
 		1EE8C095174FFBD4000B5435 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EE8C094174FFBD4000B5435 /* AVFoundation.framework */; };
 		1EE8C097174FFC2C000B5435 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EE8C096174FFC2C000B5435 /* CoreMedia.framework */; };
 		1EE8C099174FFC65000B5435 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EE8C098174FFC65000B5435 /* CoreVideo.framework */; };
@@ -169,6 +171,10 @@
 		1E3C29F9175B5A7B00B79FCB /* VidTheoraPlayer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = VidTheoraPlayer.cpp; path = ../../src/VidTheoraPlayer.cpp; sourceTree = "<group>"; };
 		1E3C29FA175B5A7B00B79FCB /* VidTheoraPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VidTheoraPlayer.h; path = ../../src/VidTheoraPlayer.h; sourceTree = "<group>"; };
 		1E3C2A02175B603200B79FCB /* DejaVuSans.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = DejaVuSans.ttf; sourceTree = "<group>"; };
+		1E6BAC9C178703630017D579 /* DirectoryOperations.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = DirectoryOperations.c; path = ../../src/DirectoryOperations.c; sourceTree = "<group>"; };
+		1E6BAC9D178703630017D579 /* DirectoryOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectoryOperations.h; path = ../../src/DirectoryOperations.h; sourceTree = "<group>"; };
+		1E6BAC9E178703630017D579 /* FileOperations.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = FileOperations.c; path = ../../src/FileOperations.c; sourceTree = "<group>"; };
+		1E6BAC9F178703630017D579 /* FileOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileOperations.h; path = ../../src/FileOperations.h; sourceTree = "<group>"; };
 		1EE8C094174FFBD4000B5435 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		1EE8C096174FFC2C000B5435 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		1EE8C098174FFC65000B5435 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
@@ -491,6 +497,10 @@
 		29B97315FDCFA39411CA2CEA /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				1E6BAC9C178703630017D579 /* DirectoryOperations.c */,
+				1E6BAC9D178703630017D579 /* DirectoryOperations.h */,
+				1E6BAC9E178703630017D579 /* FileOperations.c */,
+				1E6BAC9F178703630017D579 /* FileOperations.h */,
 				1E3C29F5175B5A7B00B79FCB /* VidDataSource.cpp */,
 				1E3C29F6175B5A7B00B79FCB /* VidDataSource.h */,
 				1E3C29F7175B5A7B00B79FCB /* VidManager.cpp */,
@@ -974,6 +984,8 @@
 				46ADBD131365C7E5000D9788 /* ios_utils.m in Sources */,
 				46D0ADFD13E1A39A00CBDA40 /* SXStore.cpp in Sources */,
 				46D0AE0313E1A50800CBDA40 /* IOS_StoreKit.m in Sources */,
+				1E6BACA0178703630017D579 /* DirectoryOperations.c in Sources */,
+				1E6BACA1178703630017D579 /* FileOperations.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
