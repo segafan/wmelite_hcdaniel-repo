@@ -13,6 +13,8 @@
 		1E3C29F4175B54D200B79FCB /* VidTheoraPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3C29F0175B54D200B79FCB /* VidTheoraPlayer.cpp */; };
 		1E3D7C3A1743F0F20038FD9C /* SXStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3D7C381743F0F20038FD9C /* SXStore.cpp */; };
 		1E3D7C3C1743F21F0038FD9C /* data.dcp in Resources */ = {isa = PBXBuildFile; fileRef = 1E3D7C3B1743F21F0038FD9C /* data.dcp */; };
+		1E6BAC9A1787006B0017D579 /* DirectoryOperations.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E6BAC961787006B0017D579 /* DirectoryOperations.c */; };
+		1E6BAC9B1787006B0017D579 /* FileOperations.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E6BAC981787006B0017D579 /* FileOperations.c */; };
 		1EDECB6817456DB5008020C3 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6717456DB5008020C3 /* SDL2.framework */; };
 		1EDECB6917456DBD008020C3 /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6717456DB5008020C3 /* SDL2.framework */; };
 		1EDECB6E17456EE4008020C3 /* Ogg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6A17456EE4008020C3 /* Ogg.framework */; };
@@ -178,6 +180,10 @@
 		1E3D7C381743F0F20038FD9C /* SXStore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SXStore.cpp; path = ../../src/SXStore.cpp; sourceTree = "<group>"; };
 		1E3D7C391743F0F20038FD9C /* SXStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SXStore.h; path = ../../src/SXStore.h; sourceTree = "<group>"; };
 		1E3D7C3B1743F21F0038FD9C /* data.dcp */ = {isa = PBXFileReference; lastKnownFileType = file; path = data.dcp; sourceTree = "<group>"; };
+		1E6BAC961787006B0017D579 /* DirectoryOperations.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = DirectoryOperations.c; path = ../../src/DirectoryOperations.c; sourceTree = "<group>"; };
+		1E6BAC971787006B0017D579 /* DirectoryOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectoryOperations.h; path = ../../src/DirectoryOperations.h; sourceTree = "<group>"; };
+		1E6BAC981787006B0017D579 /* FileOperations.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = FileOperations.c; path = ../../src/FileOperations.c; sourceTree = "<group>"; };
+		1E6BAC991787006B0017D579 /* FileOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileOperations.h; path = ../../src/FileOperations.h; sourceTree = "<group>"; };
 		1EDECB6717456DB5008020C3 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../dep/SDL/SDL2.framework; sourceTree = "<group>"; };
 		1EDECB6A17456EE4008020C3 /* Ogg.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Ogg.framework; path = ../dep/libtheoraplayer/Ogg.framework; sourceTree = "<group>"; };
 		1EDECB6B17456EE4008020C3 /* Theora.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Theora.framework; path = ../dep/libtheoraplayer/Theora.framework; sourceTree = "<group>"; };
@@ -449,6 +455,10 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				1E6BAC961787006B0017D579 /* DirectoryOperations.c */,
+				1E6BAC971787006B0017D579 /* DirectoryOperations.h */,
+				1E6BAC981787006B0017D579 /* FileOperations.c */,
+				1E6BAC991787006B0017D579 /* FileOperations.h */,
 				1E3C29EC175B54D200B79FCB /* VidDataSource.cpp */,
 				1E3C29ED175B54D200B79FCB /* VidDataSource.h */,
 				1E3C29EE175B54D200B79FCB /* VidManager.cpp */,
@@ -968,6 +978,8 @@
 				1E3C29F2175B54D200B79FCB /* VidDataSource.cpp in Sources */,
 				1E3C29F3175B54D200B79FCB /* VidManager.cpp in Sources */,
 				1E3C29F4175B54D200B79FCB /* VidTheoraPlayer.cpp in Sources */,
+				1E6BAC9A1787006B0017D579 /* DirectoryOperations.c in Sources */,
+				1E6BAC9B1787006B0017D579 /* FileOperations.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
