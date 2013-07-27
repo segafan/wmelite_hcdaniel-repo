@@ -79,7 +79,7 @@ HRESULT CBPackage::Read(FILEHANDLE file, DWORD offset, BYTE* buffer, DWORD size)
 	else
 	{
 		if (ops->file_seek(file, offset, SEEK_SET)) return E_FAIL;
-		if (ops->file_read((char *) buffer, size, file) != 1) return E_FAIL;
+		if (ops->file_read((char *) buffer, size, file) != size) return E_FAIL;
 		else return S_OK;
 	}
 }
