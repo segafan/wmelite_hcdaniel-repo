@@ -83,7 +83,7 @@ public class SDLActivity extends Activity {
 
         setContentView(mLayout);
     }
-
+    
     // Events
     @Override
     protected void onPause() {
