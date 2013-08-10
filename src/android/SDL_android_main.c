@@ -14,7 +14,7 @@
 #include <jni.h>
 
 // Called before SDL_main() to initialize JNI bindings in SDL library
-void SDL_Android_Init(JNIEnv* env, jclass cls);
+extern void SDL_Android_Init(JNIEnv* env, jclass cls);
 
 // Start up the SDL app
 void Java_org_libsdl_app_SDLActivity_nativeInit(JNIEnv* env, jclass cls, jobject obj)
@@ -27,7 +27,7 @@ void Java_org_libsdl_app_SDLActivity_nativeInit(JNIEnv* env, jclass cls, jobject
     /* Run the application code! */
     int status;
     char *argv[2];
-    argv[0] = strdup("SDL_app");
+    argv[0] = SDL_strdup("SDL_app");
     argv[1] = NULL;
     status = SDL_main(1, argv);
 
