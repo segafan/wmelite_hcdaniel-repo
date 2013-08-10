@@ -327,7 +327,7 @@ void CBPlatform::HandleEvent(SDL_Event* event)
 		break;
 
 	case SDL_QUIT:
-#if defined(__IPHONEOS__) || defined(__ANDROID)
+#if defined(__IPHONEOS__) || defined(__ANDROID__)
 		if (Game)
 		{
 			Game->AutoSaveOnExit();
