@@ -4017,6 +4017,23 @@ HRESULT CBGame::Unfreeze()
 //////////////////////////////////////////////////////////////////////////
 bool CBGame::HandleKeypress(SDL_Event* event)
 {
+#ifdef __ANDROID__
+	// hard-code transformation of the "back" key to the escape key on Android
+	// TODO don't know whether OnWindowClose() is the better choice...
+	if (event->type == SDL_KEYDOWN)
+	{
+		// __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "Detected keypress with key=%d mod=%d!", event->key.keysym.sym, event->key.keysym.mod);
+		if (event->key.keysym.sym == SDLK_AC_BACK)
+		{
+			// __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "Modified back key to escape key.");
+			event->key.keysym.sym = SDLK_ESCAPE;
+		}
+	}
+
+
+
+#endif
+
 	if(IsVideoPlaying())
 	{
 		if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_ESCAPE) StopVideo();
