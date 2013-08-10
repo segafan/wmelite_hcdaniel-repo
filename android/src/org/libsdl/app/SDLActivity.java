@@ -81,7 +81,7 @@ public class SDLActivity extends Activity {
 
         // Set up the surface
         mEGLSurface = EGL10.EGL_NO_SURFACE;
-        mSurface = new SDLSurface(getApplication());
+        mSurface = new SDLSurface(getApplication(), this);
         mEGLContext = EGL10.EGL_NO_CONTEXT;
 
         mLayout = new AbsoluteLayout(this);
@@ -568,7 +568,13 @@ public class SDLActivity extends Activity {
     Simple nativeInit() runnable
 */
 class SDLMain implements Runnable {
-    @Override
+    
+    private final Activity myActivity;
+    
+    public SDLMain(Activity myActivity) {
+    	this.myActivity = myActivity;
+    }
+    
     public void run() {
     	// init wmelite Java callbacks
     	SDLActivity.wmeLiteFuncs.init();
@@ -577,6 +583,7 @@ class SDLMain implements Runnable {
         SDLActivity.nativeInit();
 
         //Log.v("SDL", "SDL thread terminated");
+        myActivity.finish();
     }
 }
 
@@ -596,8 +603,10 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     // Keep track of the surface size to normalize touch events
     protected static float mWidth, mHeight;
 
+    private final Activity myActivity;
+    
     // Startup    
-    public SDLSurface(Context context) {
+    public SDLSurface(Context context, Activity myActivity) {
         super(context);
         getHolder().addCallback(this); 
     
@@ -612,6 +621,8 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         // Some arbitrary defaults to avoid a potential division by zero
         mWidth = 1.0f;
         mHeight = 1.0f;
+        
+        this.myActivity = myActivity;
     }
 
     // Called when we have a valid drawing surface
@@ -705,7 +716,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             // This is the entry point to the C app.
             // Start up the C app thread and enable sensor input for the first time
 
-            SDLActivity.mSDLThread = new Thread(new SDLMain(), "SDLThread");
+            SDLActivity.mSDLThread = new Thread(new SDLMain(myActivity), "SDLThread");
             enableSensor(Sensor.TYPE_ACCELEROMETER, true);
             SDLActivity.mSDLThread.start();
         } else {
