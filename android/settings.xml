@@ -4,7 +4,7 @@
     <DebugMode>1</DebugMode>
   </Debug>
   <Font>
-    <FontAlphaHack>true</FontAlphaHack>
+    <FontAlphaHack>1</FontAlphaHack>
   </Font>
   <Scaling>
     <UpScalingStepping>100</UpScalingStepping>
