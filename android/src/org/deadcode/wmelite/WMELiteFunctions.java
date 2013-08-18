@@ -72,6 +72,14 @@ public class WMELiteFunctions {
 		}
 	}
 	
+	public String getLocalSettingsPath() {
+		// for development and debugging, a local settings.xml
+		// can be placed onto the device using a location
+		// that can be accessed by both wmelite and the user
+		
+		return "/mnt/sdcard/";
+	}
+	
 	public byte[] getEncodedString(String inputString, String charsetName) {
 		
 		// change the default here if all the strings used in the project have the same encoding

@@ -196,6 +196,32 @@ void android_getFontPath(char *buffer, int length)
 	(*env)->DeleteLocalRef(env, str);
 }
 
+void android_getLocalSettingsPath(char *buffer, int length)
+{
+	const char *tmp;
+
+	// get the proper jni env from SDL
+	// JNIEnv *env = Android_JNI_GetEnv();
+	JNIEnv *env = localEnv;
+	jclass cls = (*env)->GetObjectClass(env, callbackObject);
+	jmethodID callbackID = (*env)->GetMethodID(env, cls, "getLocalSettingsPath", "()Ljava/lang/String;");
+	jstring str = (*env)->CallObjectMethod(env, callbackObject, callbackID);
+
+	tmp = (*env)->GetStringUTFChars(env, str, NULL);
+
+	if (strnlen(tmp, length) < length) {
+		strncpy(buffer, tmp, length);
+	} else {
+		buffer[0] = 0;
+	}
+
+	__android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "android_getLocalSettingsPath() returns %s", buffer);
+
+	(*env)->ReleaseStringUTFChars(env, str, tmp);
+	(*env)->DeleteLocalRef(env, cls);
+	(*env)->DeleteLocalRef(env, str);
+}
+
 void android_getEncodedString(char *inputString, char *encoding, char *buffer, int *length)
 {
 	JNIEnv *env = localEnv;

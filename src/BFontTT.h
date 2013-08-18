@@ -165,6 +165,8 @@ private:
 	size_t m_MaxCharWidth;
 	size_t m_MaxCharHeight;
 
+	bool m_FontAlphaHack;
+
 public:
 	bool m_IsBold;
 	bool m_IsItalic;

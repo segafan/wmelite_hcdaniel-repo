@@ -54,6 +54,10 @@ CBFontTT::CBFontTT(CBGame* inGame):CBFont(inGame)
 	m_Ascender = m_Descender = m_LineHeight = m_PointSize = m_UnderlinePos = 0;
 	m_HorDpi = m_VertDpi = 0;
 	m_MaxCharWidth = m_MaxCharHeight = 0;
+
+	m_FontAlphaHack = inGame->m_Registry->ReadBool("Font", "FontAlphaHack", false);
+
+	inGame->LOG(0, "Font alpha hack is %s.", (m_FontAlphaHack == true) ? "on" : "off");
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -359,12 +363,26 @@ void CBFontTT::BlitSurface(SDL_Surface* src, SDL_Surface* target, SDL_Rect* targ
 		Uint32* srcBuf32 = (Uint32*)srcBuf;
 		Uint32* tgtBuf32 = (Uint32*)tgtBuf;
 
-		for (int x = 0; x < src->w; x++)
+		if (m_FontAlphaHack == true)
 		{
-			if (targetRect->x + x < 0 || targetRect->x + x >= target->w) continue;
+			// hack that resolves the issue with fonts where characters that "overlap"
+			// when being rendered, so that they are not partly cut off
+			for (int x = 0; x < src->w; x++)
+			{
+				if (targetRect->x + x < 0 || targetRect->x + x >= target->w) continue;
 
-			tgtBuf32[x + targetRect->x] = srcBuf32[x];
-		}		
+				tgtBuf32[x + targetRect->x] |= srcBuf32[x];
+			}
+		}
+		else
+		{
+			for (int x = 0; x < src->w; x++)
+			{
+				if (targetRect->x + x < 0 || targetRect->x + x >= target->w) continue;
+
+				tgtBuf32[x + targetRect->x] = srcBuf32[x];
+			}
+		}
 	}
 
 }

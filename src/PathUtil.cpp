@@ -266,6 +266,26 @@ AnsiString PathUtil::GetUserDirectory()
 }
 
 //////////////////////////////////////////////////////////////////////////
+AnsiString PathUtil::GetLocalSettingsDirectory()
+{
+	AnsiString localSettingsDir;
+
+#ifndef __ANDROID__
+
+	localSettingsDir =  "";
+
+#else
+
+	char androidPath[1024];
+	android_getLocalSettingsPath(androidPath, 1024);
+	localSettingsDir = AnsiString(androidPath);
+
+#endif
+
+	return localSettingsDir;
+}
+
+//////////////////////////////////////////////////////////////////////////
 AnsiString PathUtil::GetAbsolutePath(const AnsiString& path)
 {
 #ifdef _WIN32

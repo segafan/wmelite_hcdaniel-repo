@@ -49,6 +49,7 @@ THE SOFTWARE.
 
 		static AnsiString GetSafeLogFileName();
 		static AnsiString GetUserDirectory();
+		static AnsiString GetLocalSettingsDirectory();
 
 		static void GetFilesInDirectory(const AnsiString& path, const AnsiString& mask, AnsiStringList& files);
 		static generic_directory_ops* GetDirectoryAccessMethod(const AnsiString &path);
