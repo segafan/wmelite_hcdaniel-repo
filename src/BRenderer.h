@@ -55,7 +55,7 @@ public:
 	virtual HRESULT WindowedBlt();	
 	virtual HRESULT Fill(BYTE r, BYTE g, BYTE b, RECT* rect=NULL);
 	virtual void OnWindowChange();
-	virtual HRESULT InitRenderer(int width, int height, bool windowed);
+	virtual HRESULT InitRenderer(int width, int height, bool windowed, float upScalingRatioStepping, float downScalingRatioStepping);
 	virtual HRESULT Flip();
 	virtual void InitLoop();
 	virtual HRESULT SwitchFullscreen();

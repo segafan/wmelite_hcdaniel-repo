@@ -24,6 +24,8 @@ void android_getGameFilePath(char *buffer, int length);
 
 void android_getFontPath(char *buffer, int length);
 
+void android_getLocalSettingsPath(char *buffer, int length);
+
 void android_getEncodedString(char *inputString, char *encoding, char *buffer, int *length);
 
 void android_getUTFString(char *inputString, char *encoding, char *buffer, int *length);

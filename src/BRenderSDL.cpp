@@ -49,7 +49,7 @@ CBRenderSDL::~CBRenderSDL()
 }
 
 //////////////////////////////////////////////////////////////////////////
-HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed)
+HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float upScalingRatioStepping, float downScalingRatioStepping)
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) return E_FAIL;
 	
@@ -106,6 +106,17 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed)
 		ratio = (float)m_RealWidth / (float)m_Width;
 	}
 
+	Game->LOG(0, "Ratio before stepping application: %.02f", ratio);
+
+	if (ratio > 1.0) {
+		ratio = GetAlignedUpscalingRatio(ratio, upScalingRatioStepping);
+	}
+	if (ratio < 1.0) {
+		ratio = GetAlignedDownscalingRatio(ratio, downScalingRatioStepping);
+	}
+
+	Game->LOG(0, "Ratio after stepping application: %.02f", ratio);
+
 	m_BorderLeft = (m_RealWidth - (m_Width * ratio)) / 2;
 	m_BorderRight = m_RealWidth - (m_Width * ratio) - m_BorderLeft;
 
@@ -151,7 +162,12 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed)
 	// SDL defaults to OGL ES2, which doesn't work on old devices
 	SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengles");
 #else
-	//SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
+
+#ifdef __ANDROID__
+	// lets assume almost every active device has OpenGL ES2 now...
+	// SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengles");
+#endif
+
 #endif
 
 	m_Renderer = SDL_CreateRenderer(m_Win, -1, 0);
@@ -436,3 +452,46 @@ void CBRenderSDL::DumpData(char* Filename)
 	Game->LOG(0, "Texture Stats Dump completed.");
 	Game->QuickMessage("Texture Stats Dump completed.");
 }
+
+//////////////////////////////////////////////////////////////////////////
+float CBRenderSDL::GetAlignedUpscalingRatio(float ratio, float stepping)
+{
+	float newRatio = 1.0;
+
+	// sort out unreasonable values
+	if (stepping < 0.001)
+	{
+		return ratio;
+	}
+
+	while ((newRatio + stepping) < ratio)
+	{
+		// only increase newRatio until it is at most equal to the old one
+		if ((newRatio + stepping) <= ratio)
+		{
+			newRatio += stepping;
+		}
+	}
+
+	return newRatio;
+}
+
+//////////////////////////////////////////////////////////////////////////
+float CBRenderSDL::GetAlignedDownscalingRatio(float ratio, float stepping)
+{
+	float newRatio = 1.0;
+
+	// sort out unreasonable values
+	if (stepping < 0.001)
+	{
+		return ratio;
+	}
+
+	while ((newRatio - stepping) > ratio)
+	{
+		// decrease until newRatio is equal or lower than ratio
+		newRatio -= stepping;
+	}
+	return newRatio;
+}
+

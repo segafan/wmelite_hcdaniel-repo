@@ -30,7 +30,6 @@ THE SOFTWARE.
 #include "StringUtil.h"
 #include "tinyxml.h"
 
-
 //////////////////////////////////////////////////////////////////////////
 CBRegistry::CBRegistry(CBGame* inGame):CBBase(inGame)
 {
@@ -144,7 +143,10 @@ char* CBRegistry::GetIniName()
 //////////////////////////////////////////////////////////////////////////
 void CBRegistry::LoadValues(bool local)
 {
-	if (local) LoadXml("settings.xml", m_LocalValues);
+	// that one is read only, so it could be in the .apk on Android
+	if (local) LoadXml(PathUtil::Combine(PathUtil::GetLocalSettingsDirectory(), "settings.xml"), m_LocalValues);
+
+	// that's the one that must be r/w
 	else LoadXml(PathUtil::Combine(Game->GetDataDir(), "settings.xml"), m_Values);
 }
 

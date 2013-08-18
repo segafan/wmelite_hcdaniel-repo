@@ -91,13 +91,6 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 
 	if(Game->m_Registry->ReadBool("Debug", "DebugMode")) Game->DEBUG_DebugEnable("./wme.log");
 
-#ifdef __ANDROID__
-
-	// debug mode can be forced here until the mechanism with the settings file works
-	Game->DEBUG_DebugEnable("/mnt/sdcard/wme.log");
-
-#endif
-
 	Game->m_DEBUG_ShowFPS = Game->m_Registry->ReadBool("Debug", "ShowFPS");
 
 	if(Game->m_Registry->ReadBool("Debug", "DisableSmartCache"))
@@ -128,12 +121,16 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 	Game->GetDebugMgr()->OnGameInit();
 	Game->m_ScEngine->LoadBreakpoints();
 
+	// read values for up- and downscale stepping from registry
+	float upScalingStepping = (float) (((float) Game->m_Registry->ReadInt("Scaling", "UpScalingStepping", 0)) / 100.0);
+	float downScalingStepping = (float) (((float) Game->m_Registry->ReadInt("Scaling", "DownScalingStepping", 0)) / 100.0);
 
+	Game->LOG(0, "Scaling steppings found up=%.02f down=%.02f.", upScalingStepping, downScalingStepping);
 
 	HRESULT ret;
 
 	// initialize the renderer
-	ret = Game->m_Renderer->InitRenderer(Game->m_SettingsResWidth, Game->m_SettingsResHeight, windowedMode);
+	ret = Game->m_Renderer->InitRenderer(Game->m_SettingsResWidth, Game->m_SettingsResHeight, windowedMode, upScalingStepping, downScalingStepping);
 	if (FAILED(ret))
 	{
 		Game->LOG(ret, "Error initializing renderer. Exiting.");
