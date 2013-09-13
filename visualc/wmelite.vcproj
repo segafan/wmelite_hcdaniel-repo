@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="dep\sdl\include;dep\zlib\include;dep\bass\include;dep\freetype\include;dep\FreeImage\include;dep\libtheoraplayer\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -92,7 +92,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="@copy dep\bass\lib\*.dll $(TargetDir) &gt; nul&#x0D;&#x0A;@copy dep\sdl\lib\*.dll $(TargetDir) &gt; nul&#x0D;&#x0A;@copy dep\FreeImage\lib\*.dll $(TargetDir) &gt; nul&#x0D;&#x0A;@copy dep\libtheoraplayer\lib\*.dll $(TargetDir) &gt; nul&#x0D;&#x0A;"
+				CommandLine="@copy dep\bass\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;@copy dep\sdl\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;@copy dep\FreeImage\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;@copy dep\libtheoraplayer\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -123,7 +123,7 @@
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="dep\sdl\include;dep\zlib\include;dep\bass\include;dep\freetype\include;dep\FreeImage\include;dep\libtheoraplayer\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;THEORAVIDEO_STATIC"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;THEORAVIDEO_STATIC"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -174,7 +174,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="@copy dep\bass\lib\*.dll $(TargetDir) &gt; nul&#x0D;&#x0A;@copy dep\sdl\lib\*.dll $(TargetDir) &gt; nul&#x0D;&#x0A;@copy dep\FreeImage\lib\*.dll $(TargetDir) &gt; nul&#x0D;&#x0A;@copy dep\libtheoraplayer\lib\*.dll $(TargetDir) &gt; nul&#x0D;&#x0A;"
+				CommandLine="@copy dep\bass\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;@copy dep\sdl\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;@copy dep\FreeImage\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;@copy dep\libtheoraplayer\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
