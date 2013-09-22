@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdarg.h>
 
 #include "SDL.h"
 
@@ -28,8 +29,11 @@ static int        file_exists_plain(const char *name);
 static FILEHANDLE file_open_plain(const char *name, const char *mode);
 static long       file_read_plain(char *buffer, long size, FILEHANDLE handle);
 static long       file_write_plain(const char *buffer, long size, FILEHANDLE handle);
+static long       file_print_plain(FILEHANDLE handle, const char *format, ...);
+static int        file_putc_plain(int character, FILEHANDLE handle);
 static int        file_seek_plain(FILEHANDLE handle, long offset, int whence);
 static long       file_tell_plain(FILEHANDLE handle);
+static int        file_error_plain(FILEHANDLE handle);
 static int        file_close_plain(FILEHANDLE handle);
 
 #ifdef __ANDROID__
@@ -40,8 +44,11 @@ static int        file_exists_android_asset(const char *name);
 static FILEHANDLE file_open_android_asset(const char *name, const char *mode);
 static long       file_read_android_asset(char *buffer, long size, FILEHANDLE handle);
 static long       file_write_android_asset(const char *buffer, long size, FILEHANDLE handle);
+static long       file_print_android_asset(FILEHANDLE handle, const char *format, ...);
+static int        file_putc_android_asset(int character, FILEHANDLE handle);
 static int        file_seek_android_asset(FILEHANDLE handle, long offset, int whence);
 static long       file_tell_android_asset(FILEHANDLE handle);
+static int        file_error_android_asset(FILEHANDLE handle);
 static int        file_close_android_asset(FILEHANDLE handle);
 
 #endif
@@ -53,8 +60,11 @@ generic_file_ops file_ops_plain =
 	file_open_plain,
 	file_read_plain,
 	file_write_plain,
+	file_print_plain,
+	file_putc_plain,
 	file_seek_plain,
 	file_tell_plain,
+	file_error_plain,
 	file_close_plain
 };
 
@@ -66,8 +76,11 @@ generic_file_ops file_ops_android_asset =
 	.file_open   = file_open_android_asset,
 	.file_read   = file_read_android_asset,
 	.file_write  = file_write_android_asset,
+	.file_print  = file_print_android_asset,
+	.file_putc   = file_putc_android_asset,
 	.file_seek   = file_seek_android_asset,
 	.file_tell   = file_tell_android_asset,
+	.file_error  = file_error_android_asset,
 	.file_close  = file_close_android_asset
 };
 
@@ -120,6 +133,22 @@ static long       file_write_plain(const char *buffer, long size, FILEHANDLE han
 	return fwrite(buffer, 1, size, (FILE*) handle);
 }
 
+static long       file_print_plain(FILEHANDLE handle, const char *format, ...)
+{
+	int retval;
+	va_list arglist;
+	va_start( arglist, format );
+	retval = vfprintf((FILE*) handle, format, arglist);
+	va_end(arglist);
+
+	return retval;
+}
+
+static int        file_putc_plain(int character, FILEHANDLE handle)
+{
+	return fputc(character, (FILE*) handle);
+}
+
 static int        file_seek_plain(FILEHANDLE handle, long offset, int whence)
 {
 	return fseek((FILE*) handle, offset, whence);
@@ -128,6 +157,11 @@ static int        file_seek_plain(FILEHANDLE handle, long offset, int whence)
 static long       file_tell_plain(FILEHANDLE handle)
 {
 	return ftell((FILE*) handle);
+}
+
+static int        file_error_plain(FILEHANDLE handle)
+{
+	return ferror((FILE*) handle);
 }
 
 static int        file_close_plain(FILEHANDLE handle)
@@ -214,6 +248,18 @@ static long       file_write_android_asset(const char *buffer, long size, FILEHA
     return 0;
 }
 
+static long       file_print_android_asset(FILEHANDLE handle, const char *format, ...)
+{
+    // writing is not possible
+    return 0;
+}
+
+static int        file_putc_android_asset(int character, FILEHANDLE handle)
+{
+    // writing is not possible
+    return 0;
+}
+
 static int        file_seek_android_asset(FILEHANDLE handle, long offset, int whence)
 {
     int retval = AAsset_seek((AAsset *) handle, offset, whence);
@@ -245,6 +291,11 @@ static long       file_tell_android_asset(FILEHANDLE handle)
 	*/
 
 	return retval;
+}
+
+static int        file_error_android_asset(FILEHANDLE handle)
+{
+	return 0;
 }
 
 static int        file_close_android_asset(FILEHANDLE handle)
