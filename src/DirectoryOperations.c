@@ -37,6 +37,11 @@ static char     *dir_find_android_asset(DIRHANDLE handle);
 static int        dir_close_android_asset(DIRHANDLE handle);
 static char     *dir_get_package_extension_android_asset(void);
 
+static DIRHANDLE  dir_open_android_obb_plain(const char *path);
+static char     *dir_find_android_obb_plain(DIRHANDLE handle);
+static int        dir_close_android_obb_plain(DIRHANDLE handle);
+static char     *dir_get_package_extension_android_obb_plain(void);
+
 #endif
 
 generic_directory_ops directory_ops_plain =
@@ -51,10 +56,18 @@ generic_directory_ops directory_ops_plain =
 
 generic_directory_ops directory_ops_android_asset =
 {
-	.dir_open                  = dir_open_android_asset,
-	.dir_find                  = dir_find_android_asset,
-	.dir_close                 = dir_close_android_asset,
-	.dir_get_package_extension = dir_get_package_extension_android_asset
+  .dir_open                  = dir_open_android_asset,
+  .dir_find                  = dir_find_android_asset,
+  .dir_close                 = dir_close_android_asset,
+  .dir_get_package_extension = dir_get_package_extension_android_asset
+};
+
+generic_directory_ops directory_ops_android_obb_plain =
+{
+  .dir_open                  = dir_open_android_obb_plain,
+  .dir_find                  = dir_find_android_obb_plain,
+  .dir_close                 = dir_close_android_obb_plain,
+  .dir_get_package_extension = dir_get_package_extension_android_obb_plain
 };
 
 #endif
@@ -68,17 +81,22 @@ generic_directory_ops *get_directory_operations(dir_access_variant access_varian
 #endif
 	return &directory_ops_plain;
   }
-  
+
 #ifdef __ANDROID__
 
   if (access_variant == DIR_ACCESS_VARIANT_ANDROID_ASSET)
   {
-		__android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "DirectoryOperations: Requested ANDROID ASSET access.");
+    __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "DirectoryOperations: Requested ANDROID ASSET access.");
     return &directory_ops_android_asset;
   }
-  
+  if (access_variant == DIR_ACCESS_VARIANT_ANDROID_OBB_PLAIN)
+  {
+    __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "DirectoryOperations: Requested OBB PLAIN access.");
+    return &directory_ops_android_obb_plain;
+  }
+
 #endif
-  
+
   return NULL;
 }
 
@@ -162,6 +180,43 @@ static char     *dir_get_package_extension_android_asset(void)
 {
 	// choose an extension that will not be compressed by android build tools
     return "png";
+}
+
+static DIRHANDLE  dir_open_android_obb_plain(const char *path)
+{
+  // skip the "obbplain://" prefix and remove a possible trailing slash
+  int len = strlen(path);
+  strcpy(buffer, path + 11);
+  len = len - 11;
+  if ((buffer[len - 1] == '/') || (buffer[len - 1] == '\\'))
+  {
+    buffer[len - 1] = 0;
+  }
+  DIRHANDLE handle = (DIRHANDLE) opendir(path);
+  __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "OOBPlainDir: Request to open obb dir at path: %s success=%s", path, (handle == NULL) ? "FALSE" : "TRUE");
+  return handle;
+}
+
+static char     *dir_find_android_obb_plain(DIRHANDLE handle)
+{
+  struct dirent* ent = readdir((DIR*) handle);
+  __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "OOBPlainDir: next filename=%s", (ent == NULL) ? "NULL" : ent->d_name);
+  if (ent != NULL) {
+    return ent->d_name;
+  }
+  return NULL;
+}
+
+static int        dir_close_android_obb_plain(DIRHANDLE handle)
+{
+  __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "OOBPlainDir: close handle");
+  return closedir((DIR*) handle);
+}
+
+static char     *dir_get_package_extension_android_obb_plain(void)
+{
+  // android renames files distributed as OBB
+    return "obb";
 }
 
 #endif

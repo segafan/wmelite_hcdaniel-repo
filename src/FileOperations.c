@@ -51,6 +51,17 @@ static long       file_tell_android_asset(FILEHANDLE handle);
 static int        file_error_android_asset(FILEHANDLE handle);
 static int        file_close_android_asset(FILEHANDLE handle);
 
+static int        file_exists_android_obb_plain(const char *name);
+static FILEHANDLE file_open_android_obb_plain(const char *name, const char *mode);
+static long       file_read_android_obb_plain(char *buffer, long size, FILEHANDLE handle);
+static long       file_write_android_obb_plain(const char *buffer, long size, FILEHANDLE handle);
+static long       file_print_android_obb_plain(FILEHANDLE handle, const char *format, ...);
+static int        file_putc_android_obb_plain(int character, FILEHANDLE handle);
+static int        file_seek_android_obb_plain(FILEHANDLE handle, long offset, int whence);
+static long       file_tell_android_obb_plain(FILEHANDLE handle);
+static int        file_error_android_obb_plain(FILEHANDLE handle);
+static int        file_close_android_obb_plain(FILEHANDLE handle);
+
 #endif
 
 
@@ -72,16 +83,30 @@ generic_file_ops file_ops_plain =
 
 generic_file_ops file_ops_android_asset =
 {
-	.file_exists = file_exists_android_asset,
-	.file_open   = file_open_android_asset,
-	.file_read   = file_read_android_asset,
-	.file_write  = file_write_android_asset,
-	.file_print  = file_print_android_asset,
-	.file_putc   = file_putc_android_asset,
-	.file_seek   = file_seek_android_asset,
-	.file_tell   = file_tell_android_asset,
-	.file_error  = file_error_android_asset,
-	.file_close  = file_close_android_asset
+  .file_exists = file_exists_android_asset,
+  .file_open   = file_open_android_asset,
+  .file_read   = file_read_android_asset,
+  .file_write  = file_write_android_asset,
+  .file_print  = file_print_android_asset,
+  .file_putc   = file_putc_android_asset,
+  .file_seek   = file_seek_android_asset,
+  .file_tell   = file_tell_android_asset,
+  .file_error  = file_error_android_asset,
+  .file_close  = file_close_android_asset
+};
+
+generic_file_ops file_ops_android_obb_plain =
+{
+  .file_exists = file_exists_android_obb_plain,
+  .file_open   = file_open_android_obb_plain,
+  .file_read   = file_read_android_obb_plain,
+  .file_write  = file_write_android_obb_plain,
+  .file_print  = file_print_android_obb_plain,
+  .file_putc   = file_putc_android_obb_plain,
+  .file_seek   = file_seek_android_obb_plain,
+  .file_tell   = file_tell_android_obb_plain,
+  .file_error  = file_error_android_obb_plain,
+  .file_close  = file_close_android_obb_plain
 };
 
 #endif
@@ -95,15 +120,20 @@ generic_file_ops *get_file_operations(file_access_variant access_variant)
 #endif
     return &file_ops_plain;
   }
-  
+
 #ifdef __ANDROID__
 
   if (access_variant == FILE_ACCESS_VARIANT_ANDROID_ASSET)
   {
-		// __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "FileOperations: Requested ANDROID ASSET access.");
+    // __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "FileOperations: Requested ANDROID ASSET access.");
     return &file_ops_android_asset;
   }
-  
+  if (access_variant == FILE_ACCESS_VARIANT_ANDROID_OBB_PLAIN)
+  {
+    // __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "FileOperations: Requested OBB PLAIN access.");
+    return &file_ops_android_obb_plain;
+  }
+
 #endif
 
   return NULL;
@@ -203,9 +233,9 @@ static int        file_exists_android_asset(const char *name)
     else
     {
     	// __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "AssetFile: Request to open asset at path: %s OK", buffer);
-        AAsset_close(asset);   
+        AAsset_close(asset);
     }
-    
+
     return retval;
 }
 
@@ -304,6 +334,97 @@ static int        file_close_android_asset(FILEHANDLE handle)
     return 0;
 }
 
+static int        file_exists_android_obb_plain(const char *name)
+{
+  // skip the "obbplain://" prefix and remove a possible trailing slash
+  int i;
+  int len = strlen(name);
+  strcpy(buffer, name + 11);
+  len = len - 11;
+  if ((buffer[len - 1] == '/') || (buffer[len - 1] == '\\'))
+  {
+    buffer[len - 1] = 0;
+  }
+  for (i = 0; i < len; i++)
+  {
+    if (buffer[i] == '\\')
+    {
+      buffer[i] = '/';
+    }
+  }
+
+  return access(buffer, R_OK);
+}
+
+static FILEHANDLE file_open_android_obb_plain(const char *name, const char *mode)
+{
+  // skip the "obbplain://" prefix and remove a possible trailing slash
+  int i;
+  int len = strlen(name);
+  strcpy(buffer, name + 11);
+  len = len - 11;
+  if ((buffer[len - 1] == '/') || (buffer[len - 1] == '\\'))
+  {
+    buffer[len - 1] = 0;
+  }
+  for (i = 0; i < len; i++)
+  {
+    if (buffer[i] == '\\')
+    {
+      buffer[i] = '/';
+    }
+  }
+
+  // do not open the file for writing or appending, only reading is good
+  if ((mode[0] != 'r') && (mode[0] != 'R'))
+  {
+    return NULL;
+  }
+
+  return (FILEHANDLE) fopen(buffer, mode);
+}
+
+static long       file_read_android_obb_plain(char *buffer, long size, FILEHANDLE handle)
+{
+  return fread(buffer, 1, size, (FILE*) handle);
+}
+
+static long       file_write_android_obb_plain(const char *buffer, long size, FILEHANDLE handle)
+{
+  // OBB files shall never be written to
+  return 0;
+}
+
+static long       file_print_android_obb_plain(FILEHANDLE handle, const char *format, ...)
+{
+  // OBB files shall never be written to
+  return 0;
+}
+
+static int        file_putc_android_obb_plain(int character, FILEHANDLE handle)
+{
+  // OBB files shall never be written to
+  return 0;
+}
+
+static int        file_seek_android_obb_plain(FILEHANDLE handle, long offset, int whence)
+{
+  return fseek((FILE*) handle, offset, whence);
+}
+
+static long       file_tell_android_obb_plain(FILEHANDLE handle)
+{
+  return ftell((FILE*) handle);
+}
+
+static int        file_error_android_obb_plain(FILEHANDLE handle)
+{
+  return ferror((FILE*) handle);
+}
+
+static int        file_close_android_obb_plain(FILEHANDLE handle)
+{
+  return fclose((FILE*) handle);
+}
+
 #endif
-
-
