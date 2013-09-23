@@ -18,7 +18,9 @@ typedef void* DIRHANDLE;
 typedef enum dir_access_variant_t
 {
 	DIR_ACCESS_VARIANT_PLAIN             = 0,
-	DIR_ACCESS_VARIANT_ANDROID_ASSET     = 1
+	DIR_ACCESS_VARIANT_ANDROID_ASSET     = 1,
+	DIR_ACCESS_VARIANT_ANDROID_OBB_PLAIN = 2,
+	DIR_ACCESS_VARIANT_ANDROID_OBB_MOUNT = 3
 } dir_access_variant;
 
 typedef struct generic_directory_ops_t
