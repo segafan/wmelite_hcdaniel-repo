@@ -56,9 +56,9 @@ IMPLEMENT_PERSISTENT(CBGame, true);
 
 //////////////////////////////////////////////////////////////////////
 CBGame::CBGame():CBObject(this)
-{	
+{
 	m_ShuttingDown = false;
-	
+
 	m_State = GAME_RUNNING;
 	m_OrigState = GAME_RUNNING;
 	m_FreezeLevel = 0;
@@ -78,7 +78,7 @@ CBGame::CBGame():CBObject(this)
 	m_DebugMgr = NULL;
 	m_ScEngine = NULL;
 	m_KeyboardState = NULL;
-	
+
 	m_MathClass = NULL;
 
 	m_DEBUG_LogFile = NULL;
@@ -104,11 +104,11 @@ CBGame::CBGame():CBObject(this)
 	m_Subtitles = true;
 	m_VideoSubtitles = true;
 
-	m_Timer = 0;	
+	m_Timer = 0;
 	m_TimerDelta = 0;
 	m_TimerLast = 0;
 
-	m_LiveTimer = 0;	
+	m_LiveTimer = 0;
 	m_LiveTimerDelta = 0;
 	m_LiveTimerLast = 0;
 
@@ -124,7 +124,7 @@ CBGame::CBGame():CBObject(this)
 	m_CursorNoninteractive = NULL;
 
 	m_UseD3D = false;
-	
+
 	srand((unsigned)time(NULL));
 
 	m_Registry = new CBRegistry(this);
@@ -165,7 +165,7 @@ CBGame::CBGame():CBObject(this)
 	m_DoNotExpandStrings = false;
 
 	m_EngineLogCallback = NULL;
-	m_EngineLogCallbackData = NULL;	
+	m_EngineLogCallbackData = NULL;
 
 	m_SmartCache = false;
 	m_SurfaceGCCycleTime = 10000;
@@ -206,7 +206,7 @@ CBGame::CBGame():CBObject(this)
 
 	m_SaveImageX = m_SaveImageY = 0;
 	m_LoadImageX = m_LoadImageY = 0;
-	
+
 	m_LocalSaveDir = NULL;
 	CBUtils::SetString(&m_LocalSaveDir, "saves");
 	m_SaveDirChecked = false;
@@ -263,28 +263,28 @@ CBGame::CBGame():CBObject(this)
 
 //////////////////////////////////////////////////////////////////////
 CBGame::~CBGame()
-{	
+{
 	m_ShuttingDown = true;
 
 	LOG(0, "");
 	LOG(0, "Shutting down...");
-	
+
 	GetDebugMgr()->OnGameShutdown();
 
-	m_Registry->WriteBool("System", "LastRun", true);	
+	m_Registry->WriteBool("System", "LastRun", true);
 
 	Cleanup();
 
 	SAFE_DELETE_ARRAY(m_LocalSaveDir);
 	SAFE_DELETE_ARRAY(m_SettingsGameFile);
 	SAFE_DELETE_ARRAY(m_SavedGameExt);
-	
+
 	SAFE_DELETE(m_CachedThumbnail);
-	
+
 	SAFE_DELETE(m_SaveLoadImage);
 	SAFE_DELETE(m_MathClass);
-	
-	SAFE_DELETE(m_TransMgr);	
+
+	SAFE_DELETE(m_TransMgr);
 	SAFE_DELETE(m_ScEngine);
 	SAFE_DELETE(m_FontStorage);
 	SAFE_DELETE(m_SurfaceStorage);
@@ -295,10 +295,10 @@ CBGame::~CBGame()
 	SAFE_DELETE(m_SoundMgr);
 	SAFE_DELETE(m_DebugMgr);
 	//SAFE_DELETE(m_KeyboardState);
-	
+
 	SAFE_DELETE(m_Renderer);
 	SAFE_DELETE(m_FileManager);
-	SAFE_DELETE(m_Registry);	
+	SAFE_DELETE(m_Registry);
 	SAFE_DELETE(m_StringTable);
 
 
@@ -315,7 +315,7 @@ HRESULT CBGame::Cleanup()
 	SAFE_DELETE(m_LoadingIcon);
 
 	m_EngineLogCallback = NULL;
-	m_EngineLogCallbackData = NULL;	
+	m_EngineLogCallbackData = NULL;
 
 	for (i=0; i<NUM_MUSIC_CHANNELS; i++)
 	{
@@ -337,7 +337,7 @@ HRESULT CBGame::Cleanup()
 
 	m_Windows.RemoveAll(); // refs only
 	m_FocusedWindow = NULL; // ref only
-	
+
 	SAFE_DELETE_ARRAY(m_SaveImageName);
 	SAFE_DELETE_ARRAY(m_LoadImageName);
 
@@ -357,7 +357,7 @@ HRESULT CBGame::Cleanup()
 
 	m_FontStorage->RemoveFont(m_SystemFont);
 	m_SystemFont = NULL;
-	
+
 	m_FontStorage->RemoveFont(m_VideoFont);
 	m_VideoFont = NULL;
 
@@ -378,14 +378,14 @@ HRESULT CBGame::Cleanup()
 	m_LastCursor = NULL;
 
 	SAFE_DELETE(m_KeyboardState);
-	
+
 	return S_OK;
 }
 
 
 //////////////////////////////////////////////////////////////////////
 HRESULT CBGame::Initialize1()
-{	
+{
 	m_SurfaceStorage = new CBSurfaceStorage(this);
 	if(m_SurfaceStorage==NULL) goto init_fail;
 
@@ -449,7 +449,7 @@ init_fail:
 
 //////////////////////////////////////////////////////////////////////
 HRESULT CBGame::Initialize2() // we know whether we are going to be accelerated
-{	
+{
 	m_Renderer = new CBRenderSDL(this);
 	if(m_Renderer==NULL) goto init_fail;
 
@@ -463,7 +463,7 @@ init_fail:
 
 //////////////////////////////////////////////////////////////////////
 HRESULT CBGame::Initialize3() // renderer is initialized
-{	
+{
 	m_PosX = m_Renderer->m_Width / 2;
 	m_PosY = m_Renderer->m_Height / 2;
 
@@ -492,9 +492,9 @@ void CBGame::DEBUG_DebugEnable(const char* Filename)
 
 	if(m_DEBUG_LogFile!=NULL) fprintf(m_DEBUG_LogFile, "\n");
 #endif
-	
+
 	time_t timeNow;
-	time(&timeNow);		
+	time(&timeNow);
 	struct tm* tm = localtime(&timeNow);
 
 #ifdef _DEBUG
@@ -514,7 +514,7 @@ void CBGame::DEBUG_DebugEnable(const char* Filename)
 
 //////////////////////////////////////////////////////////////////////
 void CBGame::DEBUG_DebugDisable()
-{	
+{
 	if(m_DEBUG_LogFile != NULL)
 	{
 		LOG(0, "********** DEBUG LOG CLOSED ********************************************");
@@ -532,16 +532,16 @@ void CBGame::LOG(HRESULT res, LPCSTR fmt, ...)
 	if(!m_DEBUG_DebugMode) return;
 #endif
 	time_t timeNow;
-	time(&timeNow);		
+	time(&timeNow);
 	struct tm* tm = localtime(&timeNow);
 
 	char buff[512];
 	va_list va;
-	
+
 	va_start(va, fmt);
 	vsprintf(buff, fmt, va);
 	va_end(va);
-	
+
 #ifdef __IPHONEOS__
 	printf("%02d:%02d:%02d: %s\n", tm->tm_hour, tm->tm_min, tm->tm_sec, buff);
 	fflush(stdout);
@@ -581,9 +581,9 @@ void CBGame::SetEngineLogCallback(ENGINE_LOG_CALLBACK Callback, void *Data)
 HRESULT CBGame::InitLoop()
 {
 	m_ViewportSP = -1;
-	
+
 	m_CurrentTime = CBPlatform::GetTime();
-	
+
 	GetDebugMgr()->OnGameTick();
 	m_Renderer->InitLoop();
 #if !defined(__LINUX__) && !defined(__ANDROID__)
@@ -591,10 +591,10 @@ HRESULT CBGame::InitLoop()
 #endif
 	m_SoundMgr->InitLoop();
 	UpdateMusicCrossfade();
-	
+
 	m_SurfaceStorage->InitLoop();
 	m_FontStorage->InitLoop();
-	
+
 
 	//m_ActiveObject = NULL;
 
@@ -605,13 +605,13 @@ HRESULT CBGame::InitLoop()
 
 	m_LiveTimerDelta = m_LiveTimer - m_LiveTimerLast;
 	m_LiveTimerLast = m_LiveTimer;
-	m_LiveTimer += MIN(1000, m_DeltaTime);	
+	m_LiveTimer += MIN(1000, m_DeltaTime);
 
 	if(m_State!=GAME_FROZEN)
 	{
 		m_TimerDelta = m_Timer - m_TimerLast;
 		m_TimerLast = m_Timer;
-		m_Timer += MIN(1000, m_DeltaTime);	
+		m_Timer += MIN(1000, m_DeltaTime);
 	}
 	else m_TimerDelta = 0;
 
@@ -625,7 +625,7 @@ HRESULT CBGame::InitLoop()
 	//Game->LOG(0, "%d", m_Fps);
 
 	GetMousePos(&m_MousePos);
-	
+
 	m_FocusedWindow = NULL;
 	for(int i=m_Windows.GetSize()-1; i>=0; i--)
 	{
@@ -637,7 +637,7 @@ HRESULT CBGame::InitLoop()
 	}
 
 	UpdateSounds();
-	
+
 	if(m_Fader) m_Fader->Update();
 
 	return S_OK;
@@ -783,7 +783,7 @@ HRESULT CBGame::LoadBuffer(BYTE * Buffer, bool Complete)
 		TOKEN_TABLE (LOCAL_SAVE_DIR)
 		TOKEN_TABLE (COMPAT_KILL_METHOD_THREADS)
 	TOKEN_TABLE_END
-	
+
 	BYTE* params;
 	int cmd;
 	CBParser parser(Game);
@@ -855,10 +855,10 @@ HRESULT CBGame::LoadBuffer(BYTE * Buffer, bool Complete)
 					cmd = PARSERR_GENERIC;
 				}
 			break;
-		
+
 			case TOKEN_SCRIPT:
 				AddScript((char*)params);
-			break;		
+			break;
 
 			case TOKEN_PERSONAL_SAVEGAMES:
 				parser.ScanStr((char*)params, "%b", &m_PersonalizedSave);
@@ -1032,7 +1032,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 		bool ClearOld;
 		if(Val->IsNULL()) ClearOld = true;
 		else ClearOld = Val->GetBool();
-		
+
 		if(FAILED(m_StringTable->LoadFile(Filename, ClearOld)))
 			Stack->PushBool(false);
 		else
@@ -1130,7 +1130,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 			Stack->CorrectParams(4);
 			Channel = Stack->Pop()->GetInt();
 		}
-		
+
 		char* Filename = Stack->Pop()->GetString();
 		CScValue* ValLooping = Stack->Pop();
 		bool Looping = ValLooping->IsNULL()?true:ValLooping->GetBool();
@@ -1157,7 +1157,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 			Stack->CorrectParams(1);
 			Channel = Stack->Pop()->GetInt();
 		}
-		
+
 		if(FAILED(StopMusic(Channel))) Stack->PushBool(false);
 		else Stack->PushBool(true);
 		return S_OK;
@@ -1176,7 +1176,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 			Stack->CorrectParams(1);
 			Channel = Stack->Pop()->GetInt();
 		}
-		
+
 		if(FAILED(PauseMusic(Channel))) Stack->PushBool(false);
 		else Stack->PushBool(true);
 		return S_OK;
@@ -1194,7 +1194,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 			Stack->CorrectParams(1);
 			Channel = Stack->Pop()->GetInt();
 		}
-		
+
 		if(FAILED(ResumeMusic(Channel))) Stack->PushBool(false);
 		else Stack->PushBool(true);
 		return S_OK;
@@ -1233,12 +1233,12 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 			Stack->CorrectParams(2);
 			Channel = Stack->Pop()->GetInt();
 		}
-		
+
 		DWORD Time = Stack->Pop()->GetInt();
-		
+
 		if(FAILED(SetMusicStartTime(Channel, Time))) Stack->PushBool(false);
 		else Stack->PushBool(true);
-		
+
 		return S_OK;
 	}
 
@@ -1359,7 +1359,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 
 		int Length = 0;
 		char* Filename = Stack->Pop()->GetString();
-		
+
 		CBSound* Sound = new CBSound(Game);
 		if(Sound && SUCCEEDED(Sound->SetSound(Filename, SOUND_MUSIC, true)))
 		{
@@ -1418,7 +1418,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 	{
 		Stack->CorrectParams(0);
 		Stack->PushBool(false);
-		
+
 		return S_OK;
 	}
 
@@ -1459,7 +1459,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 			else Stack->PushBool(false);
 		}
 		else Stack->PushBool(false);
-        
+
         if (!videoLoaded)
         {
             SAFE_DELETE(m_TheoraPlayer);
@@ -1474,7 +1474,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 	//////////////////////////////////////////////////////////////////////////
 	else if(strcmp(Name, "QuitGame")==0)
 	{
-		Stack->CorrectParams(0);		
+		Stack->CorrectParams(0);
 		Stack->PushNULL();
 		m_Quitting = true;
 		return S_OK;
@@ -1601,7 +1601,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 		Stack->PushNULL();
 		return S_OK;
 	}
-	
+
 	//////////////////////////////////////////////////////////////////////////
 	// SetGlobalSFXVolume
 	//////////////////////////////////////////////////////////////////////////
@@ -1761,7 +1761,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 		{
 			m_FileManager->CloseFile(File);
 			Stack->PushBool(true);
-		}		
+		}
 		return S_OK;
 	}
 
@@ -1781,7 +1781,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 
 		m_Fader->FadeOut(DRGBA(Red, Green, Blue, Alpha), Duration, System);
 		if(strcmp(Name, "FadeOutAsync")!=0 && strcmp(Name, "SystemFadeOutAsync")!=0) Script->WaitFor(m_Fader);
-				
+
 		Stack->PushNULL();
 		return S_OK;
 	}
@@ -1802,7 +1802,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 
 		m_Fader->FadeIn(DRGBA(Red, Green, Blue, Alpha), Duration, System);
 		if(strcmp(Name, "FadeInAsync")!=0 && strcmp(Name, "SystemFadeInAsync")!=0) Script->WaitFor(m_Fader);
-				
+
 		Stack->PushNULL();
 		return S_OK;
 	}
@@ -1845,7 +1845,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 			delete Image;
 		}
 		else ret = false;
-		
+
 		Stack->PushBool(ret);
 		return S_OK;
 	}
@@ -1881,7 +1881,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 	{
 		Stack->CorrectParams(1);
 		CScValue* Val = Stack->Pop();
-		
+
 		CUIWindow* Win = new CUIWindow(Game);
 		m_Windows.Add(Win);
 		RegisterObject(Win);
@@ -1905,7 +1905,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 				Stack->PushBool(true);
 				return S_OK;
 			}
-		}		
+		}
 		Stack->PushBool(false);
 		return S_OK;
 	}
@@ -1947,7 +1947,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 		CScValue* Val = Stack->Pop();
 		m_LoadImageX = Stack->Pop()->GetInt();
 		m_LoadImageY = Stack->Pop()->GetInt();
-		
+
 		if(Val->IsNULL()) SAFE_DELETE_ARRAY(m_LoadImageName);
 		else CBUtils::SetString(&m_LoadImageName, Val->GetString());
 
@@ -1990,7 +1990,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 	else if(strcmp(Name, "RemoveWaitCursor")==0)
 	{
 		Stack->CorrectParams(0);
-		SAFE_DELETE(m_CursorNoninteractive);		
+		SAFE_DELETE(m_CursorNoninteractive);
 		Stack->PushNULL();
 
 		return S_OK;
@@ -2025,7 +2025,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 	//////////////////////////////////////////////////////////////////////////
 	else if(strcmp(Name, "ClearScriptCache")==0)
 	{
-		Stack->CorrectParams(0);		
+		Stack->CorrectParams(0);
 		Stack->PushBool(SUCCEEDED(m_ScEngine->EmptyScriptCache()));
 		return S_OK;
 	}
@@ -2064,7 +2064,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 	//////////////////////////////////////////////////////////////////////////
 	else if(strcmp(Name, "HideLoadingIcon")==0)
 	{
-		Stack->CorrectParams(0);		
+		Stack->CorrectParams(0);
 		SAFE_DELETE(m_LoadingIcon);
 		Stack->PushNULL();
 		return S_OK;
@@ -2208,7 +2208,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 		IOS_ShowStatusLine(TRUE);
 #endif
 		Stack->PushNULL();
-		
+
 		return S_OK;
 	}
 
@@ -2222,10 +2222,26 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 		IOS_ShowStatusLine(FALSE);
 #endif
 		Stack->PushNULL();
-		
+
 		return S_OK;
 	}
-	
+
+  //////////////////////////////////////////////////////////////////////////
+  // ShowURLInBrowser
+  //////////////////////////////////////////////////////////////////////////
+  else if(strcmp(Name, "ShowURLInBrowser")==0)
+  {
+    Stack->CorrectParams(1);
+
+    char* URLToShow = Stack->Pop()->GetString();
+#ifdef __ANDROID__
+    android_showURLInBrowser(URLToShow);
+#endif
+    Stack->PushNULL();
+
+    return S_OK;
+  }
+
 	else return CBObject::ScCallMethod(Script, Stack, ThisStack, Name);
 }
 
@@ -2948,7 +2964,7 @@ void CBGame::QuickMessageForm(LPSTR fmt, ...)
 	va_start(va, fmt);
 	vsprintf(buff, fmt, va);
 	va_end(va);
-	
+
 	QuickMessage(buff);
 }
 
@@ -3028,7 +3044,7 @@ bool CBGame::ValidObject(CBObject *Object)
 {
 	if(!Object) return false;
 	if(Object==this) return true;
-	
+
 	for(int i=0; i<m_RegObjects.GetSize(); i++)
 	{
 		if(m_RegObjects[i] == Object) return true;
@@ -3168,7 +3184,7 @@ HRESULT CBGame::ExternalCall(CScScript* Script, CScStack* Stack, CScStack* ThisS
 	else if(strcmp(Name, "Sleep")==0)
 	{
 		Stack->CorrectParams(1);
-		
+
 		Script->Sleep((DWORD)Stack->Pop()->GetInt());
 		Stack->PushNULL();
 	}
@@ -3191,7 +3207,7 @@ HRESULT CBGame::ExternalCall(CScScript* Script, CScStack* Stack, CScStack* ThisS
 	else if(strcmp(Name, "Random")==0)
 	{
 		Stack->CorrectParams(2);
-		
+
 		int from = Stack->Pop()->GetInt();
 		int to   = Stack->Pop()->GetInt();
 
@@ -3204,7 +3220,7 @@ HRESULT CBGame::ExternalCall(CScScript* Script, CScStack* Stack, CScStack* ThisS
 	else if(strcmp(Name, "SetScriptTimeSlice")==0)
 	{
 		Stack->CorrectParams(1);
-		
+
 		Script->m_TimeSlice = (DWORD)Stack->Pop()->GetInt();
 		Stack->PushNULL();
 	}
@@ -3245,7 +3261,7 @@ HRESULT CBGame::ExternalCall(CScScript* Script, CScStack* Stack, CScStack* ThisS
 	else if(strcmp(Name, "GetRValue")==0)
 	{
 		Stack->CorrectParams(1);
-		
+
 		DWORD rgba = (DWORD)Stack->Pop()->GetInt();
 		Stack->PushInt(D3DCOLGetR(rgba));
 	}
@@ -3256,7 +3272,7 @@ HRESULT CBGame::ExternalCall(CScScript* Script, CScStack* Stack, CScStack* ThisS
 	else if(strcmp(Name, "GetGValue")==0)
 	{
 		Stack->CorrectParams(1);
-		
+
 		DWORD rgba = (DWORD)Stack->Pop()->GetInt();
 		Stack->PushInt(D3DCOLGetG(rgba));
 	}
@@ -3267,7 +3283,7 @@ HRESULT CBGame::ExternalCall(CScScript* Script, CScStack* Stack, CScStack* ThisS
 	else if(strcmp(Name, "GetBValue")==0)
 	{
 		Stack->CorrectParams(1);
-		
+
 		DWORD rgba = (DWORD)Stack->Pop()->GetInt();
 		Stack->PushInt(D3DCOLGetB(rgba));
 	}
@@ -3278,7 +3294,7 @@ HRESULT CBGame::ExternalCall(CScScript* Script, CScStack* Stack, CScStack* ThisS
 	else if(strcmp(Name, "GetAValue")==0)
 	{
 		Stack->CorrectParams(1);
-		
+
 		DWORD rgba = (DWORD)Stack->Pop()->GetInt();
 		Stack->PushInt(D3DCOLGetA(rgba));
 	}
@@ -3328,7 +3344,7 @@ HRESULT CBGame::ExternalCall(CScScript* Script, CScStack* Stack, CScStack* ThisS
 	else if(strcmp(Name, "Debug")==0)
 	{
 		Stack->CorrectParams(0);
-		
+
 		if(Game->GetDebugMgr()->m_Enabled)
 		{
 			Game->GetDebugMgr()->OnScriptHitBreakpoint(Script);
@@ -3426,7 +3442,7 @@ HRESULT CBGame::SaveGame(int slot, char* desc, bool quickSave)
 	Game->ApplyEvent("BeforeSave", true);
 
 	HRESULT ret;
-	
+
 	m_IndicatorDisplay = true;
 	m_IndicatorProgress = 0;
 	CBPersistMgr* pm = new CBPersistMgr(Game);
@@ -3489,7 +3505,7 @@ HRESULT CBGame::LoadGame(char* Filename)
 	if(m_LoadImageName)
 	{
 		m_SaveLoadImage = new CBSurfaceSDL(this);
-	
+
 		if(!m_SaveLoadImage || FAILED(m_SaveLoadImage->Create(m_LoadImageName, true, 0, 0, 0)))
 		{
 			SAFE_DELETE(m_SaveLoadImage);
@@ -3510,7 +3526,7 @@ HRESULT CBGame::LoadGame(char* Filename)
 
 	// data initialization after load
 	InitAfterLoad();
-	
+
 	Game->ApplyEvent("AfterLoad", true);
 
 	DisplayContent(true, false);
@@ -3613,7 +3629,7 @@ HRESULT CBGame::DisplayWindows(bool InGame)
 	// display all windows
 	for(i=0; i<m_Windows.GetSize(); i++)
 	{
-		if(m_Windows[i]->m_Visible && m_Windows[i]->m_InGame==InGame){		
+		if(m_Windows[i]->m_Visible && m_Windows[i]->m_InGame==InGame){
 
 			res = m_Windows[i]->Display();
 			if(FAILED(res)) return res;
@@ -3704,7 +3720,7 @@ HRESULT CBGame::ResumeMusic(int Channel)
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBGame::SetMusicStartTime(int Channel, DWORD Time)
 {
-	
+
 	if(Channel>=NUM_MUSIC_CHANNELS)
 	{
 		Game->LOG(0, "**Error** Attempting to use music channel %d (max num channels: %d)", Channel, NUM_MUSIC_CHANNELS);
@@ -3739,7 +3755,7 @@ HRESULT CBGame::LoadSettings(char *Filename)
 		TOKEN_TABLE (GUID)
 	TOKEN_TABLE_END
 
-	
+
 	BYTE* OrigBuffer = Game->m_FileManager->ReadWholeFile(Filename);
 	if(OrigBuffer==NULL)
 	{
@@ -3773,7 +3789,7 @@ HRESULT CBGame::LoadSettings(char *Filename)
 			case TOKEN_STRING_TABLE:
 				if(FAILED(m_StringTable->LoadFile((char*)params))) cmd = PARSERR_GENERIC;
 			break;
-			
+
 			case TOKEN_RESOLUTION:
 				parser.ScanStr((char*)params, "%d,%d", &m_SettingsResWidth, &m_SettingsResHeight);
 			break;
@@ -3813,7 +3829,7 @@ HRESULT CBGame::LoadSettings(char *Filename)
 			case TOKEN_REGISTRY_PATH:
 				m_Registry->SetBasePath((char*)params);
 			break;
-			
+
 			case TOKEN_RICH_SAVED_GAMES:
 				parser.ScanStr((char*)params, "%b", &m_RichSavedGames);
 			break;
@@ -3924,7 +3940,7 @@ HRESULT CBGame::Persist(CBPersistMgr *PersistMgr)
 	PersistMgr->Transfer(TMEMBER(m_SuspendedRendering));
 
 	PersistMgr->Transfer(TMEMBER(m_MouseLockRect));
-	
+
 	m_Windows.Persist(PersistMgr);
 
 	PersistMgr->Transfer(TMEMBER(m_SuppressScriptErrors));
@@ -3938,7 +3954,7 @@ HRESULT CBGame::Persist(CBPersistMgr *PersistMgr)
 		PersistMgr->Transfer(TMEMBER(m_Store));
 	else
 		m_Store = NULL;
-	
+
 	if (!PersistMgr->m_Saving) m_Quitting = false;
 
 	return S_OK;
@@ -4145,7 +4161,7 @@ void CBGame::SetWindowTitle()
 		if(Title[0]!='\0') strcat(Title, " - ");
 		strcat(Title, "WME Lite");
 
-		
+
 		Utf8String title;
 		if (m_TextEncoding == TEXT_UTF8)
 		{
@@ -4247,7 +4263,7 @@ HRESULT CBGame::SetActiveObject(CBObject *Obj)
 	}
 
 	if(Obj==m_ActiveObject) return S_OK;
-	
+
 	if(m_ActiveObject) m_ActiveObject->ApplyEvent("MouseLeave");
 	//if(ValidObject(m_ActiveObject)) m_ActiveObject->ApplyEvent("MouseLeave");
 	m_ActiveObject = Obj;
@@ -4360,7 +4376,7 @@ void CBGame::ResetMousePos()
 	POINT p;
 	p.x = m_MousePos.x + m_Renderer->m_DrawOffsetX;
 	p.y = m_MousePos.y + m_Renderer->m_DrawOffsetY;
-	
+
 	CBPlatform::SetCursorPos(p.x, p.y);
 }
 
@@ -4439,21 +4455,21 @@ HRESULT CBGame::UpdateMusicCrossfade()
 		m_MusicCrossfadeRunning = false;
 		//m_Music[m_MusicCrossfadeChannel2]->SetVolume(GlobMusicVol);
 		m_Music[m_MusicCrossfadeChannel2]->SetVolume(100);
-		
+
 		m_Music[m_MusicCrossfadeChannel1]->Stop();
 		//m_Music[m_MusicCrossfadeChannel1]->SetVolume(GlobMusicVol);
 		m_Music[m_MusicCrossfadeChannel1]->SetVolume(100);
-		
+
 
 		if(m_MusicCrossfadeSwap)
 		{
 			// swap channels
 			CBSound* Dummy = m_Music[m_MusicCrossfadeChannel1];
 			int DummyInt = m_MusicStartTime[m_MusicCrossfadeChannel1];
-			
+
 			m_Music[m_MusicCrossfadeChannel1] = m_Music[m_MusicCrossfadeChannel2];
 			m_MusicStartTime[m_MusicCrossfadeChannel1] = m_MusicStartTime[m_MusicCrossfadeChannel2];
-			
+
 			m_Music[m_MusicCrossfadeChannel2] = Dummy;
 			m_MusicStartTime[m_MusicCrossfadeChannel2] = DummyInt;
 		}
@@ -4614,7 +4630,7 @@ HRESULT CBGame::OnMouseLeftDown()
 	{
 		if(m_ActiveObject!=NULL)
 		{
-			m_ActiveObject->ApplyEvent("LeftClick");							
+			m_ActiveObject->ApplyEvent("LeftClick");
 		}
 	}
 
@@ -4648,7 +4664,7 @@ HRESULT CBGame::OnMouseLeftUp()
 }
 
 //////////////////////////////////////////////////////////////////////////
-HRESULT CBGame::OnMouseLeftDblClick() 
+HRESULT CBGame::OnMouseLeftDblClick()
 {
 	if(IsVideoPlaying()) return S_OK;
 
@@ -4706,7 +4722,7 @@ HRESULT CBGame::OnMouseRightDown()
 }
 
 //////////////////////////////////////////////////////////////////////////
-HRESULT CBGame::OnMouseRightUp() 
+HRESULT CBGame::OnMouseRightUp()
 {
 	if (IsVideoPlaying()) return S_OK;
 
@@ -4724,7 +4740,7 @@ HRESULT CBGame::OnMouseRightUp()
 }
 
 //////////////////////////////////////////////////////////////////////////
-HRESULT CBGame::OnMouseMiddleDown() 
+HRESULT CBGame::OnMouseMiddleDown()
 {
 	if (IsVideoPlaying()) return S_OK;
 
@@ -4744,7 +4760,7 @@ HRESULT CBGame::OnMouseMiddleDown()
 }
 
 //////////////////////////////////////////////////////////////////////////
-HRESULT CBGame::OnMouseMiddleUp() 
+HRESULT CBGame::OnMouseMiddleUp()
 {
 	if (IsVideoPlaying()) return S_OK;
 
@@ -4786,7 +4802,7 @@ HRESULT CBGame::OnWindowClose()
 }
 
 //////////////////////////////////////////////////////////////////////////
-HRESULT CBGame::DisplayDebugInfo() 
+HRESULT CBGame::DisplayDebugInfo()
 {
 	char str[100];
 
@@ -4956,7 +4972,7 @@ void CBGame::AutoSaveOnExit()
 {
 	m_SoundMgr->SaveSettings();
 	m_Registry->SaveValues();
-		
+
 	if (!m_AutoSaveOnExit) return;
 	if (m_State == GAME_FROZEN) return;
 
@@ -5006,10 +5022,10 @@ void CBGame::FileSystemTests()
 	b = CBPlatform::CreateDirectory("/tmp/whatever2");
 	b = CBPlatform::DirectoryExists("/tmp/whatever2/");
 	CBUtils::CreatePath("/tmp/whatever/whenever/whoever", true);
-    
+
 	AnsiStringList files;
 	PathUtil::GetFilesInDirectory("/tmp", "*.xml", files);
-    
+
 	char* path = CBUtils::GetPath("/tmp/index.xml");
 	delete [] path;
     #endif
