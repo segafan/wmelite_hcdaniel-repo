@@ -30,6 +30,8 @@ void android_getEncodedString(char *inputString, char *encoding, char *buffer, i
 
 void android_getUTFString(char *inputString, char *encoding, char *buffer, int *length);
 
+void android_showURLInBrowser(char *URL);
+
 #ifdef __cplusplus
 }
 #endif

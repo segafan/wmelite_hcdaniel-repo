@@ -5,8 +5,11 @@ import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
+
+import android.net.Uri;
 
 public class WMELiteFunctions {
 
@@ -121,5 +124,11 @@ public class WMELiteFunctions {
 		String res = new String(inputBytes, charset);
 		
 		return res;
+	}
+	
+	public void showURLInBrowser(String urlToShow)
+	{
+	  Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlToShow));
+	  c.startActivity(myIntent);
 	}
 }

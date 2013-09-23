@@ -321,3 +321,16 @@ void android_getUTFString(char *inputString, char *encoding, char *buffer, int *
 		(*env)->DeleteLocalRef(env, result);
 	}
 }
+
+void android_showURLInBrowser(char *URL)
+{
+  JNIEnv *env = localEnv;
+  jclass cls = (*env)->GetObjectClass(env, callbackObject);
+  jmethodID callbackID = (*env)->GetMethodID(env, cls, "showURLInBrowser", "(Ljava/lang/String;)V");
+
+  jstring urlString = (*env)->NewStringUTF(env,URL);
+
+  (*env)->CallVoidMethod(env, callbackObject, callbackID, urlString);
+
+  (*env)->DeleteLocalRef(env, urlString);
+}
