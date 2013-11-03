@@ -42,6 +42,7 @@ public:
 	HRESULT Close();
 	HRESULT Open();
 	char* m_Name;
+	char* m_InternalName;
 	int m_CD;
 	CBPackage(CBGame* inGame);
 	virtual ~CBPackage();
