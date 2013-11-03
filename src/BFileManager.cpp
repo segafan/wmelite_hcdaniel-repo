@@ -458,8 +458,18 @@ HRESULT CBFileManager::RegisterPackage(const AnsiString& path, const AnsiString&
 		// read package info
 		BYTE NameLength;
 		ops->file_read((char *) (&NameLength), sizeof(BYTE), f);
-		pkg->m_Name = new char[NameLength];
-		ops->file_read(pkg->m_Name, NameLength, f);
+		pkg->m_InternalName = new char[NameLength];
+		ops->file_read(pkg->m_InternalName, NameLength, f);
+		// the m_Name shall be filled with the real filename instead
+		// because that one can differ from the stored name
+		AnsiString fileNameWithoutExt = PathUtil::GetFileNameWithoutExtension(name);
+		pkg->m_Name = new char[fileNameWithoutExt.length() + 1];
+		pkg->m_Name[fileNameWithoutExt.length()] = 0;
+		strncpy((char *) (pkg->m_Name), fileNameWithoutExt.c_str(), fileNameWithoutExt.length());
+
+		Game->LOG(0, "Package internal name=%s", pkg->m_InternalName);
+		Game->LOG(0, "Package file name=%s", pkg->m_Name);
+
 		ops->file_read((char *) (&pkg->m_CD), sizeof(BYTE), f);
 		pkg->m_Priority = hdr.Priority;
 
@@ -574,6 +584,7 @@ FILEHANDLE CBFileManager::OpenPackage(char *Name, generic_file_ops **ops)
 	{
 		dir_ops = PathUtil::GetDirectoryAccessMethod(m_PackagePaths[i]);
 		sprintf(Filename, "%s%s.%s", m_PackagePaths[i], Name, dir_ops->dir_get_package_extension());
+		Game->LOG(0, "Package file name to open: %s", Filename);
 		*ops = PathUtil::GetFileAccessMethod(Filename);
 		ret = (*ops)->file_open(Filename, "rb");
 		if(ret!=NULL) return ret;

@@ -192,7 +192,7 @@ static DIRHANDLE  dir_open_android_obb_plain(const char *path)
   {
     buffer[len - 1] = 0;
   }
-  DIRHANDLE handle = (DIRHANDLE) opendir(path);
+  DIRHANDLE handle = (DIRHANDLE) opendir(buffer);
   __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "OOBPlainDir: Request to open obb dir at path: %s success=%s", path, (handle == NULL) ? "FALSE" : "TRUE");
   return handle;
 }

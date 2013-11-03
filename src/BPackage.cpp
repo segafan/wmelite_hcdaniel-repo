@@ -36,6 +36,7 @@ CBPackage::CBPackage(CBGame* inGame):CBBase(inGame)
 {
 	m_File = NULL;
 	m_Name = NULL;
+	m_InternalName = NULL;
 	m_CD = 0;
 	m_Priority = 0;
 	m_BoundToExe = false;
@@ -46,6 +47,7 @@ CBPackage::CBPackage(CBGame* inGame):CBBase(inGame)
 CBPackage::~CBPackage()
 {
 	if(m_Name) delete [] m_Name;
+	if(m_InternalName) delete [] m_InternalName;
 	CloseFilePointer(m_File);
 }
 
