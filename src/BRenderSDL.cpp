@@ -32,16 +32,19 @@ THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////
 CBRenderSDL::CBRenderSDL(CBGame* inGame) : CBRenderer(inGame)
 {
+	m_Texture = NULL;
 	m_Renderer = NULL;
 	m_Win = NULL;
 
 	m_BorderLeft = m_BorderRight = m_BorderTop = m_BorderBottom = 0;
 	m_RatioX = m_RatioY = 1.0f;
+	m_PixelPerfect = false;
 }
 
 //////////////////////////////////////////////////////////////////////////
 CBRenderSDL::~CBRenderSDL()
 {
+	if (m_Texture) SDL_DestroyTexture(m_Texture);
 	if (m_Renderer) SDL_DestroyRenderer(m_Renderer);
 	if (m_Win) SDL_DestroyWindow(m_Win);
 	
@@ -49,7 +52,7 @@ CBRenderSDL::~CBRenderSDL()
 }
 
 //////////////////////////////////////////////////////////////////////////
-HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float upScalingRatioStepping, float downScalingRatioStepping)
+HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float upScalingRatioStepping, float downScalingRatioStepping, bool pixelPerfectRendering)
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) return E_FAIL;
 	
@@ -64,6 +67,7 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 	m_RealWidth = width;
 	m_RealHeight = height;
 
+	m_PixelPerfect = pixelPerfectRendering;
 
 	// find suitable resolution
 #if defined(__IPHONEOS__) || defined(__ANDROID__)
@@ -173,6 +177,27 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 	m_Renderer = SDL_CreateRenderer(m_Win, -1, 0);
 	if (!m_Renderer) return E_FAIL;
 
+#ifdef __ANDROID__
+	if (m_PixelPerfect == true) {
+		m_Texture = SDL_CreateTexture(m_Renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, m_Width, m_Height);
+		if (!m_Texture) return E_FAIL;
+		SDL_SetTextureBlendMode(m_Texture, SDL_BLENDMODE_BLEND);
+		SDL_SetRenderTarget(m_Renderer, m_Texture);
+
+		m_PixelPerfectTargetRect.x = m_BorderLeft;
+		m_PixelPerfectTargetRect.y = m_BorderTop;
+		m_PixelPerfectTargetRect.w = m_RealWidth;
+		m_PixelPerfectTargetRect.h = m_RealHeight;
+
+		Game->AddMem(m_Width * m_Height * 4);
+
+		Game->LOG(0, "PixelPerfect rendering enabled!");
+	} else {
+		Game->LOG(0, "PixelPerfect rendering disabled!");
+	}
+
+#endif
+
 	m_Active = true;
 	
 
@@ -232,8 +257,16 @@ HRESULT CBRenderSDL::Flip()
     
 #endif
 
+	if (m_PixelPerfect == true) {
+		SDL_SetRenderTarget(m_Renderer, NULL);
+		SDL_RenderCopy(m_Renderer, m_Texture, NULL, &m_PixelPerfectTargetRect);
+	}
 
 	SDL_RenderPresent(m_Renderer);
+
+	if (m_PixelPerfect == true) {
+		SDL_SetRenderTarget(m_Renderer, m_Texture);
+	}
 
 	return S_OK;
 }
@@ -374,15 +407,29 @@ const char* CBRenderSDL::GetName()
 HRESULT CBRenderSDL::SetViewport(int left, int top, int right, int bottom)
 {
 	SDL_Rect rect;
-	rect.x = left + m_BorderLeft;
-	rect.y = top + m_BorderTop;
-	rect.w = (right - left) * m_RatioX;
-	rect.h = (bottom - top) * m_RatioY;
 	
-	// TODO fix this once viewports work correctly in SDL/landscape
+	if (m_PixelPerfect == false)
+	{
+		// original behaviour --> modify viewport rect
+		rect.x = left + m_BorderLeft;
+		rect.y = top + m_BorderTop;
+		rect.w = (right - left) * m_RatioX;
+		rect.h = (bottom - top) * m_RatioY;
+
+		// TODO fix this once viewports work correctly in SDL/landscape
 #ifndef __IPHONEOS__	
-	SDL_RenderSetViewport(GetSdlRenderer(), &rect);
+		SDL_RenderSetViewport(GetSdlRenderer(), &rect);
 #endif
+	}
+	else
+	{
+		// pixelperfect behaviour --> remember viewport for final onscreen drawing only
+		m_PixelPerfectTargetRect.x = left + m_BorderLeft;
+		m_PixelPerfectTargetRect.y = top + m_BorderTop;
+		m_PixelPerfectTargetRect.w = (right - left) * m_RatioX;
+		m_PixelPerfectTargetRect.h = (bottom - top) * m_RatioY;
+	}
+
 	return S_OK;
 }
 
@@ -390,19 +437,29 @@ HRESULT CBRenderSDL::SetViewport(int left, int top, int right, int bottom)
 void CBRenderSDL::ModTargetRect(SDL_Rect* rect)
 {
 	SDL_Rect viewportRect;
-	SDL_RenderGetViewport(GetSdlRenderer(), &viewportRect);
 
-	rect->x = MathUtil::Round(rect->x * m_RatioX + m_BorderLeft - viewportRect.x);
-	rect->y = MathUtil::Round(rect->y * m_RatioY + m_BorderTop - viewportRect.y);
-	rect->w = MathUtil::RoundUp(rect->w * m_RatioX);
-	rect->h = MathUtil::RoundUp(rect->h * m_RatioY);
+	if (m_PixelPerfect == false)
+	{
+		// only apply offsets/scaling if pixelperfect rendering is off
+		SDL_RenderGetViewport(GetSdlRenderer(), &viewportRect);
+
+		rect->x = MathUtil::Round(rect->x * m_RatioX + m_BorderLeft - viewportRect.x);
+		rect->y = MathUtil::Round(rect->y * m_RatioY + m_BorderTop - viewportRect.y);
+		rect->w = MathUtil::RoundUp(rect->w * m_RatioX);
+		rect->h = MathUtil::RoundUp(rect->h * m_RatioY);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
 void CBRenderSDL::ModOrigin(SDL_Point* origin)
 {
-	origin->x *= m_RatioX;
-	origin->y *= m_RatioY;
+	// FIXME I don't know if this is correct...
+	if (m_PixelPerfect == false)
+	{
+		// only apply scaling if no pixelperfect rendering is requested
+		origin->x *= m_RatioX;
+		origin->y *= m_RatioY;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
