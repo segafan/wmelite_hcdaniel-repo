@@ -62,6 +62,8 @@ public:
 	virtual HRESULT Setup2D(bool Force=false);
 	virtual HRESULT SetupLines();
 
+	virtual HRESULT SendRenderingHintSceneComplete() { return S_OK; };
+
 	virtual const char* GetName(){ return ""; };
 	virtual HRESULT DisplayDebugInfo() { return E_FAIL; };
 	virtual HRESULT DrawShaderQuad() { return E_FAIL; }
