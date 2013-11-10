@@ -191,8 +191,12 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 
 		Game->AddMem(m_Width * m_Height * 4);
 
+		m_RenderOffscreen = true;
+
 		Game->LOG(0, "PixelPerfect rendering enabled!");
 	} else {
+		m_RenderOffscreen = false;
+
 		Game->LOG(0, "PixelPerfect rendering disabled!");
 	}
 
@@ -200,6 +204,21 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 
 	m_Active = true;
 	
+
+	return S_OK;
+}
+
+/////////////////////////////////////////////////////
+HRESULT CBRenderSDL::SendRenderingHintSceneComplete()
+{
+	SDL_SetRenderTarget(m_Renderer, NULL);
+	SDL_RenderCopy(m_Renderer, m_Texture, NULL, &m_PixelPerfectTargetRect);
+
+#ifndef __IPHONEOS__
+	SDL_RenderSetViewport(GetSdlRenderer(), &m_PixelPerfectTargetRect);
+#endif
+
+	m_RenderOffscreen = false;
 
 	return S_OK;
 }
@@ -257,7 +276,8 @@ HRESULT CBRenderSDL::Flip()
     
 #endif
 
-	if (m_PixelPerfect == true) {
+	// if not already done, draw the offscreen image onto the final screen
+	if ((m_PixelPerfect == true) && (m_RenderOffscreen == true)) {
 		SDL_SetRenderTarget(m_Renderer, NULL);
 		SDL_RenderCopy(m_Renderer, m_Texture, NULL, &m_PixelPerfectTargetRect);
 	}
@@ -266,6 +286,7 @@ HRESULT CBRenderSDL::Flip()
 
 	if (m_PixelPerfect == true) {
 		SDL_SetRenderTarget(m_Renderer, m_Texture);
+		m_RenderOffscreen = true;
 	}
 
 	return S_OK;
@@ -408,7 +429,7 @@ HRESULT CBRenderSDL::SetViewport(int left, int top, int right, int bottom)
 {
 	SDL_Rect rect;
 	
-	if (m_PixelPerfect == false)
+	if (m_RenderOffscreen == false)
 	{
 		// original behaviour --> modify viewport rect
 		rect.x = left + m_BorderLeft;
@@ -438,7 +459,7 @@ void CBRenderSDL::ModTargetRect(SDL_Rect* rect)
 {
 	SDL_Rect viewportRect;
 
-	if (m_PixelPerfect == false)
+	if (m_RenderOffscreen == false)
 	{
 		// only apply offsets/scaling if pixelperfect rendering is off
 		SDL_RenderGetViewport(GetSdlRenderer(), &viewportRect);
@@ -454,7 +475,7 @@ void CBRenderSDL::ModTargetRect(SDL_Rect* rect)
 void CBRenderSDL::ModOrigin(SDL_Point* origin)
 {
 	// FIXME I don't know if this is correct...
-	if (m_PixelPerfect == false)
+	if (m_RenderOffscreen == false)
 	{
 		// only apply scaling if no pixelperfect rendering is requested
 		origin->x *= m_RatioX;

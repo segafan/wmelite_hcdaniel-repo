@@ -1812,6 +1812,8 @@ HRESULT CAdGame::DisplayContent(bool Update, bool DisplayAll)
 		m_Scene->Update();		
 		m_Scene->Display();
 
+		Game->m_Renderer->SendRenderingHintSceneComplete();
+
 
 		// display in-game windows
 		DisplayWindows(true);				

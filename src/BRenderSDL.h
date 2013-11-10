@@ -55,6 +55,8 @@ public:
 
 	HRESULT SetViewport(int left, int top, int right, int bottom);
 
+	HRESULT SendRenderingHintSceneComplete();
+
 	void ModTargetRect(SDL_Rect* rect);
 	void ModOrigin(SDL_Point* origin);
 	void PointFromScreen(POINT* point);
@@ -80,6 +82,7 @@ private:
 	float m_RatioY;
 
 	bool m_PixelPerfect;
+	bool m_RenderOffscreen;
 	SDL_Rect m_PixelPerfectTargetRect;
 
 	float GetAlignedUpscalingRatio(float ratio, float stepping);
