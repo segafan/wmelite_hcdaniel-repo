@@ -37,7 +37,7 @@ public:
 
 	const char* GetName();
 
-	HRESULT InitRenderer(int width, int height, bool windowed, float upScalingRatioStepping, float downScalingRatioStepping);
+	HRESULT InitRenderer(int width, int height, bool windowed, float upScalingRatioStepping, float downScalingRatioStepping, bool pixelPerfectRendering);
 	HRESULT Flip();
 	HRESULT Fill(BYTE r, BYTE g, BYTE b, RECT* rect);
 
@@ -67,6 +67,7 @@ public:
 
 private:
 	SDL_Renderer* m_Renderer;
+	SDL_Texture* m_Texture;
 	SDL_Window* m_Win;
 	AnsiString m_Name;
 
@@ -77,6 +78,9 @@ private:
 
 	float m_RatioX;
 	float m_RatioY;
+
+	bool m_PixelPerfect;
+	SDL_Rect m_PixelPerfectTargetRect;
 
 	float GetAlignedUpscalingRatio(float ratio, float stepping);
 	float GetAlignedDownscalingRatio(float ratio, float stepping);

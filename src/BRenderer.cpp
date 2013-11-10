@@ -134,7 +134,7 @@ HRESULT CBRenderer::Flip()
 
 
 //////////////////////////////////////////////////////////////////////
-HRESULT CBRenderer::InitRenderer(int width, int height, bool windowed, float upScalingRatioStepping, float downScalingRatioStepping)
+HRESULT CBRenderer::InitRenderer(int width, int height, bool windowed, float upScalingRatioStepping, float downScalingRatioStepping, bool pixelPerfectRendering)
 {
 	return E_FAIL;
 }

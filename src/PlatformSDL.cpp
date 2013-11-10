@@ -127,10 +127,12 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 
 	Game->LOG(0, "Scaling steppings found up=%.02f down=%.02f.", upScalingStepping, downScalingStepping);
 
+	bool pixelPerfectRendering = Game->m_Registry->ReadBool("Rendering", "PixelPerfect");
+
 	HRESULT ret;
 
 	// initialize the renderer
-	ret = Game->m_Renderer->InitRenderer(Game->m_SettingsResWidth, Game->m_SettingsResHeight, windowedMode, upScalingStepping, downScalingStepping);
+	ret = Game->m_Renderer->InitRenderer(Game->m_SettingsResWidth, Game->m_SettingsResHeight, windowedMode, upScalingStepping, downScalingStepping, pixelPerfectRendering);
 	if (FAILED(ret))
 	{
 		Game->LOG(ret, "Error initializing renderer. Exiting.");
