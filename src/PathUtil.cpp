@@ -273,7 +273,7 @@ AnsiString PathUtil::GetLocalSettingsDirectory()
 
 #ifndef __ANDROID__
 
-	localSettingsDir =  "";
+	localSettingsDir =  ".";
 
 #else
 
