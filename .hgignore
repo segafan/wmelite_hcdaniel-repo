@@ -17,3 +17,6 @@ xcode-ios/wmelite/wmelite.xcodeproj/project.xcworkspace
 xcode/wmelite/wmelite.xcodeproj/project.xcworkspace
 xcode-ios/wmelite/wmelite.xcodeproj/xcuserdata
 xcode/wmelite/wmelite.xcodeproj/xcuserdata
+
+linux/obj
+linux/wmelite
