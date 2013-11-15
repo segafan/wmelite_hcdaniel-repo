@@ -1,16 +1,16 @@
 IDIR =../src
 CC=gcc
 
-CFLAGS=-I$(IDIR) -O2 -m32 -I/usr/local/include/SDL2/ 
+CFLAGS=-I$(IDIR) -O2 -m32 `sdl2-config --cflags` `freetype-config --cflags`
 
 CPP=g++
-CPPFLAGS=-I$(IDIR) -O2 -m32 -Wno-write-strings -Wno-conversion-null -I/usr/local/include/SDL2/ -I/usr/local/include/bass/ -I/usr/include/freetype2/
+CPPFLAGS=-I$(IDIR) -O2 -m32 -Wno-write-strings -Wno-conversion-null `freetype-config --cflags` `sdl2-config --cflags` -I/usr/local/include/bass/ 
 
 SRCDIR=../src
 
 ODIR=obj
 
-LIBS=-lSDL2 -lbass -lfreeimage -lfreetype -lz
+LIBS=`sdl2-config --libs` `freetype-config --libs` -lbass -lfreeimage 
 
 _OBJC = ConvertUTF.o DirectoryOperations.o FileOperations.o
 OBJC = $(patsubst %,$(ODIR)/%,$(_OBJC))
