@@ -50,6 +50,11 @@ THE SOFTWARE.
 #	include "android/android.h"
 #endif
 
+#if defined(__LINUX__) && !defined(__ANDROID__)
+#	include <pwd.h>
+#endif
+
+
 const AnsiString assetIdentifier = "asset://";
 const AnsiString obbPlainIdentifier = "obbplain://";
 
@@ -261,6 +266,9 @@ AnsiString PathUtil::GetUserDirectory()
 	android_getPrivateFilesPath(androidPath, 1024);
 	userDir = AnsiString(androidPath);
 
+#elif defined(__LINUX__) && !defined(__ANDROID__)
+	struct passwd *pw = getpwuid(getuid());
+	if(pw != NULL) userDir = AnsiString(pw->pw_dir);
 #endif
 	
 	return userDir;
