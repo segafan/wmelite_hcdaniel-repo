@@ -19,6 +19,9 @@ _OBJCPP =  AdActor.o AdActorDir.o AdEntity.o AdGame.o AdInventoryBox.o AdInvento
 # VidDataSource.o VidManager.o VidTheoraPlayer.o
 OBJCPP = $(patsubst %,$(ODIR)/%,$(_OBJCPP))
 
+wmelite: $(OBJC) $(OBJCPP)
+	g++ -o $@ $^ $(CFLAGS) $(LIBS)
+
 $(ODIR)/ConvertUTF.o: $(SRCDIR)/ConvertUTF.c
 	mkdir -p $(ODIR)
 	$(CC) -c -o $@ $< $(CFLAGS)
@@ -34,9 +37,6 @@ $(ODIR)/FileOperations.o: $(SRCDIR)/FileOperations.c
 $(ODIR)/%.o: $(SRCDIR)/%.cpp
 	mkdir -p $(ODIR)
 	$(CPP) -c -o $@ $< $(CPPFLAGS)
-
-wmelite: $(OBJC) $(OBJCPP)
-	g++ -o $@ $^ $(CFLAGS) $(LIBS)
 
 .PHONY: clean
 
