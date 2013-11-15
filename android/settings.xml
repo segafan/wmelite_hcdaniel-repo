@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Settings>
+  <Debug>
+    <DebugMode>1</DebugMode>
+  </Debug>
+  <Font>
+    <FontAlphaHack>1</FontAlphaHack>
+  </Font>
+  <Scaling>
+    <UpScalingStepping>100</UpScalingStepping>
+    <DownScalingStepping>0</DownScalingStepping>
+  </Scaling>
+</Settings>
+
