@@ -48,9 +48,7 @@ THE SOFTWARE.
 
 #ifdef __ANDROID__
 #	include "android/android.h"
-#endif
-
-#if defined(__LINUX__) && !defined(__ANDROID__)
+#elif  __LINUX__
 #	include <pwd.h>
 #endif
 
@@ -266,7 +264,7 @@ AnsiString PathUtil::GetUserDirectory()
 	android_getPrivateFilesPath(androidPath, 1024);
 	userDir = AnsiString(androidPath);
 
-#elif defined(__LINUX__) && !defined(__ANDROID__)
+#elif __LINUX__
 	char* strHome = getenv("HOME");
 
 	if(strHome != NULL) {

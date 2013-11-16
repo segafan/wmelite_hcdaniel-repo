@@ -4195,7 +4195,7 @@ AnsiString CBGame::GetDataDir()
 
 #if defined(__IPHONEOS__) || defined(__ANDROID__)
 	return userDir;
-#elif defined(__LINUX__) && !defined(__ANDROID__)
+#elif defined(__LINUX__)
 
 	// Not fully implemented, but a guideline
 	// http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
