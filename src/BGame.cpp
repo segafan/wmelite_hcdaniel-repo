@@ -1124,10 +1124,10 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 	else if(strcmp(Name, "PlayMusic")==0 || strcmp(Name, "PlayMusicChannel")==0)
 	{
 		int Channel = 0;
-		if(strcmp(Name, "PlayMusic")==0) Stack->CorrectParams(3);
+		if(strcmp(Name, "PlayMusic")==0) Stack->CorrectParams(4);
 		else
 		{
-			Stack->CorrectParams(4);
+			Stack->CorrectParams(5);
 			Channel = Stack->Pop()->GetInt();
 		}
 
@@ -1138,8 +1138,10 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 		CScValue* ValLoopStart = Stack->Pop();
 		DWORD LoopStart = (DWORD)(ValLoopStart->IsNULL()?0:ValLoopStart->GetInt());
 
+		CScValue* ValPrivVolume = Stack->Pop();
+		DWORD PrivVolume = (DWORD)(ValPrivVolume->IsNULL()?100:ValPrivVolume->GetInt());
 
-		if(FAILED(PlayMusic(Channel, Filename, Looping, LoopStart))) Stack->PushBool(false);
+		if(FAILED(PlayMusic(Channel, Filename, Looping, LoopStart, PrivVolume))) Stack->PushBool(false);
 		else Stack->PushBool(true);
 		return S_OK;
 	}
@@ -3641,7 +3643,7 @@ HRESULT CBGame::DisplayWindows(bool InGame)
 
 
 //////////////////////////////////////////////////////////////////////////
-HRESULT CBGame::PlayMusic(int Channel, char *Filename, bool Looping, DWORD LoopStart)
+HRESULT CBGame::PlayMusic(int Channel, char *Filename, bool Looping, DWORD LoopStart, DWORD PrivVolume)
 {
 	if(Channel>=NUM_MUSIC_CHANNELS)
 	{
@@ -3652,7 +3654,7 @@ HRESULT CBGame::PlayMusic(int Channel, char *Filename, bool Looping, DWORD LoopS
 	SAFE_DELETE(m_Music[Channel]);
 
 	m_Music[Channel] = new CBSound(Game);
-	if(m_Music[Channel] && SUCCEEDED(m_Music[Channel]->SetSound(Filename, SOUND_MUSIC, true)))
+	if(m_Music[Channel] && SUCCEEDED(m_Music[Channel]->SetSound(Filename, SOUND_MUSIC, true, PrivVolume)))
 	{
 		if(m_MusicStartTime[Channel])
 		{
