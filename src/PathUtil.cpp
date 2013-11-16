@@ -267,8 +267,17 @@ AnsiString PathUtil::GetUserDirectory()
 	userDir = AnsiString(androidPath);
 
 #elif defined(__LINUX__) && !defined(__ANDROID__)
-	struct passwd *pw = getpwuid(getuid());
-	if(pw != NULL) userDir = AnsiString(pw->pw_dir);
+	char* strHome = getenv("HOME");
+
+	if(strHome != NULL) {
+		userDir = AnsiString(strHome);
+	}
+	else {
+		struct passwd *pw = getpwuid(getuid());
+		if(pw != NULL) {
+			userDir = AnsiString(pw->pw_dir);
+		}
+	}
 #endif
 	
 	return userDir;
