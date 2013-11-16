@@ -280,6 +280,10 @@ HRESULT CBRenderSDL::Flip()
 	if ((m_PixelPerfect == true) && (m_RenderOffscreen == true)) {
 		SDL_SetRenderTarget(m_Renderer, NULL);
 		SDL_RenderCopy(m_Renderer, m_Texture, NULL, &m_PixelPerfectTargetRect);
+
+#ifndef __IPHONEOS__
+		SDL_RenderSetViewport(GetSdlRenderer(), &m_PixelPerfectTargetRect);
+#endif
 	}
 
 	SDL_RenderPresent(m_Renderer);
