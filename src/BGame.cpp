@@ -4192,8 +4192,25 @@ HRESULT CBGame::GetSaveSlotFilename(int Slot, char *Buffer)
 AnsiString CBGame::GetDataDir()
 {
 	AnsiString userDir = PathUtil::GetUserDirectory();
+
 #if defined(__IPHONEOS__) || defined(__ANDROID__)
 	return userDir;
+#elif defined(__LINUX__) && !defined(__ANDROID__)
+
+	// Not fully implemented, but a guideline
+	// http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
+	AnsiString baseDir = m_Registry->GetBasePath();
+	
+	char* strUserDirectory = getenv("XDG_DATA_HOME");
+	if( strUserDirectory == NULL || strUserDirectory[0] != '/' ) {
+		userDir = PathUtil::Combine(userDir, ".local/share");
+	}
+	else {
+		userDir = AnsiString(strUserDirectory);
+	}
+
+	return PathUtil::Combine(userDir, baseDir);
+
 #else
 	AnsiString baseDir = m_Registry->GetBasePath();
 	return PathUtil::Combine(userDir, baseDir);
