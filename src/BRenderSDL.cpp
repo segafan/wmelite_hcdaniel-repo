@@ -278,14 +278,25 @@ HRESULT CBRenderSDL::Flip()
 
 	// if not already done, draw the offscreen image onto the final screen
 	if ((m_PixelPerfect == true) && (m_RenderOffscreen == true)) {
-		SDL_SetRenderTarget(m_Renderer, NULL);
-		SDL_RenderCopy(m_Renderer, m_Texture, NULL, &m_PixelPerfectTargetRect);
+		SendRenderingHintSceneComplete();
 	}
 
 	SDL_RenderPresent(m_Renderer);
 
+	return S_OK;
+}
+
+//////////////////////////////////////////////////////////////////////////
+HRESULT CBRenderSDL::EraseBackground()
+{
+	Fill(0, 0, 0, NULL);
+
+	// in case of pixelperfect rendering, both on- and offscreen
+	// image need to be erased
 	if (m_PixelPerfect == true) {
+		SDL_RenderSetViewport(GetSdlRenderer(), NULL);
 		SDL_SetRenderTarget(m_Renderer, m_Texture);
+		Fill(0, 0, 0, NULL);
 		m_RenderOffscreen = true;
 	}
 
