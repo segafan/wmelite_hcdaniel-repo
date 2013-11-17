@@ -231,7 +231,10 @@ HRESULT CBSoundBuffer::SetVolume(int Volume)
 {
 	if (m_Stream)
 	{
-		BASS_ChannelSetAttribute(m_Stream, BASS_ATTRIB_VOL, (float)Volume / 100.0f);
+		// compute the "weighted" value (volume relatively to TSoundType category's volume)
+		float resultingVolumePerCent = ((float)Volume / 100.0f) * m_PrivateVolume;
+		BASS_ChannelSetAttribute(m_Stream, BASS_ATTRIB_VOL, resultingVolumePerCent / 100.0f);
+		// Game->LOG(0, "BASS_Setvolume occurred, integer=%d, privVolume=%d, resulting float value=%f.\n", Volume, m_PrivateVolume, resultingVolumePerCent / 100.0f);
 	}
 	return S_OK;
 }

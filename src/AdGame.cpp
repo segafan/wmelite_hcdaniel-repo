@@ -1783,7 +1783,7 @@ HRESULT CAdGame::DisplayContent(bool Update, bool DisplayAll)
 	if(Update) InitLoop();
 	
 	// fill black
-	m_Renderer->Fill(0,0,0);
+	m_Renderer->EraseBackground();
 	if(!m_EditorMode) m_Renderer->SetScreenViewport();
 
 	// playing exclusive video?
