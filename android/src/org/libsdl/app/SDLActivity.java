@@ -88,7 +88,7 @@ public class SDLActivity extends Activity {
         mSingleton = this;
 
         // Set up the surface
-        mSurface = new SDLSurface(getApplication());
+        mSurface = new SDLSurface(getApplication(), exitHandler);
         
         if(Build.VERSION.SDK_INT >= 12) {
             // mJoystickHandler = new SDLJoystickHandler_API12();
@@ -154,9 +154,15 @@ public class SDLActivity extends Activity {
             }
             SDLActivity.mSDLThread = null;
 
-            //Log.v("SDL", "Finished waiting for SDL thread");
+            // Log.v("SDL", "Finished waiting for SDL thread");
         }
     }
+    
+    protected Handler exitHandler = new Handler() {
+    	public void handleMessage(Message msg) {
+    		finish();
+    	}
+    };
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
@@ -478,6 +484,13 @@ public class SDLActivity extends Activity {
     Simple nativeInit() runnable
 */
 class SDLMain implements Runnable {
+	
+	private final Handler exitHandler;
+	
+	public SDLMain(Handler exitHandler) {
+		this.exitHandler = exitHandler;
+	}
+	
     @Override
     public void run() {
     	// init wmelite Java callbacks
@@ -486,7 +499,10 @@ class SDLMain implements Runnable {
         // Runs SDL_main()
         SDLActivity.nativeInit();
 
-        //Log.v("SDL", "SDL thread terminated");
+        // Log.v("SDL", "SDL thread terminated");
+        
+        // SDLActivity.mSingleton.finish();
+        exitHandler.sendEmptyMessage(0);
         
 	// maybe no longer necessary?
 	// myActivity.finish();
@@ -509,9 +525,11 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
     // Keep track of the surface size to normalize touch events
     protected static float mWidth, mHeight;
+    
+    private final Handler exitHandler;
 
     // Startup    
-    public SDLSurface(Context context) {
+    public SDLSurface(Context context, Handler exitHandler) {
         super(context);
         getHolder().addCallback(this); 
     
@@ -531,6 +549,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         // Some arbitrary defaults to avoid a potential division by zero
         mWidth = 1.0f;
         mHeight = 1.0f;
+        this.exitHandler = exitHandler;
     }
     
     public Surface getNativeSurface() {
@@ -619,7 +638,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             // This is the entry point to the C app.
             // Start up the C app thread and enable sensor input for the first time
 
-            SDLActivity.mSDLThread = new Thread(new SDLMain(), "SDLThread");
+            SDLActivity.mSDLThread = new Thread(new SDLMain(exitHandler), "SDLThread");
             enableSensor(Sensor.TYPE_ACCELEROMETER, true);
             SDLActivity.mSDLThread.start();
         }
