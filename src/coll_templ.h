@@ -340,14 +340,12 @@ void CBArray<TYPE, ARG_TYPE>::InsertAt(int nIndex, ARG_TYPE newElement, int nCou
 template<class TYPE, class ARG_TYPE>
 void CBArray<TYPE, ARG_TYPE>::RemoveAt(int nIndex, int nCount)
 {
-	// move nCount elements one by one.
-	// It is more expensive than the previous implementation, but without valgrind warnings.
+	// just remove a range
 	int nMoveCount = m_nSize - (nIndex + nCount);
 	DCDestructElements<TYPE>(&m_pData[nIndex], nCount);
-
-	for(int moved = 0; moved < nMoveCount; moved++)
-		memcpy(&m_pData[nIndex + moved], &m_pData[nIndex + nCount + moved], sizeof(TYPE));
-    
+	if (nMoveCount)
+		memcpy(&m_pData[nIndex], &m_pData[nIndex + nCount],
+			nMoveCount * sizeof(TYPE));
 	m_nSize -= nCount;
 }
 
