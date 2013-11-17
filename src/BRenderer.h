@@ -52,7 +52,8 @@ public:
 	virtual ~CBRenderer();
 	virtual HRESULT SetProjection() { return S_OK; };
 
-	virtual HRESULT WindowedBlt();	
+	virtual HRESULT WindowedBlt();
+	virtual HRESULT EraseBackground();
 	virtual HRESULT Fill(BYTE r, BYTE g, BYTE b, RECT* rect=NULL);
 	virtual void OnWindowChange();
 	virtual HRESULT InitRenderer(int width, int height, bool windowed, float upScalingRatioStepping, float downScalingRatioStepping, bool pixelPerfectRendering);
