@@ -311,6 +311,34 @@ public class SDLActivity extends Activity {
         return mSingleton;
     }
 
+    /**
+     * @return result of getSystemService(name) but executed on UI thread.
+     */
+    public Object getSystemServiceFromUiThread(final String name) {
+        final Object lock = new Object();
+        final Object[] results = new Object[2]; // array for writable variables
+        synchronized (lock) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    synchronized (lock) {
+                        results[0] = getSystemService(name);
+                        results[1] = Boolean.TRUE;
+                        lock.notify();
+                    }
+                }
+            });
+            if (results[1] == null) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        return results[0];
+    }
+
     static class ShowTextInputTask implements Runnable {
         /*
          * This is used to regulate the pan&scan method to have some offset from
@@ -691,31 +719,48 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     // Touch events
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-             final int touchDevId = event.getDeviceId();
-             final int pointerCount = event.getPointerCount();
-             // touchId, pointerId, action, x, y, pressure
-             int actionPointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT; /* API 8: event.getActionIndex(); */
-             int pointerFingerId = event.getPointerId(actionPointerIndex);
-             int action = (event.getAction() & MotionEvent.ACTION_MASK); /* API 8: event.getActionMasked(); */
-
-             float x = event.getX(actionPointerIndex) / mWidth;
-             float y = event.getY(actionPointerIndex) / mHeight;
-             float p = event.getPressure(actionPointerIndex);
-
-             if (action == MotionEvent.ACTION_MOVE && pointerCount > 1) {
-                // TODO send motion to every pointer if its position has
-                // changed since prev event.
-                for (int i = 0; i < pointerCount; i++) {
+        /* Ref: http://developer.android.com/training/gestures/multi.html */
+        final int touchDevId = event.getDeviceId();
+        final int pointerCount = event.getPointerCount();
+        int action = event.getActionMasked();
+        int pointerFingerId;
+        int i = -1;
+        float x,y,p;
+        
+        switch(action) {
+            case MotionEvent.ACTION_MOVE:
+                for (i = 0; i < pointerCount; i++) {
                     pointerFingerId = event.getPointerId(i);
                     x = event.getX(i) / mWidth;
                     y = event.getY(i) / mHeight;
                     p = event.getPressure(i);
                     SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action, x, y, p);
                 }
-             } else {
+                break;
+            
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_DOWN:
+                // Primary pointer up/down, the index is always zero
+                i = 0;
+            case MotionEvent.ACTION_POINTER_UP:
+            case MotionEvent.ACTION_POINTER_DOWN:
+                // Non primary pointer up/down
+                if (i == -1) {
+                    i = event.getActionIndex();
+                }
+                
+                pointerFingerId = event.getPointerId(i);
+                x = event.getX(i) / mWidth;
+                y = event.getY(i) / mHeight;
+                p = event.getPressure(i);
                 SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action, x, y, p);
-             }
-      return true;
+                break;
+            
+            default:
+                break;
+        }
+
+        return true;
    } 
 
     // Sensor events
