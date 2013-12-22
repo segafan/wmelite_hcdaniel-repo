@@ -116,7 +116,7 @@ generic_file_ops *get_file_operations(file_access_variant access_variant)
   if (access_variant == FILE_ACCESS_VARIANT_PLAIN)
   {
 #ifdef __ANDROID__
-	__android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "FileOperations: Requested PLAIN access.");
+	// __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "FileOperations: Requested PLAIN access.");
 #endif
     return &file_ops_plain;
   }
