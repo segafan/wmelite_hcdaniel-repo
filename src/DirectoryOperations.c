@@ -77,7 +77,7 @@ generic_directory_ops *get_directory_operations(dir_access_variant access_varian
   if (access_variant == DIR_ACCESS_VARIANT_PLAIN)
   {
 #ifdef __ANDROID__
-	__android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "DirectoryOperations: Requested PLAIN access.");
+	// __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "DirectoryOperations: Requested PLAIN access.");
 #endif
 	return &directory_ops_plain;
   }
@@ -86,12 +86,12 @@ generic_directory_ops *get_directory_operations(dir_access_variant access_varian
 
   if (access_variant == DIR_ACCESS_VARIANT_ANDROID_ASSET)
   {
-    __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "DirectoryOperations: Requested ANDROID ASSET access.");
+    // __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "DirectoryOperations: Requested ANDROID ASSET access.");
     return &directory_ops_android_asset;
   }
   if (access_variant == DIR_ACCESS_VARIANT_ANDROID_OBB_PLAIN)
   {
-    __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "DirectoryOperations: Requested OBB PLAIN access.");
+    // __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "DirectoryOperations: Requested OBB PLAIN access.");
     return &directory_ops_android_obb_plain;
   }
 

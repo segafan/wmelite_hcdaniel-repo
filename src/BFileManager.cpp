@@ -584,7 +584,7 @@ FILEHANDLE CBFileManager::OpenPackage(char *Name, generic_file_ops **ops)
 	{
 		dir_ops = PathUtil::GetDirectoryAccessMethod(m_PackagePaths[i]);
 		sprintf(Filename, "%s%s.%s", m_PackagePaths[i], Name, dir_ops->dir_get_package_extension());
-		Game->LOG(0, "Package file name to open: %s", Filename);
+		// Game->LOG(0, "Package file name to open: %s", Filename);
 		*ops = PathUtil::GetFileAccessMethod(Filename);
 		ret = (*ops)->file_open(Filename, "rb");
 		if(ret!=NULL) return ret;
