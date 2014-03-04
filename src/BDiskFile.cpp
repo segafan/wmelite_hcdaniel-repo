@@ -162,6 +162,8 @@ HRESULT CBDiskFile::Read(void *Buffer, DWORD Size)
 		if(m_File)			
 		{
 			size_t count = ops->file_read((char *) Buffer, Size, m_File);
+			if (count == 0) 
+				return E_FAIL;
 			m_Pos += count;
 			return S_OK;
 		}
