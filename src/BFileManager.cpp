@@ -426,7 +426,28 @@ HRESULT CBFileManager::RegisterPackage(const AnsiString& path, const AnsiString&
 	}
 
 	TPackageHeader hdr;
-	ops->file_read((char *) (&hdr), sizeof(TPackageHeader), f);
+  
+	BYTE tmptmp;
+
+	// don't read in the whole struct at once, the sizeof(TPackageHeader) 
+	// result differs between 32 and 64 bit!
+	ops->file_read((char *) (&hdr.Magic1)        , sizeof(DWORD), f);
+	ops->file_read((char *) (&hdr.Magic2)        , sizeof(DWORD), f);
+	ops->file_read((char *) (&hdr.PackageVersion), sizeof(DWORD), f);
+	ops->file_read((char *) (&hdr.GameVersion)   , sizeof(DWORD), f);
+
+	ops->file_read((char *) (&hdr.Priority)   , sizeof(BYTE), f);
+	ops->file_read((char *) (&hdr.CD)         , sizeof(BYTE), f);
+	ops->file_read((char *) (&hdr.MasterIndex), sizeof(BYTE), f);
+	ops->file_read((char *) (&tmptmp)         , sizeof(BYTE), f);
+#ifdef __WIN32__
+	ops->file_read((char *) (&hdr.CreationTime), sizeof(DWORD), f);
+#else
+	ops->file_read((char *) (&hdr.CreationTime), sizeof(DWORD), f);
+#endif
+	ops->file_read((char *) (&hdr.Desc)   ,           100, f);
+	ops->file_read((char *) (&hdr.NumDirs), sizeof(DWORD), f);
+ 
 	if(hdr.Magic1 != PACKAGE_MAGIC_1 || hdr.Magic2 != PACKAGE_MAGIC_2 || hdr.PackageVersion > PACKAGE_VERSION)
 	{
 		Game->LOG(0, "  Invalid header in package file '%s'. Ignoring.", fileName.c_str());
@@ -489,7 +510,7 @@ HRESULT CBFileManager::RegisterPackage(const AnsiString& path, const AnsiString&
 			ops->file_read((char *) (&NameLength), sizeof(BYTE), f);
 			Name = new char[NameLength];
 			ops->file_read(Name, NameLength, f);
-			
+		
 			// v2 - xor name
 			if(hdr.PackageVersion==PACKAGE_VERSION)
 			{
