@@ -28,7 +28,11 @@ THE SOFTWARE.
 
 
 #include "BBase.h"
+#ifndef USE_SDL_MIXER
 #include "bass.h"
+#else
+#include "SDL_mixer.h"
+#endif
 
 class CBSoundMgr : public CBBase  
 {
@@ -58,6 +62,10 @@ public:
 	virtual ~CBSoundMgr();
 	CBArray<CBSoundBuffer*, CBSoundBuffer*> m_Sounds;
 	void SaveSettings();
+#ifdef USE_SDL_MIXER
+	void InvalidateChannels(int channel_number);
+	static void SDLMixer_channelDoneCallback(void *userdata, int channel_number);
+#endif
 };
 
 #endif
