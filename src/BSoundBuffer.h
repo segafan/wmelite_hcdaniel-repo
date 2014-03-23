@@ -28,7 +28,11 @@ THE SOFTWARE.
 
 
 #include "BBase.h"
+#ifndef USE_SDL_MIXER
 #include "bass.h"
+#else
+#include "SDL_mixer.h"
+#endif
 
 class CBSoundBuffer : public CBBase  
 {
@@ -63,9 +67,6 @@ public:
 	void SetStreaming(bool Streamed, DWORD NumBlocks=0, DWORD BlockSize=0);
 	HRESULT ApplyFX(TSFXType Type, float Param1, float Param2, float Param3, float Param4);
 
-	HSTREAM m_Stream;
-	HSYNC m_Sync;
-
 	bool m_FreezePaused;
 	DWORD m_LoopStart;
 	TSoundType m_Type;
@@ -74,13 +75,35 @@ public:
 	char* m_Filename;
 	bool m_Streamed;
 	int m_PrivateVolume;
+
+#ifndef USE_SDL_MIXER
 	
+	HSTREAM m_Stream;
+	HSYNC m_Sync;
+
 	static void CALLBACK LoopSyncProc(HSYNC handle, DWORD channel, DWORD data, void* user);
 
 	static void CALLBACK FileCloseProc(void* user);
 	static QWORD CALLBACK FileLenProc(void* user);
 	static DWORD CALLBACK FileReadProc(void *buffer, DWORD length, void* user);
 	static BOOL CALLBACK FileSeekProc(QWORD offset, void *user);
+
+#else
+
+	Mix_Chunk *m_chunk;
+	SDL_RWops *m_rwops;
+	int m_currChannel;
+
+	void InvalidateChannelNumber(int finished_channel);
+
+	static Sint64 FileSizeImpl(SDL_RWops *ops);
+	static Sint64 FileSeekImpl(SDL_RWops *ops, Sint64 offset, int whence);
+	static size_t FileReadImpl(SDL_RWops *ops, void *buffer, size_t size, size_t nmemb);
+	static size_t FileWriteImpl(SDL_RWops *ops, const void *buffer, size_t size, size_t nmemb);
+	static int FileCloseImpl(SDL_RWops *ops);
+
+#endif
+
 };
 
 #endif
