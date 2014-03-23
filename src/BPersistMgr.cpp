@@ -36,6 +36,14 @@ THE SOFTWARE.
 #define SAVE_MAGIC		0x45564153
 #define SAVE_MAGIC_2	0x32564153
 
+#define PERSIST_MGR_LOBYTE(a) (BYTE)(a)
+#define PERSIST_MGR_HIBYTE(a) (BYTE)((a)>>8)
+#define PERSIST_MGR_LOWORD(a) (WORD)(a)
+#define PERSIST_MGR_HIWORD(a) (WORD)((a)>>16)
+#define PERSIST_MGR_MAKEWORD(a,b) (WORD)(((a)&0xff)|((b)<<8))
+#define PERSIST_MGR_MAKELONG(a,b) (DWORD)(((a)&0xffff)|((b)<<16))
+
+
 //////////////////////////////////////////////////////////////////////////
 CBPersistMgr::CBPersistMgr(CBGame* inGame):CBBase(inGame)
 {
@@ -134,7 +142,7 @@ HRESULT CBPersistMgr::InitSave(char* Desc)
 
 		BYTE VerMajor, VerMinor, ExtMajor, ExtMinor;
 		Game->GetVersion(&VerMajor, &VerMinor, &ExtMajor, &ExtMinor);
-		DWORD Version = MAKELONG(MAKEWORD(VerMajor, VerMinor), MAKEWORD(ExtMajor, ExtMinor));
+		DWORD Version = PERSIST_MGR_MAKELONG(PERSIST_MGR_MAKEWORD(VerMajor, VerMinor), PERSIST_MGR_MAKEWORD(ExtMajor, ExtMinor));
 		PutDWORD(Version);
 
 		// new in ver 2
@@ -199,10 +207,10 @@ HRESULT CBPersistMgr::InitLoad(char* Filename)
 		if(Magic==SAVE_MAGIC || Magic==SAVE_MAGIC_2)
 		{
 			DWORD Version = GetDWORD();
-			m_SavedVerMajor = LOBYTE(LOWORD(Version));
-			m_SavedVerMinor = HIBYTE(LOWORD(Version));
-			m_SavedExtMajor = LOBYTE(HIWORD(Version));
-			m_SavedExtMinor = HIBYTE(HIWORD(Version));
+			m_SavedVerMajor = PERSIST_MGR_LOBYTE(PERSIST_MGR_LOWORD(Version));
+			m_SavedVerMinor = PERSIST_MGR_HIBYTE(PERSIST_MGR_LOWORD(Version));
+			m_SavedExtMajor = PERSIST_MGR_LOBYTE(PERSIST_MGR_HIWORD(Version));
+			m_SavedExtMinor = PERSIST_MGR_HIBYTE(PERSIST_MGR_HIWORD(Version));
 
 			if(Magic==SAVE_MAGIC_2)
 			{
