@@ -657,8 +657,10 @@ HRESULT CBFontTT::InitFont()
 #ifdef __IPHONEOS__
         AnsiString fontFileName = "DejaVuSans.ttf"; // on iOS use a fallback font we copy to app bundle
 #else
-		AnsiString fontFileName = PathUtil::Combine(CBPlatform::GetSystemFontPath(), PathUtil::GetFileName(m_FontFile));
+        // search for a liberation font in the system font path
+		AnsiString fontFileName = PathUtil::Combine(CBPlatform::GetSystemFontPath(), "LiberationSans-Regular.ttf");
 #endif
+		Game->LOG(0, "Regular font %s not found, loading fallback font %s!", m_FontFile, fontFileName.c_str());
 		file = Game->m_FileManager->OpenFile((char*)fontFileName.c_str(), false);
 
 		if (!file)
@@ -691,6 +693,7 @@ HRESULT CBFontTT::InitFont()
 	{
 		SAFE_DELETE_ARRAY(m_FTStream);
 		Game->m_FileManager->CloseFile(file);
+		Game->LOG(0, "Fallback font FT_Open_Face failed!");
 		return E_FAIL;
 	}
 
@@ -699,6 +702,7 @@ HRESULT CBFontTT::InitFont()
 	{
 		FT_Done_Face(m_FTFace);
 		m_FTFace = NULL;
+		Game->LOG(0, "Fallback font FT_Set_Char_Size failed!");
 		return E_FAIL;
 	}
 
