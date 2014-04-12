@@ -211,14 +211,17 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 /////////////////////////////////////////////////////
 HRESULT CBRenderSDL::SendRenderingHintSceneComplete()
 {
-	SDL_SetRenderTarget(m_Renderer, NULL);
-	SDL_RenderCopy(m_Renderer, m_Texture, NULL, &m_PixelPerfectTargetRect);
+	if (m_PixelPerfect == true) {
+		SDL_SetRenderTarget(m_Renderer, NULL);
+		SDL_RenderCopy(m_Renderer, m_Texture, NULL, &m_PixelPerfectTargetRect);
 
 #ifndef __IPHONEOS__
-	SDL_RenderSetViewport(GetSdlRenderer(), &m_PixelPerfectTargetRect);
+		SDL_RenderSetViewport(GetSdlRenderer(), &m_PixelPerfectTargetRect);
 #endif
 
-	m_RenderOffscreen = false;
+		m_RenderOffscreen = false;
+
+	}
 
 	return S_OK;
 }
