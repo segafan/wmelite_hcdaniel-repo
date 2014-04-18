@@ -56,10 +56,8 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) return E_FAIL;
 	
-	
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
 	SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING, 1);
-
 
 	m_Width = width;
 	m_Height = height;
@@ -71,6 +69,8 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 
 	// find suitable resolution
 #if defined(__IPHONEOS__) || defined(__ANDROID__)
+	// mobile devices: search all resolutions until one is found where width > height
+
 	m_RealWidth = 480;
 	m_RealHeight = 320;
 
@@ -88,12 +88,60 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 		}
 	}	
 #else
-	m_RealWidth = Game->m_Registry->ReadInt("Debug", "ForceResWidth", m_Width);
-	m_RealHeight = Game->m_Registry->ReadInt("Debug", "ForceResHeight", m_Height);
+	// windows/linux: search a resolution with same screen width/height ratio
+	// stolen from Jan Kavan (wmelite julia branch)
+	SDL_DisplayMode testResolution;
+	SDL_DisplayMode tmpResolution;
+
+	const SDL_DisplayMode* current = NULL;
+	
+	SDL_GetCurrentDisplayMode(0,&tmpResolution);
+
+	float gameRatio = width / height;
+	float screenRatio = tmpResolution.w / tmpResolution.h;
+	
+	if (gameRatio == screenRatio)
+	{
+		current = &tmpResolution;
+		m_RealWidth = width;
+		m_RealHeight = height;
+	}
+	else
+	{
+		for (int i=0;i<SDL_GetNumDisplayModes(0); i++)
+		{
+			if (SDL_GetDisplayMode(0,i,&testResolution) == 0)
+			{
+				 float tmpRatio = testResolution.w / testResolution.h;
+				 if (tmpRatio == screenRatio)
+				 {
+					 if (testResolution.w >= width && testResolution.h >= height &&
+						 testResolution.w <= tmpResolution.w && testResolution.h <= tmpResolution.h)
+					 {
+						 tmpResolution = testResolution;
+					 }
+				 }
+				 	
+			}
+		}
+	}
+
+	if (current == NULL)
+	{
+			if (tmpResolution.w == 0) SDL_GetCurrentDisplayMode(0,&tmpResolution);			
+			current = &tmpResolution;
+	}
+
+	m_RealWidth = current->w;
+	m_RealHeight = current->h;
+
 #endif
 
-	// m_RealWidth = 1024;
-	// m_RealHeight = 768;
+	// last chance to override resolution settings with registry
+	if ((Game->m_Registry->ReadInt("Debug", "ForceResWidth", 0) != 0) && (Game->m_Registry->ReadInt("Debug", "ForceResHeight", 0) != 0)) {
+		m_RealWidth = Game->m_Registry->ReadInt("Debug", "ForceResWidth", m_Width);
+		m_RealHeight = Game->m_Registry->ReadInt("Debug", "ForceResHeight", m_Height);
+	}
 
 	float origAspect = (float)m_Width / (float)m_Height;
 	float realAspect = (float)m_RealWidth / (float)m_RealHeight;
@@ -177,7 +225,6 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 	m_Renderer = SDL_CreateRenderer(m_Win, -1, 0);
 	if (!m_Renderer) return E_FAIL;
 
-#ifdef __ANDROID__
 	if (m_PixelPerfect == true) {
 		m_Texture = SDL_CreateTexture(m_Renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, m_Width, m_Height);
 		if (!m_Texture) return E_FAIL;
@@ -197,10 +244,10 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 	} else {
 		m_RenderOffscreen = false;
 
+		SDL_RenderSetViewport(GetSdlRenderer(), NULL);
+
 		Game->LOG(0, "PixelPerfect rendering disabled!");
 	}
-
-#endif
 
 	m_Active = true;
 	
