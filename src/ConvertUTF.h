@@ -87,7 +87,7 @@
     bit mask & shift operations.
 ------------------------------------------------------------------------ */
 
-#ifdef __WIN32__
+#ifdef _MSC_VER
 #define uint32_t unsigned long
 #else
 #include <stdint.h>
