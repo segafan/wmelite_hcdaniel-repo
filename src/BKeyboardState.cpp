@@ -183,7 +183,19 @@ char* CBKeyboardState::ScToString()
 HRESULT CBKeyboardState::ReadKey(SDL_Event* event)
 {
 	m_CurrentPrintable = (event->type == SDL_TEXTINPUT);
-	m_CurrentCharCode = KeyCodeToVKey(event);
+	/*
+	 * Only save the code when it is a valid one.
+	 *
+	 * SDL seems to sometimes send 2 events upon keypress. One with the actual key, and
+	 * one SDL_TEXTINPUT event later. Thus it can happen that the actual key is overwritten
+	 * before the script that reads the key is actually executed.
+	 * 
+	 * The "fix" is to not overwrite the char code when the event is not actually a KEY_DOWN event.
+	 */
+	if (event->type == SDL_KEYDOWN)
+	{
+		m_CurrentCharCode = KeyCodeToVKey(event);
+	}
 	//m_CurrentKeyData = KeyData;
 
 	m_CurrentControl = IsControlDown();
