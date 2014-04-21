@@ -163,7 +163,7 @@ HRESULT CBSoundBuffer::Play(bool Looping, DWORD StartSample)
 	if (m_Stream)
 	{
 		SetLooping(Looping);
-		BASS_ChannelPlay(m_Stream, TRUE);
+		BASS_ChannelPlay(m_Stream, FALSE);
 	}
 	return S_OK;
 }

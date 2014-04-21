@@ -3661,6 +3661,13 @@ HRESULT CBGame::PlayMusic(int Channel, char *Filename, bool Looping, DWORD LoopS
 			m_Music[Channel]->SetPositionTime(m_MusicStartTime[Channel]);
 			m_MusicStartTime[Channel] = 0;
 		}
+		else
+		{
+			/* Always set position. Safeguard to set restart flag in BASS_ChannelPlay to FALSE, 
+			 * fixes Game.SetMusicChannelPosition() function.
+			 */
+			m_Music[Channel]->SetPositionTime(0);
+		}
 		if(LoopStart) m_Music[Channel]->SetLoopStart(LoopStart);
 		return m_Music[Channel]->Play(Looping);
 	}
