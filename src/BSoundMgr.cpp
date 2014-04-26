@@ -327,7 +327,26 @@ HRESULT CBSoundMgr::ResumeAll()
 //////////////////////////////////////////////////////////////////////////
 float CBSoundMgr::PosToPan(int X, int Y)
 {
-	float relPos = (float)X / ((float)Game->m_Renderer->m_Width);
+	/*
+	 * This is tricky to do right. Scenes could be scrolling (thus bigger than rendering width)
+	 * and even then objects that emit sound could be "outside" the scene.
+	 *
+	 * As a compromise, the range where panning is applied is defined from
+	 * (-0.5 * width) .. 0 .. (+1.5 * width).
+	 *
+	 * Because the sound library might simply ignore values out of range, extreme
+	 * values are truncated.
+	 */
+	float width = (float) Game->m_Renderer->m_Width;
+	float relPos = ((float) X + (0.5f * width)) / (width * 2.0f);
+
+	// saturate
+	if (relPos < 0.0f) {
+		relPos = 0.0f;
+	}
+	if (relPos > 1.0f) {
+		relPos = 1.0f;
+	}
 
 	float minPan = -0.7f;
 	float maxPan = 0.7f;
