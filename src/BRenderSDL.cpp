@@ -28,6 +28,7 @@ THE SOFTWARE.
 #include "BSurfaceSDL.h"
 #include "FreeImage.h"
 #include "MathUtil.h"
+#include "StringUtil.h"
 
 //////////////////////////////////////////////////////////////////////////
 CBRenderSDL::CBRenderSDL(CBGame* inGame) : CBRenderer(inGame)
@@ -52,7 +53,7 @@ CBRenderSDL::~CBRenderSDL()
 }
 
 //////////////////////////////////////////////////////////////////////////
-HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float upScalingRatioStepping, float downScalingRatioStepping, bool pixelPerfectRendering)
+HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float upScalingRatioStepping, float downScalingRatioStepping, bool pixelPerfectRendering, const AnsiString& renderingHint)
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) return E_FAIL;
 	
@@ -208,19 +209,41 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 	
 	if (!m_Win) return E_FAIL;
 
+	SDL_SetWindowDisplayMode(m_Win, current);	
+
 	SDL_ShowCursor(SDL_DISABLE);
 
 #ifdef __IPHONEOS__
 	// SDL defaults to OGL ES2, which doesn't work on old devices
-	SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengles");
+	AnsiString defaultRenderingHint = "opengles";
 #else
 
 #ifdef __ANDROID__
 	// lets assume almost every active device has OpenGL ES2 now...
-	// SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengles");
+	AnsiString defaultRenderingHint = "opengles2";
+#else
+
+#ifdef __WIN32__
+    // directx for Windows
+	AnsiString defaultRenderingHint = "direct3d";
+
+#else
+	// OpenGL for Linux and all others
+	AnsiString defaultRenderingHint = "opengl";
+
 #endif
 
 #endif
+
+#endif
+
+	if (StringUtil::CompareNoCase(renderingHint, "default") == true) {
+		Game->LOG(0, "Set rendering hint default value: %s", defaultRenderingHint.c_str());
+		SDL_SetHint(SDL_HINT_RENDER_DRIVER, defaultRenderingHint.c_str());
+	} else {
+		Game->LOG(0, "Set rendering hint registry value: %s", renderingHint.c_str());
+		SDL_SetHint(SDL_HINT_RENDER_DRIVER, renderingHint.c_str());
+	}
 
 	m_Renderer = SDL_CreateRenderer(m_Win, -1, 0);
 	if (!m_Renderer) return E_FAIL;
