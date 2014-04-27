@@ -197,10 +197,15 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 	// just do the same IOS does
 	flags |= SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS;
 #endif
-	//m_Windowed = Game->m_Registry->ReadBool("Video", "Windowed", true);
-    // as of Novmber 2012 using SDL_WINDOW_FULLSCREEN causes iOS glitch when returning back to the app (the image is shifted several pixels up)
-	if (!windowed) flags |= SDL_WINDOW_FULLSCREEN;
+
 #endif
+	// registry wins over command line
+	m_Windowed = Game->m_Registry->ReadBool("Video", "Windowed", windowed);
+    
+	// as of Novmber 2012 using SDL_WINDOW_FULLSCREEN causes iOS glitch when returning back to the app (the image is shifted several pixels up)
+	// so better don't use it on iOS
+	if (!m_Windowed) flags |= SDL_WINDOW_FULLSCREEN;
+
 	m_Win = SDL_CreateWindow("WME Lite",
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
