@@ -53,7 +53,7 @@ CBRenderSDL::~CBRenderSDL()
 }
 
 //////////////////////////////////////////////////////////////////////////
-HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float upScalingRatioStepping, float downScalingRatioStepping, bool pixelPerfectRendering, const AnsiString& renderingHint)
+HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float upScalingRatioStepping, float downScalingRatioStepping, bool pixelPerfectRendering, const AnsiString& renderingHint, bool vsync)
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) return E_FAIL;
 	
@@ -250,6 +250,10 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 		SDL_SetHint(SDL_HINT_RENDER_DRIVER, renderingHint.c_str());
 	}
 
+
+	if (vsync == true) SDL_SetHint(SDL_HINT_RENDER_VSYNC, "1");
+
+	// m_Renderer = SDL_CreateRenderer(m_Win, -1, SDL_RENDERER_PRESENTVSYNC);
 	m_Renderer = SDL_CreateRenderer(m_Win, -1, 0);
 	if (!m_Renderer) return E_FAIL;
 

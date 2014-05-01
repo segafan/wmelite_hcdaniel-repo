@@ -133,8 +133,10 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 
 	AnsiString renderingHint = Game->m_Registry->ReadString("Rendering", "RenderingHint", "default");
 
+	bool vsync = Game->m_Registry->ReadBool("Rendering", "VSync");
+
 	// initialize the renderer
-	ret = Game->m_Renderer->InitRenderer(Game->m_SettingsResWidth, Game->m_SettingsResHeight, windowedMode, upScalingStepping, downScalingStepping, pixelPerfectRendering, renderingHint);
+	ret = Game->m_Renderer->InitRenderer(Game->m_SettingsResWidth, Game->m_SettingsResHeight, windowedMode, upScalingStepping, downScalingStepping, pixelPerfectRendering, renderingHint, vsync);
 	if (FAILED(ret))
 	{
 		Game->LOG(ret, "Error initializing renderer. Exiting.");
