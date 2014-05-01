@@ -166,6 +166,7 @@ private:
 	size_t m_MaxCharHeight;
 
 	bool m_FontAlphaHack;
+	bool m_FontOffsetLimitHack;
 
 public:
 	bool m_IsBold;
