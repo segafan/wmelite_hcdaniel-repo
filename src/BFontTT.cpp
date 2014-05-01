@@ -56,8 +56,10 @@ CBFontTT::CBFontTT(CBGame* inGame):CBFont(inGame)
 	m_MaxCharWidth = m_MaxCharHeight = 0;
 
 	m_FontAlphaHack = inGame->m_Registry->ReadBool("Font", "FontAlphaHack", false);
+	m_FontOffsetLimitHack = inGame->m_Registry->ReadBool("Font", "FontOffsetLimitHack", false);
 
 	inGame->LOG(0, "Font alpha hack is %s.", (m_FontAlphaHack == true) ? "on" : "off");
+	inGame->LOG(0, "Font offset limit hack is %s.", (m_FontOffsetLimitHack == true) ? "on" : "off");
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -287,6 +289,33 @@ CBSurface* CBFontTT::RenderTextToTexture(const WideString& text, int width, TTex
 			textOffset = max(textOffset, glyph->GetBearingY());
 		}
 
+		/*
+		 * Adjust offset for glyphs that draw below baseline and thus would exceed texture size.
+		 *
+		 * Above computation of the textOffset value only takes Y bearing into account, 
+		 * which is not always correct (I fail to understand the reason though). Glyphs that
+		 * draw below baseline might be cut off in some cases when they exceed the size of the 
+		 * surface they shall be rendered onto.
+		 *
+		 * Being unable to fix above computation, the hack below adjusts the previously computed
+		 * offset so that no glyph exceeds the height of the surface to be rendered onto.
+		 *
+		 */
+		if (m_FontOffsetLimitHack == true)
+		{
+			for (size_t i = 0; i < line->GetText().length(); i++)
+			{
+				wchar_t ch = line->GetText()[i];
+
+				GlyphInfo* glyph = m_GlyphCache->GetGlyph(ch);
+				if (!glyph) continue;
+
+				while ((posY + textOffset - glyph->GetBearingY() + glyph->GetImage()->h) >= textHeight) 
+				{
+					textOffset--;
+				}
+			}
+		}
 
 		int origPosX = posX;
 
