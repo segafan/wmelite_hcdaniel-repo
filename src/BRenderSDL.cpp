@@ -258,6 +258,8 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 	if (!m_Renderer) return E_FAIL;
 
 	if (m_PixelPerfect == true) {
+		// try to make texture scaling look as nice as possible
+		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
 		m_Texture = SDL_CreateTexture(m_Renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, m_Width, m_Height);
 		if (!m_Texture) return E_FAIL;
 		SDL_SetTextureBlendMode(m_Texture, SDL_BLENDMODE_BLEND);
