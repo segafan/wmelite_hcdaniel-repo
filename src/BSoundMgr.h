@@ -30,6 +30,9 @@ THE SOFTWARE.
 #include "BBase.h"
 #ifndef USE_SDL_MIXER
 #include "bass.h"
+#ifdef  USE_BASS_FX
+#include "bass_fx.h"
+#endif
 #else
 #include "SDL_mixer.h"
 #endif

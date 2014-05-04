@@ -30,6 +30,9 @@ THE SOFTWARE.
 #include "BBase.h"
 #ifndef USE_SDL_MIXER
 #include "bass.h"
+#ifdef  USE_BASS_FX
+#include "bass_fx.h"
+#endif
 #else
 #include "SDL_mixer.h"
 #endif
@@ -80,6 +83,12 @@ public:
 	
 	HSTREAM m_Stream;
 	HSYNC m_Sync;
+
+#ifdef USE_BASS_FX
+
+	HFX m_EffectHandle;
+
+#endif
 
 	static void CALLBACK LoopSyncProc(HSYNC handle, DWORD channel, DWORD data, void* user);
 
