@@ -93,12 +93,19 @@ HRESULT CBSoundMgr::Initialize()
 		return E_FAIL;
 	}
 
+#ifdef  USE_BASS_FX
+	if (HIWORD(BASS_FX_GetVersion()) != BASSVERSION) 
+	{
+		Game->LOG(0, "An incorrect version of BASS FX was loaded");
+		return E_FAIL;
+	} 
+#endif
+
 	if (!BASS_Init(-1, 44100, 0, 0, NULL))
 	{
 		Game->LOG(0, "Can't initialize sound device");
 		return E_FAIL;
 	}
-	
 
 	m_VolumeMaster = Game->m_Registry->ReadInt("Audio", "MasterVolume", 100);
 

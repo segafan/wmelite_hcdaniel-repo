@@ -49,6 +49,10 @@ CBSoundBuffer::CBSoundBuffer(CBGame* inGame):CBBase(inGame)
 	m_Type = SOUND_SFX;
 
 	m_FreezePaused = false;
+
+#ifdef USE_BASS_FX
+	m_EffectHandle = 0;
+#endif
 }
 
 
@@ -112,6 +116,14 @@ HRESULT CBSoundBuffer::LoadFromFile(const char* Filename, bool ForceReload)
 	}
 
 	CBUtils::SetString(&m_Filename, Filename);
+
+#ifdef USE_BASS_FX
+	if (m_EffectHandle != 0)
+	{
+		BASS_ChannelRemoveFX(m_Stream, m_EffectHandle);
+		m_EffectHandle = 0;
+	}
+#endif
 
 	/*
 	HRESULT res;
@@ -339,12 +351,76 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 	switch(Type)
 	{
 	case SFX_ECHO:
+#ifdef USE_BASS_FX
+		if (m_EffectHandle != 0)
+		{
+			BASS_ChannelRemoveFX(m_Stream, m_EffectHandle);
+		}
+		m_EffectHandle = BASS_ChannelSetFX(
+			m_Stream,
+			BASS_FX_BFX_ECHO4,
+			0);
+
+		if (m_EffectHandle != 0) 
+		{
+			BASS_BFX_ECHO4 params;
+			params.fDryMix = ((100.0f - Param1) / 50.0f);
+			params.fWetMix = (Param1 / 50.0f);
+			params.fFeedback = (Param2 / 100.0f);
+			params.fDelay = (Param3 + Param4) / 2.0f / 1000.0f;
+			params.bStereo = false;
+			params.lChannel = BASS_BFX_CHANALL;
+
+			Game->LOG(0, "Echo params: Dry=%.2f Wet=%.2f Fedback=%.2f Delay=%.2f", params.fDryMix, params.fWetMix, params.fFeedback, params.fDelay);
+
+			BOOL status = BASS_FXSetParameters(
+				m_EffectHandle,
+				(void *) &params);
+
+			Game->LOG(0, "Echo status=%s", (status == TRUE) ? "OK" : "ERROR");
+		}
+#endif
 		break;
 
 	case SFX_REVERB:
+#ifdef USE_BASS_FX
+		if (m_EffectHandle != 0)
+		{
+			BASS_ChannelRemoveFX(m_Stream, m_EffectHandle);
+		}	
+		m_EffectHandle = BASS_ChannelSetFX(
+			m_Stream,
+			BASS_FX_BFX_ECHO4,
+			0);
+		if (m_EffectHandle != 0) 
+		{
+			BASS_BFX_ECHO4 params;
+			params.fDryMix = 2.0f - ((Param1 + 96) / 50.0f);
+			params.fWetMix = ((Param1 + 96) / 50.0f);
+			params.fFeedback = ((Param2 + 96) / 50.0f);
+			params.fDelay = (Param3 / 1000.0f);
+			params.bStereo = false;
+			params.lChannel = BASS_BFX_CHANALL;
+
+			Game->LOG(0, "Reverb params: Dry=%.2f Wet=%.2f Fedback=%.2f Delay=%.2f", params.fDryMix, params.fWetMix, params.fFeedback, params.fDelay);
+
+			BOOL status = BASS_FXSetParameters(
+				m_EffectHandle,
+				(void *) &params);
+
+			Game->LOG(0, "Reverb status=%s", (status == TRUE) ? "OK" : "ERROR");
+		}
+#endif
 		break;
 
 	default:
+#ifdef USE_BASS_FX
+		if (m_EffectHandle != 0)
+		{
+			BASS_ChannelRemoveFX(m_Stream, m_EffectHandle);
+			m_EffectHandle = 0;
+		}
+#endif
 		break;
 	}
 
