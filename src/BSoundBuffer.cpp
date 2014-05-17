@@ -247,8 +247,19 @@ HRESULT CBSoundBuffer::SetVolume(int Volume)
 	{
 		// compute the "weighted" value (volume relatively to TSoundType category's volume)
 		float resultingVolumePerCent = ((float)Volume / 100.0f) * m_PrivateVolume;
-		BASS_ChannelSetAttribute(m_Stream, BASS_ATTRIB_VOL, resultingVolumePerCent / 100.0f);
-		// Game->LOG(0, "BASS_Setvolume occurred, integer=%d, privVolume=%d, resulting float value=%f.\n", Volume, m_PrivateVolume, resultingVolumePerCent / 100.0f);
+
+		/*
+		 * Repeat the volume computation of WME so that WMElite mimics WME.
+		 */
+		double attenuate = pow(1 - (resultingVolumePerCent / 100.0f), 3);
+		int myFinalVolume = int(-10000 * attenuate);
+		/*
+		 * Now that the volume is in 0,01dB steps, reverse-compute percentage (sort of, values are experimental)
+		 */
+		float resultingVolumeBass = (float) pow(10.0f, (myFinalVolume / 2000.0f));
+
+		BASS_ChannelSetAttribute(m_Stream, BASS_ATTRIB_VOL, resultingVolumeBass);
+		Game->LOG(0, "BASS_Setvolume for stream %s occurred, volume=%d, privVolume=%d, wmevalue=%d resulting float value=%f.\n", m_Filename, Volume, m_PrivateVolume, myFinalVolume, resultingVolumeBass);
 	}
 	return S_OK;
 }
