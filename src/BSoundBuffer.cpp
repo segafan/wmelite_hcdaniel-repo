@@ -26,6 +26,8 @@ THE SOFTWARE.
 #include "dcgf.h"
 #include "BSoundBuffer.h"
 
+#include <math.h>
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -364,9 +366,17 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 		if (m_EffectHandle != 0) 
 		{
 			BASS_BFX_ECHO4 params;
-			params.fDryMix = ((100.0f - Param1) / 50.0f);
-			params.fWetMix = (Param1 / 50.0f);
-			params.fFeedback = (Param2 / 100.0f);
+			/*
+			 * try to be as close as possible to the DSFX echo, it will never be perfect though
+			 * 
+			 * fDryMix = reverse of fWetDryMix (scaled from 0..100 into 0..1)
+			 * fWetMix = fWetDryMix (converted from logarithmic to linear) 
+			 * fDelay  = mean of fLeftDelay and fRightDelay (converted from milliseconds to seconds)
+			 * ignored = fFeedback (the BASS feedback parameter is used to create reverb)
+			 */
+			params.fDryMix = ((100.0f - Param1) / 100.0f);
+			params.fWetMix = (Param1 / 100.0f);
+			params.fFeedback = 0;
 			params.fDelay = (Param3 + Param4) / 2.0f / 1000.0f;
 			params.bStereo = false;
 			params.lChannel = BASS_BFX_CHANALL;
@@ -378,6 +388,10 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 				(void *) &params);
 
 			Game->LOG(0, "Echo status=%s", (status == TRUE) ? "OK" : "ERROR");
+			if (status == FALSE)
+			{
+				Game->LOG(0, "Echo error=%d", BASS_ErrorGetCode());
+			}
 		}
 #endif
 		break;
@@ -395,9 +409,17 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 		if (m_EffectHandle != 0) 
 		{
 			BASS_BFX_ECHO4 params;
-			params.fDryMix = 2.0f - ((Param1 + 96) / 50.0f);
-			params.fWetMix = ((Param1 + 96) / 50.0f);
-			params.fFeedback = ((Param2 + 96) / 50.0f);
+			/*
+			 * try to be as close as possible to the DSFX reverb, it will never be perfect though
+			 * 
+			 * fDryMix = fInGain (converted from logarithmic to linear)
+			 * fWetMix = fReverbMix (converted from logarithmic to linear) multiplied ("attenuated") with fDryMix
+			 * fDelay  = fReverbTime (converted from milliseconds to seconds)
+			 * ignored = fHighFreqRTRatio (no equivalent in BASS)
+			 */
+			params.fDryMix = pow(10.0f, (Param1 / 10.0f));
+			params.fWetMix = pow(10.0f, (Param2 / 10.0f)) * params.fDryMix;
+			params.fFeedback = 0.5;
 			params.fDelay = (Param3 / 1000.0f);
 			params.bStereo = false;
 			params.lChannel = BASS_BFX_CHANALL;
@@ -409,6 +431,10 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 				(void *) &params);
 
 			Game->LOG(0, "Reverb status=%s", (status == TRUE) ? "OK" : "ERROR");
+			if (status == FALSE)
+			{
+				Game->LOG(0, "Reverb error=%d", BASS_ErrorGetCode());
+			}
 		}
 #endif
 		break;
