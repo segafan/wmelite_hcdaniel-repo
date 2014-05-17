@@ -60,6 +60,14 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
 	SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING, 1);
 
+	bool doubleBuffering = Game->m_Registry->ReadBool("Rendering", "DoubleBuffering", false);
+
+	Game->LOG(0, "Double buffering flag set to: %s.", (doubleBuffering == true) ? "ON" : "default");
+	if (doubleBuffering == true)
+	{
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	}
+
 	m_Width = width;
 	m_Height = height;
 
