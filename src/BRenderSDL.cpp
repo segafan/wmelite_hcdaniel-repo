@@ -291,6 +291,16 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 		Game->LOG(0, "PixelPerfect rendering disabled!");
 	}
 
+	// necessary init and computations for experimental frame rate limit
+	m_LastRenderTime = 0;
+	m_SecondTickTime = 0;
+	m_FrameCounter   = 0;
+	m_FrameRateLimit = Game->m_Registry->ReadInt("Rendering", "FrameRateLimit", 0);
+	if (m_FrameRateLimit > 0)
+	{
+		m_FrameSleepTime = MathUtil::Round(1000.0f / ((float) m_FrameRateLimit));
+	}
+
 	m_Active = true;
 	
 
@@ -371,6 +381,40 @@ HRESULT CBRenderSDL::Flip()
 	// if not already done, draw the offscreen image onto the final screen
 	if ((m_PixelPerfect == true) && (m_RenderOffscreen == true)) {
 		SendRenderingHintSceneComplete();
+	}
+
+	// last resort to limit frame rate if vsync does not work
+	if (m_FrameRateLimit > 0)
+	{
+		DWORD currRenderTime = CBPlatform::GetTime();
+		DWORD renderDiffTime = currRenderTime - m_LastRenderTime;
+		if (renderDiffTime < m_FrameSleepTime)
+		{
+			CBPlatform::SleepMs(m_FrameSleepTime - renderDiffTime);
+		}
+		m_LastRenderTime = CBPlatform::GetTime();
+
+		// adjust sleep timer once per second
+		m_FrameCounter++;
+		if ((m_LastRenderTime - m_SecondTickTime) > 1000)
+		{
+			if (m_FrameCounter != m_FrameRateLimit)
+			{
+				if (m_FrameCounter > m_FrameRateLimit)
+				{
+					m_FrameSleepTime++;
+				}
+				else
+				{
+					if (m_FrameSleepTime > 0)
+					{
+						m_FrameSleepTime--;
+					}
+				}
+			}
+			m_FrameCounter = 0;
+			m_SecondTickTime = m_LastRenderTime;
+		}
 	}
 
 	SDL_RenderPresent(m_Renderer);

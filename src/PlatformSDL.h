@@ -62,6 +62,7 @@ public:
 	static HINSTANCE ShellExecute(HWND hwnd, LPCSTR lpOperation, LPCSTR lpFile, LPCSTR lpParameters, LPCSTR lpDirectory, INT nShowCmd);
 	static void OutputDebugString(LPCSTR lpOutputString);
 	static DWORD GetTime();
+	static void SleepMs(DWORD millis);
 	static BOOL GetCursorPos(LPPOINT lpPoint);
 	static BOOL SetCursorPos(int X, int Y);
 	static BOOL ShowWindow(HWND hWnd, int nCmdShow);

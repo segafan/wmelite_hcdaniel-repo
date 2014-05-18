@@ -387,6 +387,12 @@ DWORD CBPlatform::GetTime()
 }
 
 //////////////////////////////////////////////////////////////////////////
+void CBPlatform::SleepMs(DWORD millis)
+{
+	SDL_Delay(millis);
+}
+
+//////////////////////////////////////////////////////////////////////////
 BOOL CBPlatform::GetCursorPos(LPPOINT lpPoint)
 {
 	CBRenderSDL* renderer = static_cast<CBRenderSDL*>(Game->m_Renderer);
