@@ -189,13 +189,13 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 	m_RatioX = (float)(m_RealWidth - m_BorderLeft - m_BorderRight) / (float)m_Width;
 	m_RatioY = (float)(m_RealHeight - m_BorderTop - m_BorderBottom) / (float)m_Height;
 
-#ifdef __ANDROID__
+// #ifdef __ANDROID__
 	Game->LOG(0, "Orig w=%d h=%d Transformed w=%d h=%d ratiox=%.02f ratioy=%.02f",
 			m_Width, m_Height, m_RealWidth, m_RealHeight,
 			m_RatioX, m_RatioY);
 	Game->LOG(0, "BorderLeft=%d BorderRight=%d BorderTop=%d BorderBottom=%d",
 			m_BorderLeft, m_BorderRight, m_BorderTop, m_BorderBottom);
-#endif
+// #endif
 
 	Uint32 flags = SDL_WINDOW_SHOWN;
 #ifdef __IPHONEOS__
@@ -502,6 +502,8 @@ HRESULT CBRenderSDL::DrawLine(int X1, int Y1, int X2, int Y2, DWORD Color)
 	SDL_SetRenderDrawColor(m_Renderer, r, g, b, a);
 	SDL_SetRenderDrawBlendMode(m_Renderer, SDL_BLENDMODE_BLEND);
 
+#ifdef __IPHONEOS__
+	// maybe on iOS viewport setting still doesn't work...
 	POINT point1, point2;
 	point1.x = X1;
 	point1.y = Y1;
@@ -510,7 +512,15 @@ HRESULT CBRenderSDL::DrawLine(int X1, int Y1, int X2, int Y2, DWORD Color)
 	point2.x = X2;
 	point2.y = Y2;
 	PointToScreen(&point2);
-    
+#else
+	// setviewport() is respected, so only scale the coordinates
+	POINT point1, point2;
+	point1.x = X1 * m_RatioX;
+	point1.y = Y1 * m_RatioY;
+
+	point2.x = X2 * m_RatioX;
+	point2.y = Y2 * m_RatioY;
+#endif
 
 	SDL_RenderDrawLine(m_Renderer, point1.x, point1.y, point2.x, point2.y);
 	return S_OK;
@@ -633,16 +643,16 @@ void CBRenderSDL::ModOrigin(SDL_Point* origin)
 //////////////////////////////////////////////////////////////////////////
 void CBRenderSDL::PointFromScreen(POINT* point)
 {
-	point->x = point->x / m_RatioX - m_BorderLeft / m_RatioX;
-	point->y = point->y / m_RatioY - m_BorderTop / m_RatioY;
+	point->x = point->x / m_RatioX - m_BorderLeft;
+	point->y = point->y / m_RatioY - m_BorderTop;
 }
 
 
 //////////////////////////////////////////////////////////////////////////
 void CBRenderSDL::PointToScreen(POINT* point)
 {
-	point->x = MathUtil::Round(point->x * m_RatioX + m_BorderLeft * m_RatioX);
-	point->y = MathUtil::Round(point->y * m_RatioY + m_BorderTop * m_RatioY);
+	point->x = MathUtil::Round(point->x * m_RatioX + m_BorderLeft);
+	point->y = MathUtil::Round(point->y * m_RatioY + m_BorderTop);
 }
 
 //////////////////////////////////////////////////////////////////////////
