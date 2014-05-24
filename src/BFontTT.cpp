@@ -56,10 +56,11 @@ CBFontTT::CBFontTT(CBGame* inGame):CBFont(inGame)
 	m_MaxCharWidth = m_MaxCharHeight = 0;
 
 	m_FontAlphaHack = inGame->m_Registry->ReadBool("Font", "FontAlphaHack", false);
-	m_FontOffsetLimitHack = inGame->m_Registry->ReadBool("Font", "FontOffsetLimitHack", false);
+
+	m_FontYOffsetCompensation = inGame->m_Registry->ReadInt("Font", "FontYOffsetCompensation", 0);
 
 	inGame->LOG(0, "Font alpha hack is %s.", (m_FontAlphaHack == true) ? "on" : "off");
-	inGame->LOG(0, "Font offset limit hack is %s.", (m_FontOffsetLimitHack == true) ? "on" : "off");
+	inGame->LOG(0, "Font Y offset value=%d.", m_FontYOffsetCompensation);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -249,23 +250,54 @@ void CBFontTT::DrawText(BYTE* Text, int X, int Y, int Width, TTextAlign Align, i
 CBSurface* CBFontTT::RenderTextToTexture(const WideString& text, int width, TTextAlign align, int maxHeight, int& textOffset)
 {
 	TextLineList lines;
-	WrapText(text, width, maxHeight, lines);
+	int heightAfterWrapping;
 
+	/* The text will be wrapped to fit into the width and height as specified.
+	 * In case there was too much text, it is truncated as soon as maxHeight is exceeded.
+	 * Here, the distance between two lines is taken from the m_LineHeight value (coming from the font definition).
+	 */
+	heightAfterWrapping = WrapText(text, width, maxHeight, lines);
 
 	TextLineList::iterator it;
 
+	/* The surface to render the text onto is equal in width, but the height is computed differently.
+	 * m_MaxCharHeight is the Y size of the bounding box of all characters.
+	 * 
+	 * There could be fonts that have incorrect parameters set. The freetype doc says that the value used
+	 * for m_LineHeight does not assure that all glyphs will "fit" into this. 
+	 * 
+	 * It won't be possible to "fix" everything, but at least try our best with obvious failures. 
+	 * So if the resulting text height from the computation of "WrapText" is bigger than the
+	 * size computed below, adjust it appropriately. Later when drawing the glyphs, the m_LineHeight
+	 * is used anyway as line distance, so checking the "textHeight" for sanity is not a bad idea.
+	 * 
+	 */
 	int textHeight = lines.size() * (m_MaxCharHeight + m_Ascender);
+	if (heightAfterWrapping > textHeight)
+	{
+		Game->LOG(0, "Strange font definitions. Text height %d smaller than line height %d.", textHeight, heightAfterWrapping);
+		textHeight = heightAfterWrapping;
+	}
 	SDL_Surface* surface = SDL_CreateRGBSurface(0, width, textHeight, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
 	
 	SDL_LockSurface(surface);
 
-	int posY = (int)GetLineHeight() - (int)m_Descender;
+	/* starting position for Y axis is taken as low as possible, assuming that no glyphs
+	 * render below "baseline + descender".
+	 *
+	 * If the font has strange metrics (seen by the debug warning below), a global Y offset can
+	 * be specified.
+	 */
+	int posY = (int)GetLineHeight() - (int)m_Descender - m_FontYOffsetCompensation;
 
 	for (it = lines.begin(); it != lines.end(); ++it)
 	{
 		TextLine* line = (*it);
 		int posX = 0;
 
+		/* Adjustment of X axis of current line depending on alignment.
+		 *
+		 */
 		switch (align)
 		{
 		case TAL_CENTER:
@@ -277,7 +309,11 @@ CBSurface* CBFontTT::RenderTextToTexture(const WideString& text, int width, TTex
 			break;
 		}
 
-
+		/* Compute an offset which is the max. of all y bearings
+		 * of all glyphs of this line, 
+		 * a.k.a. the "maximum height of all glyphs of this line relative to baseline".
+		 *
+		 */
 		textOffset = 0;
 		for (size_t i = 0; i < line->GetText().length(); i++)
 		{
@@ -287,33 +323,21 @@ CBSurface* CBFontTT::RenderTextToTexture(const WideString& text, int width, TTex
 			if (!glyph) continue;
 
 			textOffset = max(textOffset, glyph->GetBearingY());
-		}
 
-		/*
-		 * Adjust offset for glyphs that draw below baseline and thus would exceed texture size.
-		 *
-		 * Above computation of the textOffset value only takes Y bearing into account, 
-		 * which is not always correct (I fail to understand the reason though). Glyphs that
-		 * draw below baseline might be cut off in some cases when they exceed the size of the 
-		 * surface they shall be rendered onto.
-		 *
-		 * Being unable to fix above computation, the hack below adjusts the previously computed
-		 * offset so that no glyph exceeds the height of the surface to be rendered onto.
-		 *
-		 */
-		if (m_FontOffsetLimitHack == true)
-		{
-			for (size_t i = 0; i < line->GetText().length(); i++)
+			/* Suggest a workaround in case the font metrics are wrong and text is thus 
+			 * rendered outside of the bounds of the surface.
+			 *
+			 */
+			if ((posY + textOffset - glyph->GetBearingY() + glyph->GetImage()->h) >= textHeight)
 			{
-				wchar_t ch = line->GetText()[i];
-
-				GlyphInfo* glyph = m_GlyphCache->GetGlyph(ch);
-				if (!glyph) continue;
-
-				while ((posY + textOffset - glyph->GetBearingY() + glyph->GetImage()->h) >= textHeight) 
-				{
-					textOffset--;
-				}
+				Game->LOG(0, "Font cut off at lower bound! Suggest (additional) font Y offset correction value of at least %d.", (posY + textOffset - glyph->GetBearingY() + glyph->GetImage()->h - textHeight + 1));
+			}
+			/* Offset might be too big. After all its just a workaround.
+			 *
+			 */
+			if ((posY + textOffset - glyph->GetBearingY()) < 0)
+			{
+				Game->LOG(0, "Font cut off at upper bound! Suggest lower font Y offset correction value of at least %d.", -(posY + textOffset - glyph->GetBearingY()));
 			}
 		}
 
@@ -756,6 +780,15 @@ HRESULT CBFontTT::InitFont()
 	m_MaxCharWidth  = (size_t)MathUtil::RoundUp(xMax - xMin);
 	m_MaxCharHeight = (size_t)MathUtil::RoundUp(yMax - yMin);
 
+	/* The text rendering function implititly assumes that ascender and descender
+	 * in sum are equal to "m_MaxCharHeight". Warn here if that is not true.
+	 *
+	 */
+	if (MathUtil::RoundUp(m_Ascender + m_Descender) < m_MaxCharHeight)
+	{
+		Game->LOG(0, "Invalid font metrics that conflict with rendering algo: %.2f %.2f %d.", m_Ascender, m_Descender, m_MaxCharHeight);
+	}
+
 	m_GlyphCache = new FontGlyphCache();
 	m_GlyphCache->Initialize();
 
@@ -797,7 +830,7 @@ void CBFontTT::FTCloseProc(FT_Stream stream)
 
 
 //////////////////////////////////////////////////////////////////////////
-void CBFontTT::WrapText(const WideString& text, int maxWidth, int maxHeight, TextLineList& lines)
+int CBFontTT::WrapText(const WideString& text, int maxWidth, int maxHeight, TextLineList& lines)
 {
 	int currWidth = 0;
 	wchar_t prevChar = L'\0';
@@ -811,6 +844,9 @@ void CBFontTT::WrapText(const WideString& text, int maxWidth, int maxHeight, Tex
 	{
 		wchar_t ch = text[i];
 
+		/* remember the last space character in the string
+		 * for wrapping the line later if necessary
+		 */
 		if (ch == L' ')
 		{
 			prevSpaceIndex = i;
@@ -819,6 +855,9 @@ void CBFontTT::WrapText(const WideString& text, int maxWidth, int maxHeight, Tex
 
 		int charWidth = 0;
 
+		/* measure width of this char
+		 * (advanceX + kerning)
+		 */
 		if (ch != L'\n')
 		{
 			GlyphInfo* glyphInfo = GetGlyphCache()->GetGlyph(ch);
@@ -838,24 +877,28 @@ void CBFontTT::WrapText(const WideString& text, int maxWidth, int maxHeight, Tex
 		if (lineTooLong && currWidth == 0) break;
 
 
+		/* check if the text shall be wrapped
+		 */
 		if (ch == L'\n' || i == text.length() - 1 || lineTooLong)
 		{
 			int breakPoint, breakWidth;
 
 			if (prevSpaceIndex >= 0 && lineTooLong)
 			{
+				/* we have a previous space character that we can wrap the text at */
 				breakPoint = prevSpaceIndex;
 				breakWidth = prevSpaceWidth;
 				breakOnSpace = true;
 			}
 			else
 			{
+				/* need to break at the current position */
 				breakPoint = i;
 				breakWidth = currWidth;
 
 				breakOnSpace = (ch == L'\n');
 
-				// we're at the end
+				// we're at the end, so "consume" the last character as well
 				if (i == text.length() - 1)
 				{
 					breakPoint++;
@@ -863,15 +906,20 @@ void CBFontTT::WrapText(const WideString& text, int maxWidth, int maxHeight, Tex
 				}
 			}
 
+			/* max. height exceeded --> "discard" this line and all following text
+			 * i.e. do not add it to the text line list, return immediately
+			 */
 			if (maxHeight >= 0 && (lines.size() + 1) * GetLineHeight() > maxHeight) break;
 
 			WideString line = text.substr(lineStartIndex, breakPoint - lineStartIndex);
 			lines.push_back(new TextLine(line, breakWidth));
 
+			/* reset all values for the next line */
 			currWidth = 0;
 			prevChar = L'\0';
 			prevSpaceIndex = -1;
 
+			/* swallow (discard) spaces when breaking line */
 			if (breakOnSpace) breakPoint++;
 
 			lineStartIndex = breakPoint;
@@ -883,6 +931,9 @@ void CBFontTT::WrapText(const WideString& text, int maxWidth, int maxHeight, Tex
 		//if (ch == L' ' && currLine.empty()) continue;
 		currWidth += charWidth;
 	}
+
+	// return the height of the "accepted" text
+	return (lines.size() * GetLineHeight());
 }
 
 //////////////////////////////////////////////////////////////////////////

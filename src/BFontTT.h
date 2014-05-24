@@ -136,7 +136,7 @@ public:
 private:
 	HRESULT ParseLayer(CBTTFontLayer* Layer, BYTE* Buffer);
 
-	void WrapText(const WideString& text, int maxWidth, int maxHeight, TextLineList& lines);
+	int WrapText(const WideString& text, int maxWidth, int maxHeight, TextLineList& lines);
 	void MeasureText(const WideString& text, int maxWidth, int maxHeight, int& textWidth, int& textHeight);
 	float GetKerning(wchar_t leftChar, wchar_t rightChar);
 	void PrepareGlyphs(const WideString& text);
@@ -166,7 +166,8 @@ private:
 	size_t m_MaxCharHeight;
 
 	bool m_FontAlphaHack;
-	bool m_FontOffsetLimitHack;
+
+	int m_FontYOffsetCompensation;
 
 public:
 	bool m_IsBold;
