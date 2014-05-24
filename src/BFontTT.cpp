@@ -867,7 +867,14 @@ int CBFontTT::WrapText(const WideString& text, int maxWidth, int maxHeight, Text
 			if (prevChar != L'\0') kerning = GetKerning(prevChar, ch);
 			prevChar = ch;
 
-			charWidth = (int)(glyphInfo->GetAdvanceX() + kerning);
+			/* Small, but important difference! The computation of width must
+			 * match the one from the rendering EXACTLY, including precision
+			 * loss from casting. Otherwise, the bounds of the surface will
+			 * be exceeded.
+			 *
+			 */
+			charWidth = (((int) glyphInfo->GetAdvanceX()) + ((int) kerning));
+			// charWidth = (int)(glyphInfo->GetAdvanceX() + kerning);
 		}
 
 		bool lineTooLong = maxWidth >= 0 && currWidth + charWidth > maxWidth;
