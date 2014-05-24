@@ -430,8 +430,15 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 			 */
 			params.fDryMix = pow(10.0f, (Param1 / 10.0f));
 			params.fWetMix = pow(10.0f, (Param2 / 10.0f)) * params.fDryMix;
-			params.fFeedback = 0.5;
-			params.fDelay = (Param3 / 1000.0f);
+			params.fFeedback = 0.7f;
+			params.fDelay = ((Param3 / 1000.0f) / 10.0f);
+
+			// test a different approach, where only the feedback parameter is affected by the fReverbTime
+			params.fDryMix = 0.999f;
+			params.fWetMix = 0.7f;
+			params.fFeedback = 0.5f + ((Param3 / 3000.0f) * 0.2f);
+			params.fDelay = 0.005f;
+
 			params.bStereo = false;
 			params.lChannel = BASS_BFX_CHANALL;
 
