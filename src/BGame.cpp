@@ -4445,8 +4445,22 @@ HRESULT CBGame::DisplayIndicator()
 
 	if((!m_IndicatorDisplay && m_IndicatorWidth<=0) || m_IndicatorHeight<=0) return S_OK;
 	m_Renderer->SetupLines();
+	/*
 	for(int i=0; i<m_IndicatorHeight; i++)
 		m_Renderer->DrawLine(m_IndicatorX, m_IndicatorY + i, m_IndicatorX + (int)(m_IndicatorWidth * (float)((float)m_IndicatorProgress / 100.0f)), m_IndicatorY + i, m_IndicatorColor);
+		*/
+
+	/* Drawing lines next to each other does not work well when the coordinates are scaled.
+	 * Since we have an option to draw a rectangle, use it instead.
+	 *
+	 */
+	RECT r;
+	r.left   = m_IndicatorX;
+	r.top    = m_IndicatorY;
+	r.right  = m_IndicatorX + (int)(m_IndicatorWidth * (float)((float)m_IndicatorProgress / 100.0f));
+	r.bottom = m_IndicatorY + m_IndicatorHeight;
+
+	m_Renderer->FadeToColor(m_IndicatorColor, &r);
 
 	m_Renderer->Setup2D();
 	return S_OK;
