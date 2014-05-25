@@ -355,8 +355,8 @@ float CBSoundMgr::PosToPan(int X, int Y)
 		relPos = 1.0f;
 	}
 
-	float minPan = -0.7f;
-	float maxPan = 0.7f;
+	float minPan = -1.0f;
+	float maxPan = 1.0f;
 
 	return minPan + relPos * (maxPan - minPan);
 }
