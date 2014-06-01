@@ -62,6 +62,17 @@ static long       file_tell_android_obb_plain(FILEHANDLE handle);
 static int        file_error_android_obb_plain(FILEHANDLE handle);
 static int        file_close_android_obb_plain(FILEHANDLE handle);
 
+static int        file_exists_android_obb_mount(const char *name);
+static FILEHANDLE file_open_android_obb_mount(const char *name, const char *mode);
+static long       file_read_android_obb_mount(char *buffer, long size, FILEHANDLE handle);
+static long       file_write_android_obb_mount(const char *buffer, long size, FILEHANDLE handle);
+static long       file_print_android_obb_mount(FILEHANDLE handle, const char *format, ...);
+static int        file_putc_android_obb_mount(int character, FILEHANDLE handle);
+static int        file_seek_android_obb_mount(FILEHANDLE handle, long offset, int whence);
+static long       file_tell_android_obb_mount(FILEHANDLE handle);
+static int        file_error_android_obb_mount(FILEHANDLE handle);
+static int        file_close_android_obb_mount(FILEHANDLE handle);
+
 #endif
 
 
@@ -109,6 +120,20 @@ generic_file_ops file_ops_android_obb_plain =
   .file_close  = file_close_android_obb_plain
 };
 
+generic_file_ops file_ops_android_obb_mount =
+{
+  .file_exists = file_exists_android_obb_mount,
+  .file_open   = file_open_android_obb_mount,
+  .file_read   = file_read_android_obb_mount,
+  .file_write  = file_write_android_obb_mount,
+  .file_print  = file_print_android_obb_mount,
+  .file_putc   = file_putc_android_obb_mount,
+  .file_seek   = file_seek_android_obb_mount,
+  .file_tell   = file_tell_android_obb_mount,
+  .file_error  = file_error_android_obb_mount,
+  .file_close  = file_close_android_obb_mount
+};
+
 #endif
 
 generic_file_ops *get_file_operations(file_access_variant access_variant)
@@ -132,6 +157,10 @@ generic_file_ops *get_file_operations(file_access_variant access_variant)
   {
     // __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "FileOperations: Requested OBB PLAIN access.");
     return &file_ops_android_obb_plain;
+  }
+  if (access_variant == FILE_ACCESS_VARIANT_ANDROID_OBB_MOUNT)
+  {
+    return &file_ops_android_obb_mount;
   }
 
 #endif
@@ -423,6 +452,99 @@ static int        file_error_android_obb_plain(FILEHANDLE handle)
 }
 
 static int        file_close_android_obb_plain(FILEHANDLE handle)
+{
+  return fclose((FILE*) handle);
+}
+
+static int        file_exists_android_obb_mount(const char *name)
+{
+  // skip the "obbmount://" prefix and remove a possible trailing slash
+  int i;
+  int len = strlen(name);
+  strcpy(buffer, name + 11);
+  len = len - 11;
+  if ((buffer[len - 1] == '/') || (buffer[len - 1] == '\\'))
+  {
+    buffer[len - 1] = 0;
+  }
+  for (i = 0; i < len; i++)
+  {
+    if (buffer[i] == '\\')
+    {
+      buffer[i] = '/';
+    }
+  }
+
+  return access(buffer, R_OK);
+}
+
+static FILEHANDLE file_open_android_obb_mount(const char *name, const char *mode)
+{
+  // skip the "obbplain://" prefix and remove a possible trailing slash
+  int i;
+  int len = strlen(name);
+  strcpy(buffer, name + 11);
+  len = len - 11;
+  if ((buffer[len - 1] == '/') || (buffer[len - 1] == '\\'))
+  {
+    buffer[len - 1] = 0;
+  }
+  for (i = 0; i < len; i++)
+  {
+    if (buffer[i] == '\\')
+    {
+      buffer[i] = '/';
+    }
+  }
+
+  // do not open the file for writing or appending, only reading is good
+  if ((mode[0] != 'r') && (mode[0] != 'R'))
+  {
+    return NULL;
+  }
+
+  return (FILEHANDLE) fopen(buffer, mode);
+}
+
+static long       file_read_android_obb_mount(char *buffer, long size, FILEHANDLE handle)
+{
+  return fread(buffer, 1, size, (FILE*) handle);
+}
+
+static long       file_write_android_obb_mount(const char *buffer, long size, FILEHANDLE handle)
+{
+  // OBB files shall never be written to
+  return 0;
+}
+
+static long       file_print_android_obb_mount(FILEHANDLE handle, const char *format, ...)
+{
+  // OBB files shall never be written to
+  return 0;
+}
+
+static int        file_putc_android_obb_mount(int character, FILEHANDLE handle)
+{
+  // OBB files shall never be written to
+  return 0;
+}
+
+static int        file_seek_android_obb_mount(FILEHANDLE handle, long offset, int whence)
+{
+  return fseek((FILE*) handle, offset, whence);
+}
+
+static long       file_tell_android_obb_mount(FILEHANDLE handle)
+{
+  return ftell((FILE*) handle);
+}
+
+static int        file_error_android_obb_mount(FILEHANDLE handle)
+{
+  return ferror((FILE*) handle);
+}
+
+static int        file_close_android_obb_mount(FILEHANDLE handle)
 {
   return fclose((FILE*) handle);
 }
