@@ -8,18 +8,48 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
-
 import android.net.Uri;
+import android.os.Handler;
+import android.os.storage.OnObbStateChangeListener;
+import android.os.storage.StorageManager;
 
 public class WMELiteFunctions {
 
 	private Context c;
+	private StorageManager stMgr;
+	private ObbMountListener mountListener;
+	private String obbMountPathOverride;
+	private Handler mainThreadRunHandler;
 	
 	public WMELiteFunctions() {
+		obbMountPathOverride = null;
 	}
 	
-	public void setContext(Context c) {
+	public boolean getStorageCallbackRequired() {
+		return getGamePackagePath().startsWith("obbmount://");
+	}
+	
+	public boolean setContext(Context c, Handler mainThreadRunHandler) {
 		this.c = c;
+		
+		// check whether we need the storage manager
+		if (getStorageCallbackRequired() == true)
+		{
+			this.mainThreadRunHandler = mainThreadRunHandler;
+			stMgr = (StorageManager) c.getSystemService(Context.STORAGE_SERVICE);
+			mountListener = new ObbMountListener();
+			String rawPath = getGamePackagePath().substring(11);
+			boolean success = stMgr.mountObb(rawPath, null, mountListener);
+			if (success == false)
+			{
+				System.err.println("Initiaing OBB file mount failed!");
+			}
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	public void init() {
@@ -53,6 +83,9 @@ public class WMELiteFunctions {
 	public String getGamePackagePath() {
 		// change to fit your needs, maybe to point to the expansion files downloaded from Google play
 		// return Environment.getExternalStorageDirectory().getAbsolutePath();
+		if (obbMountPathOverride != null) {
+			return obbMountPathOverride;
+		}
 		
 		return "/mnt/sdcard/";
 		// return "/mnt/sdcard/demo/";
@@ -130,5 +163,24 @@ public class WMELiteFunctions {
 	{
 	  Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlToShow));
 	  c.startActivity(myIntent);
+	}
+	
+	public class ObbMountListener extends OnObbStateChangeListener
+	{
+		public void onObbStateChange(String path, int state)
+		{
+			if ((state == ERROR_ALREADY_MOUNTED) || (state == MOUNTED))
+			{
+				// path is now accessible
+				System.out.println("OBB mount succeeded!");
+				obbMountPathOverride = "obbmount://" + stMgr.getMountedObbPath(path);
+				System.out.println("Internal OBB mount path: " + obbMountPathOverride);
+				mainThreadRunHandler.sendEmptyMessage(1);
+			}
+			else
+			{
+				System.err.println("OBB mount error: " + state);
+			}
+		}
 	}
 }
