@@ -57,6 +57,9 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) return E_FAIL;
 	
+	const SDL_DisplayMode* current = NULL;
+	SDL_DisplayMode tmpResolution;
+	
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
 	SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING, 1);
 
@@ -86,13 +89,13 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 	int numModes = SDL_GetNumDisplayModes(0);
 	for (int i = 0; i < numModes; i++)
 	{
-		SDL_DisplayMode mode;
-		SDL_GetDisplayMode(0, i, &mode);
+		SDL_GetDisplayMode(0, i, &tmpResolution);
 
-		if (mode.w > mode.h)
+		if (current->w > current->h)
 		{
-			m_RealWidth = mode.w;
-			m_RealHeight = mode.h;
+			m_RealWidth = current->w;
+			m_RealHeight = current->h;
+			current = &tmpResolution;
 			break;
 		}
 	}	
@@ -100,10 +103,7 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 	// windows/linux: search a resolution with same screen width/height ratio
 	// stolen from Jan Kavan (wmelite julia branch)
 	SDL_DisplayMode testResolution;
-	SDL_DisplayMode tmpResolution;
 
-	const SDL_DisplayMode* current = NULL;
-	
 	SDL_GetCurrentDisplayMode(0,&tmpResolution);
 
 	float gameRatio = width / height;

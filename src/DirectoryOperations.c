@@ -21,6 +21,7 @@
 #ifdef __ANDROID__
 #include <android/asset_manager.h>
 #include <android/log.h>
+#include <android/storage_manager.h>
 #endif
 
 static DIRHANDLE  dir_open_plain(const char *path);
@@ -41,6 +42,11 @@ static DIRHANDLE  dir_open_android_obb_plain(const char *path);
 static char     *dir_find_android_obb_plain(DIRHANDLE handle);
 static int        dir_close_android_obb_plain(DIRHANDLE handle);
 static char     *dir_get_package_extension_android_obb_plain(void);
+
+static DIRHANDLE  dir_open_android_obb_mount(const char *path);
+static char     *dir_find_android_obb_mount(DIRHANDLE handle);
+static int        dir_close_android_obb_mount(DIRHANDLE handle);
+static char     *dir_get_package_extension_android_obb_mount(void);
 
 #endif
 
@@ -70,6 +76,14 @@ generic_directory_ops directory_ops_android_obb_plain =
   .dir_get_package_extension = dir_get_package_extension_android_obb_plain
 };
 
+generic_directory_ops directory_ops_android_obb_mount =
+{
+  .dir_open                  = dir_open_android_obb_mount,
+  .dir_find                  = dir_find_android_obb_mount,
+  .dir_close                 = dir_close_android_obb_mount,
+  .dir_get_package_extension = dir_get_package_extension_android_obb_mount
+};
+
 #endif
 
 generic_directory_ops *get_directory_operations(dir_access_variant access_variant)
@@ -93,6 +107,10 @@ generic_directory_ops *get_directory_operations(dir_access_variant access_varian
   {
     // __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "DirectoryOperations: Requested OBB PLAIN access.");
     return &directory_ops_android_obb_plain;
+  }
+  if (access_variant == DIR_ACCESS_VARIANT_ANDROID_OBB_MOUNT)
+  {
+    return &directory_ops_android_obb_mount;
   }
 
 #endif
@@ -217,6 +235,43 @@ static char     *dir_get_package_extension_android_obb_plain(void)
 {
   // android renames files distributed as OBB
     return "obb";
+}
+
+static DIRHANDLE  dir_open_android_obb_mount(const char *path)
+{
+  // skip the "obbmount://" prefix and remove a possible trailing slash
+  int len = strlen(path);
+  strcpy(buffer, path + 11);
+  len = len - 11;
+  if ((buffer[len - 1] == '/') || (buffer[len - 1] == '\\'))
+  {
+    buffer[len - 1] = 0;
+  }
+  DIRHANDLE handle = (DIRHANDLE) opendir(buffer);
+  __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "OOBMountDir: Request to open obb dir at path: %s success=%s", path, (handle == NULL) ? "FALSE" : "TRUE");
+  return handle;
+}
+
+static char     *dir_find_android_obb_mount(DIRHANDLE handle)
+{
+  struct dirent* ent = readdir((DIR*) handle);
+  __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "OOBMountDir: next filename=%s", (ent == NULL) ? "NULL" : ent->d_name);
+  if (ent != NULL) {
+    return ent->d_name;
+  }
+  return NULL;
+}
+
+static int        dir_close_android_obb_mount(DIRHANDLE handle)
+{
+  __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "OOBMountDir: close handle");
+  return closedir((DIR*) handle);
+}
+
+static char     *dir_get_package_extension_android_obb_mount(void)
+{
+  // files inside mounted obb containers keep their extension
+    return "dcp";
 }
 
 #endif
