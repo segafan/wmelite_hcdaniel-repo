@@ -480,7 +480,9 @@ static int        file_exists_android_obb_mount(const char *name)
 
 static FILEHANDLE file_open_android_obb_mount(const char *name, const char *mode)
 {
-  // skip the "obbplain://" prefix and remove a possible trailing slash
+  // skip the "obbmount://" prefix and remove a possible trailing slash
+  // in case a path starts with this prefix, the path is already the path
+  // of the "mounted" obb (all logic is in the Java part)
   int i;
   int len = strlen(name);
   strcpy(buffer, name + 11);

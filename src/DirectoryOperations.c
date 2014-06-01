@@ -240,6 +240,8 @@ static char     *dir_get_package_extension_android_obb_plain(void)
 static DIRHANDLE  dir_open_android_obb_mount(const char *path)
 {
   // skip the "obbmount://" prefix and remove a possible trailing slash
+  // in case a path starts with this prefix, the path is already the path
+  // of the "mounted" obb (all logic is in the Java part)
   int len = strlen(path);
   strcpy(buffer, path + 11);
   len = len - 11;

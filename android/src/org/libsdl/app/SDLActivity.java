@@ -43,6 +43,8 @@ public class SDLActivity extends Activity {
     // This is what SDL runs in. It invokes SDL_main(), eventually
     protected static Thread mSDLThread;
     
+    protected boolean mNeedStorageCallback;
+    
     // Audio
     protected static AudioTrack mAudioTrack;
 
@@ -83,15 +85,17 @@ public class SDLActivity extends Activity {
         Log.v("SDL", "onCreate():" + mSingleton);
         super.onCreate(savedInstanceState);
         
-        wmeLiteFuncs.setContext(getApplicationContext());
-        
         SDLActivity.initialize();
 
         // So we can call stuff from static callbacks
         mSingleton = this;
 
+        mNeedStorageCallback = wmeLiteFuncs.getStorageCallbackRequired();
+        
         // Set up the surface
-        mSurface = new SDLSurface(getApplication());
+        mSurface = new SDLSurface(getApplication(), mNeedStorageCallback);
+
+        wmeLiteFuncs.setContext(getApplicationContext(), mSurface.getMainThreadHandler());
         
         if(Build.VERSION.SDK_INT >= 12) {
             mJoystickHandler = new SDLJoystickHandler_API12();
@@ -504,7 +508,6 @@ public class SDLActivity extends Activity {
             mJoystickHandler.pollInputDevices();
         }
     }
-    
 }
 
 /**
@@ -539,10 +542,20 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
     // Keep track of the surface size to normalize touch events
     protected static float mWidth, mHeight;
+    
+    protected boolean mStorageCallbackOccurred;
+    protected boolean mSurfaceCallbackOccurred;
+	protected final boolean mNeedStorageCallback;
+
 
     // Startup    
-    public SDLSurface(Context context) {
+    public SDLSurface(Context context, boolean mNeedStorageCallback) {
         super(context);
+
+        mStorageCallbackOccurred = false;
+        mSurfaceCallbackOccurred = false;
+        this.mNeedStorageCallback = mNeedStorageCallback;
+
         getHolder().addCallback(this); 
     
         setFocusable(true);
@@ -644,34 +657,55 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         SDLActivity.mIsSurfaceReady = true;
         SDLActivity.onNativeSurfaceChanged();
 
+        runMainThreadHandler.sendEmptyMessage(0);
+    }
+    
+    public Handler getMainThreadHandler() {
+    	return runMainThreadHandler;
+    }
+    
+    Handler runMainThreadHandler = new Handler() {
+    	public void handleMessage(Message msg) {
 
-        if (SDLActivity.mSDLThread == null) {
-            // This is the entry point to the C app.
-            // Start up the C app thread and enable sensor input for the first time
+    		if (msg.what == 0)
+    		{
+    			mSurfaceCallbackOccurred = true;
+    		}
+    		if (msg.what == 1) 
+    		{
+    			mStorageCallbackOccurred = true;
+    		}
+    		
+    		if ((SDLActivity.mSDLThread == null) 
+    				&& ((mNeedStorageCallback == false) || ((mSurfaceCallbackOccurred == true) && (mStorageCallbackOccurred == true)))) {
+                // This is the entry point to the C app.
+                // Start up the C app thread and enable sensor input for the first time
 
-            SDLActivity.mSDLThread = new Thread(new SDLMain(), "SDLThread");
-            enableSensor(Sensor.TYPE_ACCELEROMETER, true);
-            SDLActivity.mSDLThread.start();
-            
-            // Set up a listener thread to catch when the native thread ends
-            new Thread(new Runnable(){
-                @Override
-                public void run(){
-                    try {
-                        SDLActivity.mSDLThread.join();
-                    }
-                    catch(Exception e){}
-                    finally{ 
-                        // Native thread has finished
-                        if (! SDLActivity.mExitCalledFromJava) {
-                            SDLActivity.handleNativeExit();
+                SDLActivity.mSDLThread = new Thread(new SDLMain(), "SDLThread");
+                enableSensor(Sensor.TYPE_ACCELEROMETER, true);
+                SDLActivity.mSDLThread.start();
+                
+                // Set up a listener thread to catch when the native thread ends
+                new Thread(new Runnable(){
+                    @Override
+                    public void run(){
+                        try {
+                            SDLActivity.mSDLThread.join();
+                        }
+                        catch(Exception e){}
+                        finally{ 
+                            // Native thread has finished
+                            if (! SDLActivity.mExitCalledFromJava) {
+                                SDLActivity.handleNativeExit();
+                            }
                         }
                     }
-                }
-            }).start();
-        }
-    }
-
+                }).start();
+            }
+    		
+    	}
+    };
+    
     // unused
     @Override
     public void onDraw(Canvas canvas) {}
