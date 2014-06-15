@@ -686,6 +686,10 @@ HRESULT CBFontTT::Persist(CBPersistMgr* PersistMgr)
 	{
 		for(int i=0; i<NUM_CACHED_TEXTS; i++) m_CachedTexts[i] = NULL;
 		m_GlyphCache = NULL;
+
+		// better init these variables here, but don't make such hacked things persistent
+		m_FontAlphaHack = Game->m_Registry->ReadBool("Font", "FontAlphaHack", false);
+		m_FontYOffsetCompensation = Game->m_Registry->ReadInt("Font", "FontYOffsetCompensation", 0);
 	}
 
 	return S_OK;
