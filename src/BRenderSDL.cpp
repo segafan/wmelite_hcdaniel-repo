@@ -311,15 +311,16 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 HRESULT CBRenderSDL::SendRenderingHintSceneComplete()
 {
 	if (m_PixelPerfect == true) {
-		SDL_SetRenderTarget(m_Renderer, NULL);
-		SDL_RenderCopy(m_Renderer, m_Texture, NULL, &m_PixelPerfectTargetRect);
+		if (m_RenderOffscreen == true) {
+			SDL_SetRenderTarget(m_Renderer, NULL);
+			SDL_RenderCopy(m_Renderer, m_Texture, NULL, &m_PixelPerfectTargetRect);
 
 #ifndef __IPHONEOS__
-		SDL_RenderSetViewport(GetSdlRenderer(), &m_PixelPerfectTargetRect);
+			SDL_RenderSetViewport(GetSdlRenderer(), &m_PixelPerfectTargetRect);
 #endif
 
-		m_RenderOffscreen = false;
-
+			m_RenderOffscreen = false;
+		}
 	}
 
 	return S_OK;
@@ -379,9 +380,7 @@ HRESULT CBRenderSDL::Flip()
 #endif
 
 	// if not already done, draw the offscreen image onto the final screen
-	if ((m_PixelPerfect == true) && (m_RenderOffscreen == true)) {
-		SendRenderingHintSceneComplete();
-	}
+	SendRenderingHintSceneComplete();
 
 	// last resort to limit frame rate if vsync does not work
 	if (m_FrameRateLimit > 0)
@@ -434,6 +433,9 @@ HRESULT CBRenderSDL::EraseBackground()
 		SDL_SetRenderTarget(m_Renderer, m_Texture);
 		Fill(0, 0, 0, NULL);
 		m_RenderOffscreen = true;
+	} else {
+		// paranoia
+		m_RenderOffscreen = false;
 	}
 
 	return S_OK;

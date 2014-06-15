@@ -82,7 +82,9 @@ private:
 	float m_RatioX;
 	float m_RatioY;
 
+	// whether pixelperfect is active at all
 	bool m_PixelPerfect;
+	// whether the current frame is still rendered offscreen, or directly (for fonts)
 	bool m_RenderOffscreen;
 	SDL_Rect m_PixelPerfectTargetRect;
 

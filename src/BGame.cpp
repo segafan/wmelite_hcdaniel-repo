@@ -4425,7 +4425,7 @@ HRESULT CBGame::DisplayContent(bool Update, bool DisplayAll)
 HRESULT CBGame::DisplayContentSimple()
 {
 	// fill black
-	m_Renderer->Fill(0,0,0);
+	m_Renderer->EraseBackground();
 	if(m_IndicatorDisplay) DisplayIndicator();
 
 	return S_OK;
