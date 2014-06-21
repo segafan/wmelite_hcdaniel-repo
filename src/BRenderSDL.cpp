@@ -296,9 +296,16 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 	m_SecondTickTime = 0;
 	m_FrameCounter   = 0;
 	m_FrameRateLimit = Game->m_Registry->ReadInt("Rendering", "FrameRateLimit", 0);
+	
+	// be as little invasive as possible, if the framerate is already ok or even too low
+	// there's no need to sleep
+	m_FrameRateLimitBrakeActive = false;
+	m_AccumulatedSleepTime = 0;
+	
 	if (m_FrameRateLimit > 0)
 	{
 		m_FrameSleepTime = MathUtil::Round(1000.0f / ((float) m_FrameRateLimit));
+		
 	}
 
 	m_Active = true;
@@ -385,32 +392,56 @@ HRESULT CBRenderSDL::Flip()
 	// last resort to limit frame rate if vsync does not work
 	if (m_FrameRateLimit > 0)
 	{
+		// check how many milliseconds the rendering is "too fast"
 		DWORD currRenderTime = CBPlatform::GetTime();
 		DWORD renderDiffTime = currRenderTime - m_LastRenderTime;
-		if (renderDiffTime < m_FrameSleepTime)
+
+		// accumulate the "requested" overall sleep time per second
+		m_AccumulatedSleepTime += m_FrameSleepTime - renderDiffTime;
+
+		// if the brake is active, sleep here
+		if ((m_FrameRateLimitBrakeActive == true) && (renderDiffTime < m_FrameSleepTime))
 		{
 			CBPlatform::SleepMs(m_FrameSleepTime - renderDiffTime);
 		}
 		m_LastRenderTime = CBPlatform::GetTime();
 
-		// adjust sleep timer once per second
+		// once per second, check whether the brake was necessary 
+		// and whether the sleep time needs adjustment
 		m_FrameCounter++;
 		if ((m_LastRenderTime - m_SecondTickTime) > 1000)
 		{
-			if (m_FrameCounter != m_FrameRateLimit)
+			// modify the sleep time if the actual frame rate diverts from the requested one
+			if ((m_FrameRateLimitBrakeActive == true) && (m_FrameCounter != m_FrameRateLimit))
 			{
-				if (m_FrameCounter > m_FrameRateLimit)
+				if (m_FrameCounter > (m_FrameRateLimit + 1))
 				{
 					m_FrameSleepTime++;
 				}
-				else
+				else 
 				{
-					if (m_FrameSleepTime > 0)
+					if (m_FrameCounter < (m_FrameRateLimit - 1))
 					{
-						m_FrameSleepTime--;
+						if (m_FrameSleepTime > 0)
+						{
+							m_FrameSleepTime--;
+						}
 					}
 				}
 			}
+
+			// check whether the "brake" needs to be switched on or off
+			// depending on the rendering/sleeping time during the last second
+			if (m_AccumulatedSleepTime > 60)
+			{
+				m_FrameRateLimitBrakeActive = true;
+			}
+			else
+			{
+				m_FrameRateLimitBrakeActive = false;
+			}
+			m_AccumulatedSleepTime = 0;
+
 			m_FrameCounter = 0;
 			m_SecondTickTime = m_LastRenderTime;
 		}

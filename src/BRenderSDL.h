@@ -88,11 +88,13 @@ private:
 	bool m_RenderOffscreen;
 	SDL_Rect m_PixelPerfectTargetRect;
 
+	bool m_FrameRateLimitBrakeActive;
 	DWORD m_LastRenderTime;
 	DWORD m_FrameRateLimit;
 	DWORD m_FrameSleepTime;
 	DWORD m_SecondTickTime;
 	DWORD m_FrameCounter;
+	DWORD m_AccumulatedSleepTime;
 
 	float GetAlignedUpscalingRatio(float ratio, float stepping);
 	float GetAlignedDownscalingRatio(float ratio, float stepping);
