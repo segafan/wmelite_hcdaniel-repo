@@ -55,6 +55,7 @@ THE SOFTWARE.
 
 const AnsiString assetIdentifier = "asset://";
 const AnsiString obbPlainIdentifier = "obbplain://";
+const AnsiString obbMountIdentifier = "obbmount://";
 
 //////////////////////////////////////////////////////////////////////////
 AnsiString PathUtil::AppendSlashToPlainDir(const AnsiString& path)
@@ -317,6 +318,9 @@ AnsiString PathUtil::GetAbsolutePath(const AnsiString& path)
 	if (StringUtil::StartsWith(path, obbPlainIdentifier, false) == true) {
 		return path;
 	}
+	if (StringUtil::StartsWith(path, obbMountIdentifier, false) == true) {
+		return path;
+	}
 #endif
 
 	realpath(path.c_str(), fullPath);
@@ -383,6 +387,10 @@ generic_directory_ops* PathUtil::GetDirectoryAccessMethod(const AnsiString &path
 	{
 		variant = DIR_ACCESS_VARIANT_ANDROID_OBB_PLAIN;
 	}
+	if (StringUtil::StartsWith(path, obbMountIdentifier, false) == true)
+	{
+		variant = DIR_ACCESS_VARIANT_ANDROID_OBB_MOUNT;
+	}
 
 	return get_directory_operations(variant);
 #endif
@@ -402,6 +410,10 @@ generic_file_ops* PathUtil::GetFileAccessMethod(const AnsiString &path)
 	if (StringUtil::StartsWith(path, obbPlainIdentifier, false) == true)
 	{
 		variant = FILE_ACCESS_VARIANT_ANDROID_OBB_PLAIN;
+	}
+	if (StringUtil::StartsWith(path, obbMountIdentifier, false) == true)
+	{
+		variant = FILE_ACCESS_VARIANT_ANDROID_OBB_MOUNT;
 	}
 
 	return get_file_operations(variant);
