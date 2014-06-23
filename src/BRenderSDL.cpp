@@ -91,10 +91,10 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 	{
 		SDL_GetDisplayMode(0, i, &tmpResolution);
 
-		if (current->w > current->h)
+		if (tmpResolution.w > tmpResolution.h)
 		{
-			m_RealWidth = current->w;
-			m_RealHeight = current->h;
+			m_RealWidth = tmpResolution.w;
+			m_RealHeight = tmpResolution.h;
 			current = &tmpResolution;
 			break;
 		}
