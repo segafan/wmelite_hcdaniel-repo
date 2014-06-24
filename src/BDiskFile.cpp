@@ -50,12 +50,14 @@ HRESULT CBDiskFile::Open(const char* Filename)
 	Close();
 
 	char FullPath[MAX_PATH];
-	ops = PathUtil::GetFileAccessMethod(Filename);
 
 	for(int i=0; i<Game->m_FileManager->m_SinglePaths.GetSize(); i++)
 	{
 		sprintf(FullPath, "%s%s", Game->m_FileManager->m_SinglePaths[i], Filename);
 		CorrectSlashes(FullPath);
+
+		// re-check the access method for every path
+		ops = PathUtil::GetFileAccessMethod(FullPath);
 
 		m_File = ops->file_open(FullPath, "rb");
 		if(m_File!=NULL) break;
@@ -66,6 +68,7 @@ HRESULT CBDiskFile::Open(const char* Filename)
 	{
 		strcpy(FullPath, Filename);
 		CorrectSlashes(FullPath);
+		ops = PathUtil::GetFileAccessMethod(FullPath);
 		m_File = ops->file_open(FullPath, "rb");
 	}
 
