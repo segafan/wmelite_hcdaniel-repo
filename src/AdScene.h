@@ -97,7 +97,13 @@ public:
 	DWORD m_PFMaxTime;
 	HRESULT InitLoop();
 	void PathFinderStep();
-	bool IsBlockedAt(int X, int Y, bool CheckFreeObjects=false, CBObject* Requester=NULL);
+	/*
+	 * Added the possibility to configure the default behaviour of this function. If neither free objects nor a main layer
+	 * exist, the function used to return "blocked". This results in all actors being "blocked" shortly after load.
+	 * The default behaviour is unchanged to avoid strange side effects. The actor class is now able to override this default.
+	 *
+	 */
+	bool IsBlockedAt(int X, int Y, bool CheckFreeObjects=false, CBObject* Requester=NULL, bool defaultBlock=true);
 	bool IsWalkableAt(int X, int Y, bool CheckFreeObjects=false, CBObject* Requester=NULL);
 	CAdLayer* m_MainLayer;
 	float GetZoomAt(int X, int Y);
