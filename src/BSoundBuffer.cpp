@@ -259,7 +259,7 @@ HRESULT CBSoundBuffer::SetVolume(int Volume)
 		float resultingVolumeBass = (float) pow(10.0f, (myFinalVolume / 2000.0f));
 
 		BASS_ChannelSetAttribute(m_Stream, BASS_ATTRIB_VOL, resultingVolumeBass);
-		Game->LOG(0, "BASS_Setvolume for stream %s occurred, volume=%d, privVolume=%d, wmevalue=%d resulting float value=%f.\n", m_Filename, Volume, m_PrivateVolume, myFinalVolume, resultingVolumeBass);
+		// Game->LOG(0, "BASS_Setvolume for stream %s occurred, volume=%d, privVolume=%d, wmevalue=%d resulting float value=%f.\n", m_Filename, Volume, m_PrivateVolume, myFinalVolume, resultingVolumeBass);
 	}
 	return S_OK;
 }

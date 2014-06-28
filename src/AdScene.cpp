@@ -308,9 +308,9 @@ DWORD CAdScene::GetAlphaAt(int X, int Y, bool ColorCheck)
 
 
 //////////////////////////////////////////////////////////////////////////
-bool CAdScene::IsBlockedAt(int X, int Y, bool CheckFreeObjects, CBObject* Requester)
+bool CAdScene::IsBlockedAt(int X, int Y, bool CheckFreeObjects, CBObject* Requester, bool defaultBlock)
 {
-	bool ret = true;
+	bool ret = defaultBlock;
 
 
 	if(CheckFreeObjects)
