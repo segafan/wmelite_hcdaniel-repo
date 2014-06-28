@@ -71,6 +71,10 @@ public:
 	virtual HRESULT PlayAnim(char* Filename);
 	CAdSpriteSet* GetAnimByName(char* AnimName);
 
+	// alternative behaviour when actor is blocked
+	bool m_StopOnBlocked;
+	bool m_ActorIsBlocked;
+
 	// scripting interface
 	virtual CScValue* ScGetProperty(char* Name);
 	virtual HRESULT ScSetProperty(char *Name, CScValue *Value);
