@@ -49,6 +49,9 @@ CAdActor::CAdActor(CBGame* inGame):CAdTalkHolder(inGame)
 
 	m_AnimSprite2 = NULL;
 
+	m_StopOnBlocked = false;
+	m_ActorIsBlocked = false;
+
 	SetDefaultAnimNames();
 }
 
@@ -175,6 +178,7 @@ TOKEN_DEF_START
 	TOKEN_DEF (ALPHA)
 	TOKEN_DEF (EDITOR_PROPERTY)
 	TOKEN_DEF (ANIMATION)
+	TOKEN_DEF (STOP_ON_BLOCKED)
 TOKEN_DEF_END
 //////////////////////////////////////////////////////////////////////////
 HRESULT CAdActor::LoadBuffer(BYTE * Buffer, bool Complete)
@@ -216,6 +220,7 @@ HRESULT CAdActor::LoadBuffer(BYTE * Buffer, bool Complete)
 		TOKEN_TABLE (ALPHA)
 		TOKEN_TABLE (EDITOR_PROPERTY)
 		TOKEN_TABLE (ANIMATION)
+		TOKEN_TABLE (STOP_ON_BLOCKED)
 	TOKEN_TABLE_END
 	
 	BYTE* params;
@@ -433,6 +438,11 @@ HRESULT CAdActor::LoadBuffer(BYTE * Buffer, bool Complete)
 				else m_Anims.Add(Anim);
 			}
 			break;
+
+			case TOKEN_STOP_ON_BLOCKED:
+			{
+				parser.ScanStr((char*)params, "%b", &m_StopOnBlocked);
+			}
 		}
 	}
 	if (cmd == PARSERR_TOKENNOTFOUND)
@@ -492,6 +502,7 @@ void CAdActor::TurnTo(TDirection dir)
 void CAdActor::GoTo(int X, int Y, TDirection AfterWalkDir)
 {
 	m_AfterWalkDir = AfterWalkDir;
+	m_ActorIsBlocked = false;
 	if(X == m_TargetPoint->x && Y == m_TargetPoint->y && m_State==STATE_FOLLOWING_PATH) return;
 
 	m_Path->Reset();
@@ -856,14 +867,29 @@ void CAdActor::GetNextStep()
 		MaxStepX--;
 	}
 
-	if(((CAdGame*)Game)->m_Scene->IsBlockedAt(m_PFX, m_PFY, true, this))
+	if(((CAdGame*)Game)->m_Scene->IsBlockedAt(m_PFX, m_PFY, true, this, false))
 	{
-		if(m_PFCount==0)
+		// is the actor already at its final position? this is not a block
+		if (m_PFCount==0)
 		{
 			m_State = m_NextState;
 			m_NextState = STATE_READY;
 			return;
 		}
+
+		// scripts can be informed if the actor is blocked right now
+		ApplyEvent("ActorIsBlocked");
+		
+		// stop and set the block flag
+		if (m_StopOnBlocked == true)
+		{
+			m_ActorIsBlocked = true;
+			m_State = m_NextState;
+			m_NextState = STATE_READY;
+			return;
+		}
+
+		// try to find a new path to the target
 		GoTo(m_TargetPoint->x, m_TargetPoint->y);
 		return;
 	}
@@ -1048,6 +1074,26 @@ HRESULT CAdActor::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *Thi
 		return S_OK;
 	}
 
+	//////////////////////////////////////////////////////////////////////////
+	// SetStopOnBlocked
+	//////////////////////////////////////////////////////////////////////////
+	else if(strcmp(Name, "SetStopOnBlocked")==0)
+	{
+		Stack->CorrectParams(1);
+		m_StopOnBlocked = Stack->Pop()->GetBool();
+		return S_OK;
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	// GetStopOnBlocked
+	//////////////////////////////////////////////////////////////////////////
+	else if(strcmp(Name, "GetStopOnBlocked")==0)
+	{
+		Stack->CorrectParams(0);
+		Stack->PushBool(m_StopOnBlocked);
+		return S_OK;
+	}
+
 	else return CAdTalkHolder::ScCallMethod(Script, Stack, ThisStack, Name);
 }
 
@@ -1115,6 +1161,15 @@ CScValue* CAdActor::ScGetProperty(char *Name)
 	else if(strcmp(Name, "TurnRightAnimName")==0)
 	{
 		m_ScValue->SetString(m_TurnRightAnimName);
+		return m_ScValue;
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	// ActorIsBlocked
+	//////////////////////////////////////////////////////////////////////////
+	else if(strcmp(Name, "ActorIsBlocked")==0)
+	{
+		m_ScValue->SetBool(m_ActorIsBlocked);
 		return m_ScValue;
 	}
 
@@ -1329,6 +1384,9 @@ HRESULT CAdActor::Persist(CBPersistMgr *PersistMgr)
 	PersistMgr->Transfer(TMEMBER(m_WalkAnimName));
 	PersistMgr->Transfer(TMEMBER(m_TurnLeftAnimName));
 	PersistMgr->Transfer(TMEMBER(m_TurnRightAnimName));
+
+	PersistMgr->Transfer(TMEMBER(m_StopOnBlocked));
+	PersistMgr->Transfer(TMEMBER(m_ActorIsBlocked));
 
 	m_Anims.Persist(PersistMgr);
 
