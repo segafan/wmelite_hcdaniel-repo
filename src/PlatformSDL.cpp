@@ -91,6 +91,8 @@ int CBPlatform::Initialize(CBGame* inGame, int argc, char* argv[])
 
 	if(Game->m_Registry->ReadBool("Debug", "DebugMode")) Game->DEBUG_DebugEnable("./wme.log");
 
+	if(Game->m_Registry->ReadBool("Debug", "LogWriteMode")) Game->DEBUG_DebugEnable(AnsiString("./wme" + PathUtil::GetTimeStamp() + ".log").c_str(), true);
+
 	Game->m_DEBUG_ShowFPS = Game->m_Registry->ReadBool("Debug", "ShowFPS");
 
 	if(Game->m_Registry->ReadBool("Debug", "DisableSmartCache"))

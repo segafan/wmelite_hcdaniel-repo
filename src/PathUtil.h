@@ -54,6 +54,7 @@ THE SOFTWARE.
 		static void GetFilesInDirectory(const AnsiString& path, const AnsiString& mask, AnsiStringList& files);
 		static generic_directory_ops* GetDirectoryAccessMethod(const AnsiString &path);
 		static generic_file_ops* GetFileAccessMethod(const AnsiString &path);
+		static AnsiString GetTimeStamp();
 	};
 
 #endif // __WmePathUtils_H__
