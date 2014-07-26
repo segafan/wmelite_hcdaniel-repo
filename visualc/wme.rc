@@ -36,8 +36,8 @@ IDI_ICON                ICON                    "res/icon.ico"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,2,0
- PRODUCTVERSION 1,0,2,0
+ FILEVERSION 1,0,3,0
+ PRODUCTVERSION 1,0,3,0
  FILEFLAGSMASK 0x1fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -55,12 +55,12 @@ BEGIN
             VALUE "Comments", "http://www.wintermute-engine.org"
             VALUE "CompanyName", "Dead:Code Software"
             VALUE "FileDescription", "WME Lite Runtime Rapaki Edition"
-            VALUE "FileVersion", "1.0.2-rapaki"
+            VALUE "FileVersion", "1.0.3-rapaki"
             VALUE "InternalName", "wme"
             VALUE "LegalCopyright", "Copyright (c) Dead:Code 2011"
             VALUE "OriginalFilename", "wmelite.exe"
-            VALUE "ProductName", "Wintermute Engine Rpaki Edition"
-            VALUE "ProductVersion", "1.0.2-rapaki"
+            VALUE "ProductName", "Wintermute Engine Rapaki Edition"
+            VALUE "ProductVersion", "1.0.3-rapaki"
         END
     END
     BLOCK "VarFileInfo"

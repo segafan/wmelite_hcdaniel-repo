@@ -83,6 +83,7 @@ CBGame::CBGame():CBObject(this)
 
 	m_DEBUG_LogFile = NULL;
 	m_DEBUG_DebugMode = false;
+	m_DEBUG_LogWriteMode = false;
 	m_DEBUG_AbsolutePathWarning = true;
 	m_DEBUG_ShowFPS = false;
 
@@ -476,9 +477,16 @@ HRESULT CBGame::Initialize3() // renderer is initialized
 
 
 //////////////////////////////////////////////////////////////////////
-void CBGame::DEBUG_DebugEnable(const char* Filename)
+void CBGame::DEBUG_DebugEnable(const char* Filename, bool writeLogOnly)
 {
-	m_DEBUG_DebugMode = true;
+	if (writeLogOnly == true)
+	{
+		m_DEBUG_LogWriteMode = true;
+	}
+	else
+	{
+		m_DEBUG_DebugMode = true;
+	}
 
 #ifndef __IPHONEOS__
 	if(Filename)m_DEBUG_LogFile = fopen(Filename, "a+");
@@ -522,6 +530,7 @@ void CBGame::DEBUG_DebugDisable()
 		m_DEBUG_LogFile = NULL;
 	}
 	m_DEBUG_DebugMode = false;
+	m_DEBUG_LogWriteMode = false;
 }
 
 
@@ -529,7 +538,7 @@ void CBGame::DEBUG_DebugDisable()
 void CBGame::LOG(HRESULT res, LPCSTR fmt, ...)
 {
 #if !defined(__IPHONEOS__) && !defined(__ANDROID__)
-	if(!m_DEBUG_DebugMode) return;
+	if ((!m_DEBUG_DebugMode) && (!m_DEBUG_LogWriteMode)) return;
 #endif
 	time_t timeNow;
 	time(&timeNow);

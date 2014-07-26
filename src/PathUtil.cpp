@@ -158,7 +158,7 @@ AnsiString PathUtil::GetSafeLogFileName()
 	char moduleName[MAX_PATH];
 	::GetModuleFileName(NULL, moduleName, MAX_PATH);
 	
-	AnsiString fileName = GetFileNameWithoutExtension(moduleName) + ".log";
+	AnsiString fileName = GetFileNameWithoutExtension(moduleName) + GetTimeStamp() + ".log";
 	fileName = Combine("/Wintermute Engine/Logs/", fileName);
 	logFileName = Combine(logFileName, fileName);
 	
@@ -371,7 +371,6 @@ void PathUtil::GetFilesInDirectory(const AnsiString& path, const AnsiString& mas
 }
 
 //////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
 generic_directory_ops* PathUtil::GetDirectoryAccessMethod(const AnsiString &path)
 {
 #ifdef _WIN32
@@ -396,6 +395,7 @@ generic_directory_ops* PathUtil::GetDirectoryAccessMethod(const AnsiString &path
 #endif
 }
 
+//////////////////////////////////////////////////////////////////////////
 generic_file_ops* PathUtil::GetFileAccessMethod(const AnsiString &path)
 {
 #ifdef _WIN32
@@ -418,4 +418,20 @@ generic_file_ops* PathUtil::GetFileAccessMethod(const AnsiString &path)
 
 	return get_file_operations(variant);
 #endif
+}
+
+//////////////////////////////////////////////////////////////////////////
+AnsiString PathUtil::GetTimeStamp()
+{
+  time_t rawtime;
+  struct tm * timeinfo;
+  char buffer [80];
+
+  time (&rawtime);
+  timeinfo = localtime(&rawtime);
+
+  // Wednesday, March 19, 2014 01:06:18 PM
+  strftime(buffer,80,"_%Y_%m_%d_%H",timeinfo);
+
+  return AnsiString(buffer);
 }
