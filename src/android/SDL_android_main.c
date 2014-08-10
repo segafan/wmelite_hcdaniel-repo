@@ -1,5 +1,5 @@
 
-#include "../../SDL_internal.h"
+#include "SDL_internal.h"
 
 #ifdef __ANDROID__
 
