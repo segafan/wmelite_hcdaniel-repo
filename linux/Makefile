@@ -1,10 +1,10 @@
 IDIR =../src
 CC=gcc
 
-CFLAGS=-I$(IDIR) -O2 `sdl2-config --cflags` `freetype-config --cflags`
+CFLAGS=-I$(IDIR) -I. -O2 `sdl2-config --cflags` `freetype-config --cflags`
 
 CPP=g++
-CPPFLAGS=-I$(IDIR) -O2 -Wno-write-strings -Wno-conversion-null `freetype-config --cflags` `sdl2-config --cflags` -I/usr/local/include/bass/ 
+CPPFLAGS=-I$(IDIR) -I. -O2 -Wno-write-strings -Wno-conversion-null `freetype-config --cflags` `sdl2-config --cflags` -I/usr/local/include/bass/ 
 
 SRCDIR=../src
 
