@@ -33,6 +33,7 @@ SDL_PATH := ../../../dependencies/SDL/jni/
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/$(SDL_PATH)/include \
 $(LOCAL_PATH)/$(SDL_PATH)/src/core/android/ \
+$(LOCAL_PATH)/$(SDL_PATH)/src/ \
 $(LOCAL_PATH)/../../../dependencies/SDL_mixer/jni/ \
 $(LOCAL_PATH)/../../../dependencies/libfreetype-android/jni/include/ \
 $(LOCAL_PATH)/../../../dependencies/FreeImage3154/jni/Source/ \
