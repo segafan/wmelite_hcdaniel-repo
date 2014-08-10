@@ -40,6 +40,7 @@ SDL_PATH := ../../../dependencies/SDL/jni/
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/$(SDL_PATH)/include \
 $(LOCAL_PATH)/$(SDL_PATH)/src/core/android/ \
 $(LOCAL_PATH)/$(SDL_PATH)/src/ \
+$(LOCAL_PATH)/../../../dependencies/bass/ \
 $(LOCAL_PATH)/../../../dependencies/SDL_mixer/jni/ \
 $(LOCAL_PATH)/../../../dependencies/libfreetype-android/jni/include/ \
 $(LOCAL_PATH)/../../../dependencies/FreeImage3154/jni/Source/ \
@@ -120,9 +121,9 @@ LOCAL_SRC_FILES := ../../../src/android/SDL_android_main.c \
 ../../../src/BSaveThumbHelper.cpp \
 ../../../src/BScriptable.cpp \
 ../../../src/BScriptHolder.cpp \
-../../../src/snd_SDL_mixer/BSoundBuffer.cpp \
+../../../src/BSoundBuffer.cpp \
 ../../../src/BSound.cpp \
-../../../src/snd_SDL_mixer/BSoundMgr.cpp \
+../../../src/BSoundMgr.cpp \
 ../../../src/BSprite.cpp \
 ../../../src/BStringTable.cpp \
 ../../../src/BSubFrame.cpp \
