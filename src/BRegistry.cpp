@@ -64,8 +64,10 @@ AnsiString CBRegistry::ReadString(const AnsiString& subKey, const AnsiString& ke
 #endif
 
 	bool found = false;
-	ret = GetValue(m_LocalValues, subKey, key, found);
-	if (!found) ret = GetValue(m_Values, subKey, key, found);
+
+	// experimentally reverse the order of xml files (read-write values first, then read-only ones)
+	ret = GetValue(m_Values, subKey, key, found);
+	if (!found) ret = GetValue(m_LocalValues, subKey, key, found);
 	if (!found) ret = init;
 
 	return ret;
