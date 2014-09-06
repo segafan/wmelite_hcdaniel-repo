@@ -106,10 +106,12 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 
 	SDL_GetCurrentDisplayMode(0,&tmpResolution);
 
-	float gameRatio = width / height;
-	float screenRatio = tmpResolution.w / tmpResolution.h;
+	// compute ratios precisely
+	float gameRatio = (float)width / (float)height;
+	float screenRatio = (float)tmpResolution.w / (float)tmpResolution.h;
 	
-	if (gameRatio == screenRatio)
+	// need to compare floats with some residual error
+	if (MathUtil::FloatsAreEqual(gameRatio, screenRatio) == true)
 	{
 		current = &tmpResolution;
 		m_RealWidth = width;
@@ -121,8 +123,9 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 		{
 			if (SDL_GetDisplayMode(0,i,&testResolution) == 0)
 			{
-				 float tmpRatio = testResolution.w / testResolution.h;
-				 if (tmpRatio == screenRatio)
+				 float tmpRatio = (float)testResolution.w / (float)testResolution.h;
+				 // need to compare floats with some residual error
+				 if (MathUtil::FloatsAreEqual(tmpRatio, screenRatio) == true)
 				 {
 					 if (testResolution.w >= width && testResolution.h >= height &&
 						 testResolution.w <= tmpResolution.w && testResolution.h <= tmpResolution.h)
