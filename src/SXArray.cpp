@@ -35,15 +35,26 @@ CSXArray::CSXArray(CBGame* inGame, CScStack* Stack):CBScriptable(inGame)
 	m_Length = 0;
 	m_Values = new CScValue(Game);
 
+	// how many arguments to "new Array()"?
 	int NumParams = Stack->Pop()->GetInt(0);
 
-	if(NumParams==1) m_Length = Stack->Pop()->GetInt(0);
-	else if(NumParams>1){
-		m_Length = NumParams;
-		char ParamName[20];
-		for(int i=0; i<NumParams; i++){
-			sprintf(ParamName, "%d", i);
-			m_Values->SetProp(ParamName, Stack->Pop());
+	// > 0 means do some initalization
+    if(NumParams >= 1){
+        if((NumParams == 1) && Stack->GetTop()->IsInt())
+		{
+			// new Array(int);
+            m_Length = Stack->Pop()->GetInt(0);
+		}
+        else
+        {
+			// new Array("str", "anotherstr", ...)
+			m_Length = NumParams;
+			char ParamName[20];
+			for(int i=0; i < NumParams; i++)
+			{
+				sprintf(ParamName, "%d", i);
+				m_Values->SetProp(ParamName, Stack->Pop());
+			}
 		}
 	}
 }
