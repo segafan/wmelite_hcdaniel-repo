@@ -552,12 +552,16 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 			Game->LOG(0, "Reverb command error=%d", status);
 		}
 
-		m_BASS_DSP_handle = BASS_ChannelSetDSP(m_Stream, CBSoundBuffer::DSPProc, (void *) this, 0);
+		m_pContext = &m_context;
+
+		m_BASS_DSP_handle = BASS_ChannelSetDSP(m_Stream, DSPProc, (void *) this, 0);
 
 		if (m_BASS_DSP_handle == 0)
 		{
 			Game->LOG(0, "BASS error: %d while adding DSP effect", BASS_ErrorGetCode());
 		}
+
+		Game->LOG(0, "Preset reverb active.");
 
 #endif
 		break;
@@ -635,8 +639,13 @@ void CBSoundBuffer::DSPProc(HDSP handle, DWORD channel, void *buffer, DWORD leng
 	ReverbContext *ctx;
 	audio_buffer_t audio_in;
 	audio_buffer_t audio_out;
+	CBSoundBuffer *obj; 
 
-	ctx = &(((CBSoundBuffer *) user)->m_context);
+	printf("In Callback!\n");
+
+	obj = static_cast<CBSoundBuffer*>(user);
+
+	ctx = obj->m_pContext;
 
 	audio_in.raw = buffer;
 	audio_out.raw = buffer;

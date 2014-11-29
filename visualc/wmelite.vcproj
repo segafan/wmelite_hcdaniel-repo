@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="dep\sdl\include;dep\zlib\include;dep\bass\include;dep\freetype\include;dep\FreeImage\include;dep\libtheoraplayer\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;USE_BASS_FX"
+				AdditionalIncludeDirectories="dep\sdl\include;dep\zlib\include;dep\bass\include;dep\freetype\include;dep\FreeImage\include;dep\libtheoraplayer\include;dep\libeffects\;dep\libeffects\Common\lib\;dep\libeffects\Reverb\lib\;vs2008includes\"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;USE_BASS_FX;USE_LIBEFFECTS_REVERB;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -61,10 +61,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL2.lib SDL2main.lib bass.lib bass_fx.lib zlib.lib freetype2311_D.lib FreeImage.lib libtheoraplayer.lib"
+				AdditionalDependencies="SDL2.lib SDL2main.lib bass.lib bass_fx.lib zlib.lib freetype2311_D.lib FreeImage.lib libtheoraplayer.lib libeffects.lib"
 				OutputFile="$(InputDir)\..\bin\$(IntDir)\$(ProjectName).exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="dep\sdl\lib;dep\zlib\lib;dep\bass\lib;dep\freetype\lib;dep\FreeImage\lib;dep\libtheoraplayer\lib"
+				AdditionalLibraryDirectories="dep\sdl\lib;dep\zlib\lib;dep\bass\lib;dep\freetype\lib;dep\FreeImage\lib;dep\libtheoraplayer\lib;dep\libeffects\"
 				AdditionalManifestDependencies=""
 				IgnoreDefaultLibraryNames="LIBCMT"
 				GenerateDebugInformation="true"
@@ -122,8 +122,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="dep\sdl\include;dep\zlib\include;dep\bass\include;dep\freetype\include;dep\FreeImage\include;dep\libtheoraplayer\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;THEORAVIDEO_STATIC;USE_BASS_FX"
+				AdditionalIncludeDirectories="dep\sdl\include;dep\zlib\include;dep\bass\include;dep\freetype\include;dep\FreeImage\include;dep\libtheoraplayer\include;dep\libeffects\;dep\libeffects\Common\lib\;dep\libeffects\Reverb\lib\;vs2008includes\"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;THEORAVIDEO_STATIC;USE_BASS_FX;USE_LIBEFFECTS_REVERB;"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -141,10 +141,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL2.lib SDL2main.lib bass.lib bass_fx.lib zlib.lib freetype2311ST.lib FreeImage.lib libtheoraplayer_static.lib  libogg.lib libtheora.lib libvorbis.lib "
+				AdditionalDependencies="SDL2.lib SDL2main.lib bass.lib bass_fx.lib zlib.lib freetype2311ST.lib FreeImage.lib libtheoraplayer_static.lib  libogg.lib libtheora.lib libvorbis.lib  libeffects.lib"
 				OutputFile="$(InputDir)\..\bin\$(IntDir)\wme_D3D9.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="dep\sdl\lib;dep\zlib\lib;dep\bass\lib;dep\freetype\lib;dep\FreeImage\lib;dep\libtheoraplayer\lib"
+				AdditionalLibraryDirectories="dep\sdl\lib;dep\zlib\lib;dep\bass\lib;dep\freetype\lib;dep\FreeImage\lib;dep\libtheoraplayer\lib;dep\libeffects\"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="false"
 				GenerateMapFile="true"
@@ -3020,6 +3020,14 @@
 			</File>
 			<File
 				RelativePath="..\src\SdlUtil.h"
+				>
+			</File>
+			<File
+				RelativePath=".\vs2008includes\stdbool.h"
+				>
+			</File>
+			<File
+				RelativePath=".\vs2008includes\stdint.h"
 				>
 			</File>
 			<File
