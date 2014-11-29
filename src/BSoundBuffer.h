@@ -37,6 +37,10 @@ THE SOFTWARE.
 #include "SDL_mixer.h"
 #endif
 
+#ifdef USE_LIBEFFECTS_REVERB
+#include "Wrapper/ReverbLibrary.h"
+#endif
+
 class CBSoundBuffer : public CBBase  
 {
 public:
@@ -87,6 +91,16 @@ public:
 #ifdef USE_BASS_FX
 
 	HFX m_EffectHandle;
+
+#endif
+
+#ifdef USE_LIBEFFECTS_REVERB
+
+	ReverbContext m_context;
+	HDSP m_BASS_DSP_handle;
+
+	static void CALLBACK DSPProc(HDSP handle, DWORD channel, void *buffer, DWORD length, void *user);
+
 
 #endif
 
