@@ -531,6 +531,8 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 	    	break;
 	    }
 
+		Game->LOG(0, "====> Next preset=%d.\n", m_context.nextPreset);
+
 		status = Reverb_init(&m_context);
 
 		if (status != 0)
@@ -541,7 +543,18 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 		m_context.config.outputCfg.accessMode = EFFECT_BUFFER_ACCESS_WRITE;
 
 	    m_context.InFrames32  = (LVM_INT32 *)malloc(LVREV_MAX_FRAME_SIZE * sizeof(LVM_INT32) * 2);
+
+		if (m_context.InFrames32 == NULL)
+		{
+			Game->LOG(0, "Reverb malloc failed!");
+		}
+
 	    m_context.OutFrames32 = (LVM_INT32 *)malloc(LVREV_MAX_FRAME_SIZE * sizeof(LVM_INT32) * 2);
+
+		if (m_context.OutFrames32 == NULL)
+		{
+			Game->LOG(0, "Reverb malloc failed!");
+		}
 
 	    replyCount = sizeof(int);
 
@@ -561,7 +574,7 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 			Game->LOG(0, "BASS error: %d while adding DSP effect", BASS_ErrorGetCode());
 		}
 
-		Game->LOG(0, "Preset reverb active.");
+		Game->LOG(0, "Preset reverb active, ptr=0x%08X.", (uint32_t) m_pContext);
 
 #endif
 		break;
@@ -640,27 +653,35 @@ void CBSoundBuffer::DSPProc(HDSP handle, DWORD channel, void *buffer, DWORD leng
 	audio_buffer_t audio_in;
 	audio_buffer_t audio_out;
 	CBSoundBuffer *obj; 
-
-	printf("In Callback!\n");
+	// CBGame *Game;
+	char inbuf[100000];
+	char outbuf[100000];
 
 	obj = static_cast<CBSoundBuffer*>(user);
 
 	ctx = obj->m_pContext;
+	// ctx = static_cast<ReverbContext*>(user);
 
-	audio_in.raw = buffer;
-	audio_out.raw = buffer;
+	// Game = static_cast<CBGame*>(user);
+
+	obj->Game->LOG(0, "In Callback! length=%d.", length);
+
+	audio_in.raw = inbuf;
+	// memcpy(inbuf, buffer, length);
+
+	audio_out.raw = outbuf;
+
+	obj->Game->LOG(0, "In callback context is 0x%08X.", (uint32_t) ctx);
 
 	// TODO need to properly adjust this!
-	audio_in.frameCount = length / 4;
-	audio_out.frameCount = length / 4;
+	audio_in.frameCount = 1;
+	audio_out.frameCount = 1;
 
 	status = Reverb_process(ctx, &audio_in, &audio_out);
 
-	/*
 	if (status != 0)
 	{
-		Game->LOG(0, "Reverb process error=%d", status);
+		obj->Game->LOG(0, "Reverb process error=%d", status);
 	}
-	*/
 }
 #endif
