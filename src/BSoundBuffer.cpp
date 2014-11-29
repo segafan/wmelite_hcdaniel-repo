@@ -55,6 +55,11 @@ CBSoundBuffer::CBSoundBuffer(CBGame* inGame):CBBase(inGame)
 #ifdef USE_BASS_FX
 	m_EffectHandle = 0;
 #endif
+
+#ifdef USE_LIBEFFECTS_REVERB
+	m_context.hInstance = NULL;
+	m_BASS_DSP_handle = 0;
+#endif
 }
 
 
@@ -74,6 +79,17 @@ CBSoundBuffer::~CBSoundBuffer()
 		Game->m_FileManager->CloseFile(m_File);
 		m_File = NULL;
 	}
+
+#ifdef USE_LIBEFFECTS_REVERB
+	if (m_context.hInstance != NULL)
+	{
+		free(m_context.InFrames32);
+		free(m_context.OutFrames32);
+		Reverb_free(&m_context);
+		m_context.hInstance = NULL;
+	}
+#endif
+
 
 	SAFE_DELETE_ARRAY(m_Filename);
 }
@@ -124,6 +140,24 @@ HRESULT CBSoundBuffer::LoadFromFile(const char* Filename, bool ForceReload)
 	{
 		BASS_ChannelRemoveFX(m_Stream, m_EffectHandle);
 		m_EffectHandle = 0;
+	}
+#endif
+
+#ifdef USE_LIBEFFECTS_REVERB
+	if (m_BASS_DSP_handle != 0)
+	{
+		if (BASS_ChannelRemoveDSP(m_Stream, m_BASS_DSP_handle) == FALSE)
+		{
+			Game->LOG(0, "BASS error: %d while removing ond DSP effect from '%s'", BASS_ErrorGetCode(), Filename);
+		}
+		m_BASS_DSP_handle = 0;
+	}
+	if (m_context.hInstance != NULL)
+	{
+		free(m_context.InFrames32);
+		free(m_context.OutFrames32);
+		Reverb_free(&m_context);
+		m_context.hInstance = NULL;
 	}
 #endif
 
@@ -457,6 +491,77 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 #endif
 		break;
 
+	case SFX_REVERB_PRESET:
+#ifdef USE_LIBEFFECTS_REVERB
+		int status;
+		uint32_t replyCount;
+		char replydata[8];
+
+		m_context.hInstance  = NULL;
+		m_context.auxiliary  = false;
+
+	    m_context.preset     = true;
+	    m_context.curPreset  = REVERB_PRESET_LAST + 1;
+
+	    switch (int (Param1))
+	    {
+	    case 0:
+	    	m_context.nextPreset = REVERB_PRESET_NONE;
+	    	break;
+	    case 1:
+	    	m_context.nextPreset = REVERB_PRESET_SMALLROOM;
+	    	break;
+	    case 2:
+	    	m_context.nextPreset = REVERB_PRESET_MEDIUMROOM;
+	    	break;
+	    case 3:
+	    	m_context.nextPreset = REVERB_PRESET_LARGEROOM;
+	    	break;
+	    case 4:
+	    	m_context.nextPreset = REVERB_PRESET_MEDIUMHALL;
+	    	break;
+	    case 5:
+	    	m_context.nextPreset = REVERB_PRESET_LARGEHALL;
+	    	break;
+	    case 6:
+	    	m_context.nextPreset = REVERB_PRESET_PLATE;
+	    	break;
+	    default:
+	    	m_context.nextPreset = REVERB_PRESET_NONE;
+	    	break;
+	    }
+
+		status = Reverb_init(&m_context);
+
+		if (status != 0)
+		{
+			Game->LOG(0, "Reverb init error=%d", status);
+		}
+
+		m_context.config.outputCfg.accessMode = EFFECT_BUFFER_ACCESS_WRITE;
+
+	    m_context.InFrames32  = (LVM_INT32 *)malloc(LVREV_MAX_FRAME_SIZE * sizeof(LVM_INT32) * 2);
+	    m_context.OutFrames32 = (LVM_INT32 *)malloc(LVREV_MAX_FRAME_SIZE * sizeof(LVM_INT32) * 2);
+
+	    replyCount = sizeof(int);
+
+	    status = Reverb_command(&m_context, EFFECT_CMD_ENABLE, 0, NULL, &replyCount, replydata);
+
+		if (status != 0)
+		{
+			Game->LOG(0, "Reverb command error=%d", status);
+		}
+
+		m_BASS_DSP_handle = BASS_ChannelSetDSP(m_Stream, CBSoundBuffer::DSPProc, (void *) this, 0);
+
+		if (m_BASS_DSP_handle == 0)
+		{
+			Game->LOG(0, "BASS error: %d while adding DSP effect", BASS_ErrorGetCode());
+		}
+
+#endif
+		break;
+
 	default:
 #ifdef USE_BASS_FX
 		if (m_EffectHandle != 0)
@@ -464,6 +569,24 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 			BASS_ChannelRemoveFX(m_Stream, m_EffectHandle);
 			m_EffectHandle = 0;
 		}
+#endif
+
+#ifdef USE_LIBEFFECTS_REVERB
+	if (m_BASS_DSP_handle != 0)
+	{
+		if (BASS_ChannelRemoveDSP(m_Stream, m_BASS_DSP_handle) == FALSE)
+		{
+			Game->LOG(0, "BASS error: %d while removing old DSP effect", BASS_ErrorGetCode());
+		}
+		m_BASS_DSP_handle = 0;
+	}
+	if (m_context.hInstance != NULL)
+	{
+		free(m_context.InFrames32);
+		free(m_context.OutFrames32);
+		Reverb_free(&m_context);
+		m_context.hInstance = NULL;
+	}
 #endif
 		break;
 	}
@@ -503,3 +626,32 @@ BOOL CBSoundBuffer::FileSeekProc(QWORD offset, void *user)
 	CBFile* file = static_cast<CBFile*>(user);
 	return SUCCEEDED(file->Seek(offset));
 }
+
+//////////////////////////////////////////////////////////////////////////
+#ifdef USE_LIBEFFECTS_REVERB
+void CBSoundBuffer::DSPProc(HDSP handle, DWORD channel, void *buffer, DWORD length, void *user)
+{
+	int status;
+	ReverbContext *ctx;
+	audio_buffer_t audio_in;
+	audio_buffer_t audio_out;
+
+	ctx = &(((CBSoundBuffer *) user)->m_context);
+
+	audio_in.raw = buffer;
+	audio_out.raw = buffer;
+
+	// TODO need to properly adjust this!
+	audio_in.frameCount = length / 4;
+	audio_out.frameCount = length / 4;
+
+	status = Reverb_process(ctx, &audio_in, &audio_out);
+
+	/*
+	if (status != 0)
+	{
+		Game->LOG(0, "Reverb process error=%d", status);
+	}
+	*/
+}
+#endif

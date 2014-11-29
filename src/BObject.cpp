@@ -458,6 +458,21 @@ HRESULT CBObject::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *Thi
 		return S_OK;
 	}
 
+#ifdef USE_LIBEFFECTS_REVERB
+	//////////////////////////////////////////////////////////////////////////
+	// SoundFXReverb
+	//////////////////////////////////////////////////////////////////////////
+	else if(strcmp(Name, "SoundFXReverbPreset")==0)
+	{
+		Stack->CorrectParams(1);
+		m_SFXType = SFX_REVERB_PRESET;
+		m_SFXParam1 = (float)Stack->Pop()->GetFloat(0); // Number of reverb preset
+		Stack->PushNULL();
+
+		return S_OK;
+	}
+#endif
+
 	else return CBScriptHolder::ScCallMethod(Script, Stack, ThisStack, Name);
 }
 

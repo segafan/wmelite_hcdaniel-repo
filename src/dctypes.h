@@ -150,7 +150,7 @@ typedef enum {
 } TWindowMode;
 
 typedef enum {
-	SFX_NONE, SFX_ECHO, SFX_REVERB
+	SFX_NONE, SFX_ECHO, SFX_REVERB, SFX_REVERB_PRESET
 } TSFXType;
 
 
