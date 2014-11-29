@@ -8,7 +8,7 @@ CPPFLAGS=-I$(IDIR) -I. -I../dependencies/libeffects-android/ -I../dependencies/l
 
 SRCDIR=../src
 
-ODIR=obj_bass_fx
+ODIR=obj_bass_fx_effects
 
 LIBS=`sdl2-config --libs` `freetype-config --libs` -L../prebuilt/linux/i386/ -L. -lbass -lfreeimage -lbass_fx -lSDL2 -leffects
 
@@ -19,7 +19,7 @@ _OBJCPP =  AdActor.o AdActorDir.o AdEntity.o AdGame.o AdInventoryBox.o AdInvento
 # VidDataSource.o VidManager.o VidTheoraPlayer.o
 OBJCPP = $(patsubst %,$(ODIR)/%,$(_OBJCPP))
 
-wmelite_bass_fx: $(OBJC) $(OBJCPP)
+wmelite_bass_fx_effects: $(OBJC) $(OBJCPP)
 	g++ -o $@ $^ $(CFLAGS) $(LIBS)
 
 $(ODIR)/ConvertUTF.o: $(SRCDIR)/ConvertUTF.c
@@ -41,5 +41,5 @@ $(ODIR)/%.o: $(SRCDIR)/%.cpp
 .PHONY: clean
 
 clean:
-	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ wmelite_bass_fx
+	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ wmelite_bass_fx_effects
 
