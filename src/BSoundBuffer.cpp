@@ -653,9 +653,11 @@ void CBSoundBuffer::DSPProc(HDSP handle, DWORD channel, void *buffer, DWORD leng
 	audio_buffer_t audio_in;
 	audio_buffer_t audio_out;
 	CBSoundBuffer *obj; 
+	DWORD currLength;
+	DWORD totalLength;
 	// CBGame *Game;
-	char inbuf[100000];
-	char outbuf[100000];
+	// char inbuf[100000];
+	// char outbuf[100000];
 
 	obj = static_cast<CBSoundBuffer*>(user);
 
@@ -665,23 +667,37 @@ void CBSoundBuffer::DSPProc(HDSP handle, DWORD channel, void *buffer, DWORD leng
 	// Game = static_cast<CBGame*>(user);
 
 	obj->Game->LOG(0, "In Callback! length=%d.", length);
-
-	audio_in.raw = inbuf;
-	// memcpy(inbuf, buffer, length);
-
-	audio_out.raw = outbuf;
-
 	obj->Game->LOG(0, "In callback context is 0x%08X.", (uint32_t) ctx);
 
-	// TODO need to properly adjust this!
-	audio_in.frameCount = 1;
-	audio_out.frameCount = 1;
+	currLength = 0;
+	totalLength = 0;
 
-	status = Reverb_process(ctx, &audio_in, &audio_out);
-
-	if (status != 0)
+	while (totalLength < length)
 	{
-		obj->Game->LOG(0, "Reverb process error=%d", status);
+		currLength = (length - totalLength);
+		if ((currLength / 4) > LVREV_MAX_FRAME_SIZE)
+		{
+			currLength = LVREV_MAX_FRAME_SIZE * 4;
+		} 		
+
+		audio_in.raw = ((uint8_t *) buffer) + totalLength;
+		// memcpy(inbuf, buffer, length);
+
+		audio_out.raw = ((uint8_t *) buffer) + totalLength;
+
+		// TODO need to properly adjust this!
+		audio_in.frameCount = currLength / 4;
+		audio_out.frameCount = currLength / 4;
+
+		status = Reverb_process(ctx, &audio_in, &audio_out);
+
+		if (status != 0)
+		{
+			obj->Game->LOG(0, "Reverb process error=%d", status);
+		}
+
+		totalLength += currLength;
 	}
 }
 #endif
+
