@@ -498,9 +498,9 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 		char replydata[8];
 
 		m_context.hInstance  = NULL;
-		m_context.auxiliary  = false;
+		m_context.boolAuxiliary  = 0;
 
-	    m_context.preset     = true;
+	    m_context.boolPreset     = 1;
 	    m_context.curPreset  = REVERB_PRESET_LAST + 1;
 
 	    switch (int (Param1))
@@ -548,12 +548,20 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 		{
 			Game->LOG(0, "Reverb malloc failed!");
 		}
+		else
+		{
+			Game->LOG(0, "Malloc inframes addr 0x%08X!", (uint32_t*) m_context.InFrames32);
+		}
 
 	    m_context.OutFrames32 = (LVM_INT32 *)malloc(LVREV_MAX_FRAME_SIZE * sizeof(LVM_INT32) * 2);
 
 		if (m_context.OutFrames32 == NULL)
 		{
 			Game->LOG(0, "Reverb malloc failed!");
+		}
+		else
+		{
+			Game->LOG(0, "Malloc outframes addr 0x%08X!", (uint32_t*) m_context.OutFrames32);
 		}
 
 	    replyCount = sizeof(int);
@@ -669,6 +677,9 @@ void CBSoundBuffer::DSPProc(HDSP handle, DWORD channel, void *buffer, DWORD leng
 	obj->Game->LOG(0, "In Callback! length=%d.", length);
 	obj->Game->LOG(0, "In callback context is 0x%08X.", (uint32_t) ctx);
 
+	obj->Game->LOG(0, "In callback inframes addr 0x%08X!", (uint32_t*) ctx->InFrames32);
+	obj->Game->LOG(0, "In callback outframes addr 0x%08X!", (uint32_t*) ctx->OutFrames32);
+
 	currLength = 0;
 	totalLength = 0;
 
@@ -688,6 +699,8 @@ void CBSoundBuffer::DSPProc(HDSP handle, DWORD channel, void *buffer, DWORD leng
 		// TODO need to properly adjust this!
 		audio_in.frameCount = currLength / 4;
 		audio_out.frameCount = currLength / 4;
+
+		obj->Game->LOG(0, "Frame count=%d.", audio_out.frameCount);
 
 		status = Reverb_process(ctx, &audio_in, &audio_out);
 
