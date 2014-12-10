@@ -92,7 +92,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="@copy dep\bass\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;@copy dep\sdl\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;@copy dep\FreeImage\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;@copy dep\libtheoraplayer\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;"
+				CommandLine="@copy dep\bass\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;@copy dep\sdl\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;@copy dep\FreeImage\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;@copy dep\libtheoraplayer\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;@copy dep\libeffects\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -174,7 +174,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="@copy dep\bass\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;@copy dep\sdl\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;@copy dep\FreeImage\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;@copy dep\libtheoraplayer\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;"
+				CommandLine="@copy dep\bass\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;@copy dep\sdl\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;@copy dep\FreeImage\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;@copy dep\libtheoraplayer\lib\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;@copy dep\libeffects\*.dll &quot;$(TargetDir)&quot; &gt; nul&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
