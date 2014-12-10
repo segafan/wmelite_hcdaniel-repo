@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="dep\sdl\include;dep\zlib\include;dep\bass\include;dep\freetype\include;dep\FreeImage\include;dep\libtheoraplayer\include;dep\libeffects\;dep\libeffects\Common\lib\;dep\libeffects\Reverb\lib\;vs2008includes\"
+				AdditionalIncludeDirectories="dep\sdl\include;dep\zlib\include;dep\bass\include;dep\freetype\include;dep\FreeImage\include;dep\libtheoraplayer\include;dep\libeffects\;dep\libeffects\Common\lib\;dep\libeffects\Reverb\lib\"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;USE_BASS_FX;USE_LIBEFFECTS_REVERB;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -122,7 +122,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="dep\sdl\include;dep\zlib\include;dep\bass\include;dep\freetype\include;dep\FreeImage\include;dep\libtheoraplayer\include;dep\libeffects\;dep\libeffects\Common\lib\;dep\libeffects\Reverb\lib\;vs2008includes\"
+				AdditionalIncludeDirectories="dep\sdl\include;dep\zlib\include;dep\bass\include;dep\freetype\include;dep\FreeImage\include;dep\libtheoraplayer\include;dep\libeffects\;dep\libeffects\Common\lib\;dep\libeffects\Reverb\lib\"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;THEORAVIDEO_STATIC;USE_BASS_FX;USE_LIBEFFECTS_REVERB;"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
