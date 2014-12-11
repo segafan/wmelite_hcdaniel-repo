@@ -1,0 +1,45 @@
+#include "scripts\base.inc"
+
+
+////////////////////////////////////////////////////////////////////////////////
+on "inventory"
+{
+	var invBtn = this.GetControl("inventory");
+	
+  Game.InventoryVisible = !Game.InventoryVisible;
+  invBtn.Pressed = Game.InventoryVisible;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+on "item"
+{
+  Game.SelectItem(null);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+on "menu"
+{
+	global WinCaption;
+  WinCaption.Visible = false;
+  
+  var WinMainMenu = Game.LoadWindow("interface\system\mainmenu.window");
+  WinMainMenu.Center();
+  WinMainMenu.GoSystemExclusive();
+  Game.UnloadObject(WinMainMenu);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+method DisplayItem(var item)
+{
+	var itemBtn = this.GetControl("item");
+	if (item == null)
+	{
+		itemBtn.SetImage(null);
+		itemBtn.Visible = false;
+	}
+	else
+  {
+  	itemBtn.SetImage(item.GetSprite());
+  	itemBtn.Visible = true;
+  }
+}
