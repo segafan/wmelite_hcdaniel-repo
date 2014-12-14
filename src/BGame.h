@@ -151,7 +151,7 @@ public:
 	void LOG(HRESULT res, LPCSTR fmt, ...);
 	CBRenderer* m_Renderer;
 	CBSoundMgr* m_SoundMgr;
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 	CVidManager* m_VideoMgr;
 #endif
 	CScEngine* m_ScEngine;
@@ -237,7 +237,7 @@ public:
 	HRESULT Unfreeze();
 	HRESULT Freeze(bool IncludingMusic=true);
 	HRESULT FocusWindow(CUIWindow* Window);
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 	CVidTheoraPlayer* m_TheoraPlayer;
 #endif
 	bool m_LoadInProgress;

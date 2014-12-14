@@ -70,7 +70,7 @@ CBGame::CBGame():CBObject(this)
 	m_FontStorage = NULL;
 	m_Renderer = NULL;
 	m_SoundMgr = NULL;
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 	m_VideoMgr = NULL;
 #endif
 	m_FileManager = NULL;
@@ -90,7 +90,7 @@ CBGame::CBGame():CBObject(this)
 	m_SystemFont = NULL;
 	m_VideoFont = NULL;
 
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 	m_TheoraPlayer = NULL;
 #endif
 
@@ -289,7 +289,7 @@ CBGame::~CBGame()
 	SAFE_DELETE(m_ScEngine);
 	SAFE_DELETE(m_FontStorage);
 	SAFE_DELETE(m_SurfaceStorage);
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 	SAFE_DELETE(m_TheoraPlayer);
 	SAFE_DELETE(m_VideoMgr);
 #endif
@@ -399,7 +399,7 @@ HRESULT CBGame::Initialize1()
 	m_SoundMgr = new CBSoundMgr(this);
 	if(m_SoundMgr==NULL) goto init_fail;
 
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 	m_VideoMgr = new CVidManager(this);
 	if(m_VideoMgr==NULL) goto init_fail;
 	m_VideoMgr->Initialize();
@@ -438,7 +438,7 @@ init_fail:
 	if(m_DebugMgr) delete m_DebugMgr;
 	if(m_SurfaceStorage) delete m_SurfaceStorage;
 	if(m_FontStorage) delete m_FontStorage;
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 	if(m_VideoMgr) delete m_VideoMgr;
 #endif
 	if(m_SoundMgr) delete m_SoundMgr;
@@ -595,7 +595,7 @@ HRESULT CBGame::InitLoop()
 
 	GetDebugMgr()->OnGameTick();
 	m_Renderer->InitLoop();
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 	m_VideoMgr->InitLoop();
 #endif
 	m_SoundMgr->InitLoop();
@@ -1421,7 +1421,7 @@ HRESULT CBGame::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *ThisS
 		return S_OK;
 	}
 
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 	//////////////////////////////////////////////////////////////////////////
 	// PlayVideo
 	//////////////////////////////////////////////////////////////////////////
@@ -3611,7 +3611,7 @@ void CBGame::AfterLoadScript(void* script, void* data)
 //////////////////////////////////////////////////////////////////////////
 void CBGame::AfterLoadTheora(void* Theora, void* Data)
 {
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 	((CVidTheoraPlayer*)Theora)->InitializeSimple();
 #endif
 }
@@ -4013,7 +4013,7 @@ HRESULT CBGame::Freeze(bool IncludingMusic)
 	{
 		m_ScEngine->PauseAll();
 		m_SoundMgr->PauseAll(IncludingMusic);
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 		m_VideoMgr->PauseAll();
 #endif
 		m_OrigState = m_State;
@@ -4039,7 +4039,7 @@ HRESULT CBGame::Unfreeze()
 		m_Interactive = m_OrigInteractive;
 		m_ScEngine->ResumeAll();
 		m_SoundMgr->ResumeAll();
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 		m_VideoMgr->ResumeAll();
 #endif
 	}
@@ -4598,7 +4598,7 @@ HRESULT CBGame::SetWaitCursor(char* Filename)
 //////////////////////////////////////////////////////////////////////////
 bool CBGame::IsVideoPlaying()
 {
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 	if(m_TheoraPlayer && m_TheoraPlayer->IsPlaying()) return true;
 #endif
 	return false;
@@ -4607,7 +4607,7 @@ bool CBGame::IsVideoPlaying()
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBGame::StopVideo()
 {
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 	if(m_TheoraPlayer && m_TheoraPlayer->IsPlaying())
 	{
 		m_TheoraPlayer->Stop();
@@ -4648,14 +4648,14 @@ HRESULT CBGame::OnActivate(bool Activate, bool RefreshMouse)
 	if(Activate)
 	{
 		m_SoundMgr->ResumeAll();
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 		m_VideoMgr->ResumeAll();
 #endif
 	}
 	else
 	{
 		m_SoundMgr->PauseAll();
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 		m_VideoMgr->PauseAll();
 #endif
 	}
