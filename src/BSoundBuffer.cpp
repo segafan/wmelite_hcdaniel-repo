@@ -538,6 +538,7 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 		if (status != 0)
 		{
 			Game->LOG(0, "Reverb init error=%d", status);
+			return S_FALSE;
 		}
 
 		m_context.config.outputCfg.accessMode = EFFECT_BUFFER_ACCESS_WRITE;
@@ -546,22 +547,29 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 
 		if (m_context.InFrames32 == NULL)
 		{
-			Game->LOG(0, "Reverb malloc failed!");
+			Game->LOG(0, "Reverb malloc failed (1)!");
+			Reverb_free(&m_context);
+			m_context.hInstance = NULL;
+			return S_FALSE;
 		}
 		else
 		{
-			Game->LOG(0, "Malloc inframes addr 0x%08X!", (uint32_t*) m_context.InFrames32);
+			// Game->LOG(0, "Malloc inframes addr 0x%08X!", (uint32_t*) m_context.InFrames32);
 		}
 
 	    m_context.OutFrames32 = (LVM_INT32 *)malloc(LVREV_MAX_FRAME_SIZE * sizeof(LVM_INT32) * 2);
 
 		if (m_context.OutFrames32 == NULL)
 		{
-			Game->LOG(0, "Reverb malloc failed!");
+			Game->LOG(0, "Reverb malloc failed (2)!");
+			free(m_context.InFrames32);
+			Reverb_free(&m_context);
+			m_context.hInstance = NULL;
+			return S_FALSE;
 		}
 		else
 		{
-			Game->LOG(0, "Malloc outframes addr 0x%08X!", (uint32_t*) m_context.OutFrames32);
+			// Game->LOG(0, "Malloc outframes addr 0x%08X!", (uint32_t*) m_context.OutFrames32);
 		}
 
 	    replyCount = sizeof(int);
@@ -571,18 +579,27 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 		if (status != 0)
 		{
 			Game->LOG(0, "Reverb command error=%d", status);
+			free(m_context.OutFrames32);
+			free(m_context.InFrames32);
+			Reverb_free(&m_context);
+			m_context.hInstance = NULL;
+			return S_FALSE;
 		}
-
-		m_pContext = &m_context;
 
 		m_BASS_DSP_handle = BASS_ChannelSetDSP(m_Stream, DSPProc, (void *) this, 0);
 
 		if (m_BASS_DSP_handle == 0)
 		{
 			Game->LOG(0, "BASS error: %d while adding DSP effect", BASS_ErrorGetCode());
+			free(m_context.OutFrames32);
+			free(m_context.InFrames32);
+			Reverb_free(&m_context);
+			m_context.hInstance = NULL;
+			return S_FALSE;
 		}
 
-		Game->LOG(0, "Preset reverb active, ptr=0x%08X.", (uint32_t) m_pContext);
+	//	Game->LOG(0, "Preset reverb active, ptr=0x%08X.", (uint32_t) m_pContext);
+		Game->LOG(0, "Preset reverb active.");
 
 #endif
 		break;
@@ -669,16 +686,16 @@ void CBSoundBuffer::DSPProc(HDSP handle, DWORD channel, void *buffer, DWORD leng
 
 	obj = static_cast<CBSoundBuffer*>(user);
 
-	ctx = obj->m_pContext;
+	ctx = &(obj->m_context);
 	// ctx = static_cast<ReverbContext*>(user);
 
 	// Game = static_cast<CBGame*>(user);
 
-	obj->Game->LOG(0, "In Callback! length=%d.", length);
-	obj->Game->LOG(0, "In callback context is 0x%08X.", (uint32_t) ctx);
+	// obj->Game->LOG(0, "In Callback! length=%d.", length);
+	// obj->Game->LOG(0, "In callback context is 0x%08X.", (uint32_t) ctx);
 
-	obj->Game->LOG(0, "In callback inframes addr 0x%08X!", (uint32_t*) ctx->InFrames32);
-	obj->Game->LOG(0, "In callback outframes addr 0x%08X!", (uint32_t*) ctx->OutFrames32);
+	// obj->Game->LOG(0, "In callback inframes addr 0x%08X!", (uint32_t*) ctx->InFrames32);
+	// obj->Game->LOG(0, "In callback outframes addr 0x%08X!", (uint32_t*) ctx->OutFrames32);
 
 	currLength = 0;
 	totalLength = 0;
@@ -700,7 +717,7 @@ void CBSoundBuffer::DSPProc(HDSP handle, DWORD channel, void *buffer, DWORD leng
 		audio_in.frameCount = currLength / 4;
 		audio_out.frameCount = currLength / 4;
 
-		obj->Game->LOG(0, "Frame count=%d.", audio_out.frameCount);
+		// obj->Game->LOG(0, "Frame count=%d.", audio_out.frameCount);
 
 		status = Reverb_process(ctx, &audio_in, &audio_out);
 
