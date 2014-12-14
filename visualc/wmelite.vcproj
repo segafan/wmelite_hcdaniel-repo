@@ -148,7 +148,7 @@
 				OutputFile="$(InputDir)\..\bin\$(IntDir)\wme_D3D9.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="dep\sdl\lib;dep\zlib\lib;dep\bass\lib;dep\freetype\lib;dep\FreeImage\lib;dep\libeffects\"
-				IgnoreDefaultLibraryNames="LIBCMT"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="false"
 				GenerateMapFile="true"
 				SubSystem="2"
