@@ -61,6 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				LinkLibraryDependencies="false"
 				AdditionalDependencies="SDL2.lib SDL2main.lib bass.lib bass_fx.lib zlib.lib freetype2311_D.lib FreeImage.lib libeffects_static.lib"
 				OutputFile="$(InputDir)\..\bin\$(IntDir)\$(ProjectName).exe"
 				LinkIncremental="2"
@@ -141,6 +142,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				LinkLibraryDependencies="false"
 				AdditionalOptions="/VERBOSE:LIB"
 				AdditionalDependencies="SDL2.lib SDL2main.lib bass.lib bass_fx.lib zlib.lib freetype2311ST.lib FreeImage.lib libeffects_static.lib"
 				OutputFile="$(InputDir)\..\bin\$(IntDir)\wme_D3D9.exe"
