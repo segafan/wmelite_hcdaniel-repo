@@ -40,7 +40,7 @@ CAdEntity::CAdEntity(CBGame* inGame):CAdTalkHolder(inGame)
 	m_WalkToX = m_WalkToY = 0;
 	m_WalkToDir = DI_NONE;
 
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 	m_Theora = NULL;
 #endif
 }
@@ -50,7 +50,7 @@ CAdEntity::CAdEntity(CBGame* inGame):CAdTalkHolder(inGame)
 CAdEntity::~CAdEntity()
 {
 	Game->UnregisterObject(m_Region);
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 	SAFE_DELETE(m_Theora);
 #endif
 
@@ -507,7 +507,7 @@ HRESULT CAdEntity::Display()
 		}
 
 		DisplaySpriteAttachments(true);
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 		if(m_Theora && (m_Theora->IsPlaying() || m_Theora->IsPaused()))
 		{
 			m_Theora->Display(Alpha);
@@ -620,7 +620,7 @@ HRESULT CAdEntity::Update()
 	UpdateBlockRegion();
 	m_Ready = (m_State == STATE_READY);
 
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 	if (m_Theora)
 	{
 		int OffsetX, OffsetY;
@@ -661,7 +661,7 @@ HRESULT CAdEntity::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *Th
 		return S_OK;
 	}
 
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 	//////////////////////////////////////////////////////////////////////////
 	// PlayTheora
 	//////////////////////////////////////////////////////////////////////////
@@ -1061,7 +1061,7 @@ HRESULT CAdEntity::Persist(CBPersistMgr *PersistMgr)
 	PersistMgr->Transfer(TMEMBER(m_WalkToY));
 	PersistMgr->Transfer(TMEMBER_INT(m_WalkToDir));
 
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 	if (PersistMgr->CheckVersion(1, 0, 2))
 		PersistMgr->Transfer(TMEMBER(m_Theora));
 	else

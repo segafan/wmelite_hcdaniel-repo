@@ -1787,7 +1787,7 @@ HRESULT CAdGame::DisplayContent(bool Update, bool DisplayAll)
 	if(!m_EditorMode) m_Renderer->SetScreenViewport();
 
 	// playing exclusive video?
-#if !defined(__LINUX__) && !defined(__ANDROID__)
+#if !defined(__LINUX__) && !defined(__ANDROID__) && !defined(__EXCLUDE_LIBTHEORA_PLAYER__)
 	if (m_TheoraPlayer)
 	{
 		if(m_TheoraPlayer->IsPlaying())
