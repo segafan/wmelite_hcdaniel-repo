@@ -55,12 +55,12 @@ BEGIN
             VALUE "Comments", "http://www.wintermute-engine.org"
             VALUE "CompanyName", "Dead:Code Software"
             VALUE "FileDescription", "WME Lite Runtime Rapaki Edition"
-            VALUE "FileVersion", "1.0.7-rapaki-test"
+            VALUE "FileVersion", "1.0.7-rapaki"
             VALUE "InternalName", "wme"
             VALUE "LegalCopyright", "Copyright (c) Dead:Code 2011"
             VALUE "OriginalFilename", "wmelite.exe"
             VALUE "ProductName", "Wintermute Engine Rapaki Edition"
-            VALUE "ProductVersion", "1.0.7-rapaki-test"
+            VALUE "ProductVersion", "1.0.7-rapaki"
         END
     END
     BLOCK "VarFileInfo"
