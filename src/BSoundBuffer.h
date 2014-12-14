@@ -97,7 +97,6 @@ public:
 #ifdef USE_LIBEFFECTS_REVERB
 
 	ReverbContext m_context;
-	ReverbContext *m_pContext;
 	HDSP m_BASS_DSP_handle;
 
 	static void CALLBACK DSPProc(HDSP handle, DWORD channel, void *buffer, DWORD length, void *user);
