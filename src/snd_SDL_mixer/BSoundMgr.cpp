@@ -40,9 +40,9 @@ CBSoundMgr::CBSoundMgr(CBGame* inGame):CBBase(inGame)
 	m_SoundAvailable = false;
 
 	if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
-        {
+	{
 		Game->LOG(0, "SDL_InitSubSystem failed to init audio!");
-        }
+	}
 
 	m_VolumeSFX = m_VolumeSpeech = m_VolumeMusic = m_VolumeMaster = 100;
 }
@@ -123,6 +123,9 @@ HRESULT CBSoundMgr::Initialize()
 		return E_FAIL;
 	}
 	Mix_ChannelFinished((void *) this, SDLMixer_channelDoneCallback);
+
+	// TODO
+	Game->LOG(0, "Need to set the music finished hook as well!");
 
 	m_VolumeMaster = Game->m_Registry->ReadInt("Audio", "MasterVolume", 100);
 
