@@ -53,6 +53,8 @@ $(ODIR)/%.o: $(SRCDIR)/%.cpp
 
 .PHONY: clean
 
+all: wmelite_sdl_mixer
+
 clean:
 	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ wmelite_sdl_mixer
 

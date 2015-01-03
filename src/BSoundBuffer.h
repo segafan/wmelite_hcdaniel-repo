@@ -114,6 +114,7 @@ public:
 #else
 
 	Mix_Chunk *m_chunk;
+	Mix_Music *m_music;
 	SDL_RWops *m_rwops;
 	int m_currChannel;
 
