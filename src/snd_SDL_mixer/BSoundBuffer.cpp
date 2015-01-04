@@ -187,6 +187,9 @@ HRESULT CBSoundBuffer::Play(bool Looping, DWORD StartSample)
 	}
 
 	Game->LOG(0, "Allocated channel for file %s = %d.", m_Filename, m_currChannel);
+	
+	// reset panning of channel to default
+	Mix_SetPanning(m_currChannel, 127, 127);
 
 	if ((m_chunk) || (m_music))
 	{
@@ -299,16 +302,18 @@ void CBSoundBuffer::SetType(TSoundType Type)
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBSoundBuffer::SetVolume(int Volume)
 {
+	// compute the "weighted" value (volume relatively to TSoundType category's volume)
 	float resultingVolumePerCent = ((float)Volume / 100.0f) * m_PrivateVolume;
+
+	resultingVolumePerCent *= 1.2f; // SDL_mixer volume ranges from 0 to 127
 
 	if ((m_chunk) && (m_currChannel >= 0))
 	{
-		// compute the "weighted" value (volume relatively to TSoundType category's volume)
-		Mix_Volume(m_currChannel, (int) (resultingVolumePerCent * 1.2f));
+		Mix_Volume(m_currChannel, (int) resultingVolumePerCent);
 	}
 	if ((m_music) && (m_currChannel >= 0))
 	{
-		Mix_VolumeMusicCh((int) (resultingVolumePerCent * 1.2f), m_currChannel);
+		Mix_VolumeMusicCh((int) resultingVolumePerCent, m_currChannel);
 	}
 
 	return S_OK;
@@ -417,27 +422,14 @@ HRESULT CBSoundBuffer::SetPan(float Pan)
 	{
 		Uint8 left;
 		Uint8 right;
+		int result;
 
-		if (Pan == 0)
-		{
-			// unregister effect
-			left  = 255;
-			right = 255;
-		}
-		if (Pan < 0)
-		{
-			// change balance to left (a.k.a. attenuate right channel)
-			left  = 255;
-			right = (Uint8) ((1.0 - Pan) * 255.0f);
-		}
-		if (Pan > 0)
-		{
-			// change balance to right (a.k.a. attenuate left channel)
-			left  = (Uint8) ((1.0 - Pan) * 255.0f);
-			right = 255;
-		}
+		left  = (Uint8) (127 * (1.0 - Pan));
+		right = (Uint8) (127 * (1.0 + Pan));
 
-		Mix_SetPanning(m_currChannel, left, right);
+		result = Mix_SetPanning(m_currChannel, left, right);
+
+		// Game->LOG(0, "Setting pan on channel %d to left=%d right=%d, result=%d.", m_currChannel, left, right, result);
 
 		if (m_music)
 		{
