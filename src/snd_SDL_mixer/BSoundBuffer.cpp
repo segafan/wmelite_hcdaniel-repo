@@ -441,7 +441,8 @@ HRESULT CBSoundBuffer::SetPan(float Pan)
 
 		if (m_music)
 		{
-			Game->LOG(0, "Setting pan on music is experimental!");
+			// TODO need to debug whether panning setting works on a music channel
+			// Game->LOG(0, "Setting pan on music is experimental!");
 		}
 	}
 	return S_OK;

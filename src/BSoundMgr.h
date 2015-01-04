@@ -66,8 +66,9 @@ public:
 	CBArray<CBSoundBuffer*, CBSoundBuffer*> m_Sounds;
 	void SaveSettings();
 #ifdef USE_SDL_MIXER
-	void InvalidateChannels(int channel_number);
+	void InvalidateChannels(int channel_number, bool streamed);
 	static void SDLMixer_channelDoneCallback(void *userdata, int channel_number);
+	static void SDLMixer_musicFinishedHook(void *userdata, Mix_Music *music, int channel);
 #endif
 };
 

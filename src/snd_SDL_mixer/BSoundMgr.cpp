@@ -123,9 +123,7 @@ HRESULT CBSoundMgr::Initialize()
 		return E_FAIL;
 	}
 	Mix_ChannelFinished((void *) this, SDLMixer_channelDoneCallback);
-
-	// TODO
-	Game->LOG(0, "Need to set the music finished hook as well!");
+	Mix_HookMusicFinishedCh((void *) this, SDLMixer_musicFinishedHook);
 
 	m_VolumeMaster = Game->m_Registry->ReadInt("Audio", "MasterVolume", 100);
 
@@ -367,9 +365,9 @@ float CBSoundMgr::PosToPan(int X, int Y)
 }
 
 /////////////////////////////////////////////////////////////////////////
-void CBSoundMgr::InvalidateChannels(int channel_number)
+void CBSoundMgr::InvalidateChannels(int channel_number, bool streamed)
 {
-	Game->LOG(0, "Invalidate channel with number %d.", channel_number);
+	Game->LOG(0, "Invalidate %s channel with number %d.", (streamed == true) ? "streamed" : "non-streamed", channel_number);
 	for (int i=0; i < m_Sounds.GetSize(); i++)
 	{
 		m_Sounds[i]->InvalidateChannelNumber(channel_number);
@@ -380,6 +378,11 @@ void CBSoundMgr::InvalidateChannels(int channel_number)
 void CBSoundMgr::SDLMixer_channelDoneCallback(void *userdata, int channel_number)
 {
 	CBSoundMgr *obj = static_cast<CBSoundMgr*>(userdata);
-	obj->InvalidateChannels(channel_number);
+	obj->InvalidateChannels(channel_number, false);
 }
 
+void CBSoundMgr::SDLMixer_musicFinishedHook(void *userdata, Mix_Music *music, int channel)
+{
+	CBSoundMgr *obj = static_cast<CBSoundMgr*>(userdata);
+	obj->InvalidateChannels(channel, true);
+}
