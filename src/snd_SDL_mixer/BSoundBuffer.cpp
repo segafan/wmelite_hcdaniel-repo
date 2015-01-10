@@ -45,6 +45,7 @@ CBSoundBuffer::CBSoundBuffer(CBGame* inGame):CBBase(inGame)
 	m_Filename = NULL;
 	m_File = NULL;
 	m_PrivateVolume = 100;
+	m_cachedVolume = 100;
 
 	m_Looping = false;
 	m_LoopStart = 0;
@@ -123,6 +124,7 @@ HRESULT CBSoundBuffer::LoadFromFile(const char* Filename, bool ForceReload)
 	if (m_File) Game->m_FileManager->CloseFile(m_File);
 	
 	m_currChannel = -1;
+	m_cachedVolume = 100;
 
 	m_File = Game->m_FileManager->OpenFile(Filename);
 	if (!m_File)
@@ -188,6 +190,9 @@ HRESULT CBSoundBuffer::Play(bool Looping, DWORD StartSample)
 
 	Game->LOG(0, "Allocated channel for file %s = %d.", m_Filename, m_currChannel);
 	
+	// set volume to the last cached one (volume could have been set before channel number was known)
+	SetVolume(m_cachedVolume);
+
 	// reset panning of channel to default
 	Mix_SetPanning(m_currChannel, 127, 127);
 
@@ -302,18 +307,32 @@ void CBSoundBuffer::SetType(TSoundType Type)
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBSoundBuffer::SetVolume(int Volume)
 {
+	m_cachedVolume = Volume;
+	
 	// compute the "weighted" value (volume relatively to TSoundType category's volume)
 	float resultingVolumePerCent = ((float)Volume / 100.0f) * m_PrivateVolume;
 
 	resultingVolumePerCent *= 1.2f; // SDL_mixer volume ranges from 0 to 127
 
-	if ((m_chunk) && (m_currChannel >= 0))
+	if (m_currChannel == -1)
 	{
-		Mix_Volume(m_currChannel, (int) resultingVolumePerCent);
+		// Game->LOG(0, "Caching volume %d for file '%s' because channel not yet allocated.", Volume, m_Filename);
 	}
-	if ((m_music) && (m_currChannel >= 0))
+	else
 	{
-		Mix_VolumeMusicCh((int) resultingVolumePerCent, m_currChannel);
+		// Game->LOG(0, "Setting volume on channel %d request %d m_Private %d applied %.2f.", m_currChannel, Volume, m_PrivateVolume, resultingVolumePerCent);
+
+		if ((m_chunk) && (m_currChannel >= 0))
+		{
+			Mix_Volume(m_currChannel, (int) resultingVolumePerCent);
+		}
+		if ((m_music) && (m_currChannel >= 0))
+		{
+			Mix_Volume(m_currChannel, (int) resultingVolumePerCent);
+
+			// hmmmm
+			// Mix_VolumeMusicCh((int) resultingVolumePerCent, m_currChannel);
+		}
 	}
 
 	return S_OK;

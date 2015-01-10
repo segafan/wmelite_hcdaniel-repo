@@ -117,6 +117,7 @@ public:
 	Mix_Music *m_music;
 	SDL_RWops *m_rwops;
 	int m_currChannel;
+	int m_cachedVolume; // remember volume when channel number is not known yet
 
 	void InvalidateChannelNumber(int finished_channel);
 
