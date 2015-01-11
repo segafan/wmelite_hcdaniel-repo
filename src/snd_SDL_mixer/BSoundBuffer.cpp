@@ -53,6 +53,10 @@ CBSoundBuffer::CBSoundBuffer(CBGame* inGame):CBBase(inGame)
 	m_Type = SOUND_SFX;
 
 	m_FreezePaused = false;
+
+	m_ReverbContext.hInstance = NULL;
+
+	m_EchoContext.inBuffer = NULL;
 }
 
 
@@ -60,6 +64,20 @@ CBSoundBuffer::CBSoundBuffer(CBGame* inGame):CBBase(inGame)
 CBSoundBuffer::~CBSoundBuffer()
 {
 	Stop();
+
+	if (m_ReverbContext.hInstance != NULL)
+	{
+		free(m_ReverbContext.InFrames32);
+		free(m_ReverbContext.OutFrames32);
+		Reverb_free(&m_ReverbContext);
+		m_ReverbContext.hInstance = NULL;
+	}
+
+	if (m_EchoContext.inBuffer != NULL)
+	{
+		Echo_free(&m_EchoContext);
+		m_EchoContext.inBuffer = NULL;
+	}
 
 	if (m_chunk)
 	{
@@ -103,6 +121,20 @@ void CBSoundBuffer::SetStreaming(bool Streamed, DWORD NumBlocks, DWORD BlockSize
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBSoundBuffer::LoadFromFile(const char* Filename, bool ForceReload)
 {
+	if (m_ReverbContext.hInstance != NULL)
+	{
+		free(m_ReverbContext.InFrames32);
+		free(m_ReverbContext.OutFrames32);
+		Reverb_free(&m_ReverbContext);
+		m_ReverbContext.hInstance = NULL;
+	}
+
+	if (m_EchoContext.inBuffer != NULL)
+	{
+		Echo_free(&m_EchoContext);
+		m_EchoContext.inBuffer = NULL;
+	}
+
 	if (m_chunk)
 	{
 		Mix_FreeChunk(m_chunk);
@@ -190,6 +222,9 @@ HRESULT CBSoundBuffer::Play(bool Looping, DWORD StartSample)
 
 	Game->LOG(0, "Allocated channel for file %s = %d.", m_Filename, m_currChannel);
 	
+	// delete all previously registered effects
+	Mix_UnregisterAllEffects(m_currChannel);
+
 	// set volume to the last cached one (volume could have been set before channel number was known)
 	SetVolume(m_cachedVolume);
 

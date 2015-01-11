@@ -35,6 +35,8 @@ THE SOFTWARE.
 #endif
 #else
 #include "SDL_mixer.h"
+#include "Wrapper/ReverbLibrary.h"
+#include "libecho.h"
 #endif
 
 #ifdef USE_LIBEFFECTS_REVERB
@@ -126,6 +128,9 @@ public:
 	static size_t FileReadImpl(SDL_RWops *ops, void *buffer, size_t size, size_t nmemb);
 	static size_t FileWriteImpl(SDL_RWops *ops, const void *buffer, size_t size, size_t nmemb);
 	static int FileCloseImpl(SDL_RWops *ops);
+
+	ReverbContext m_ReverbContext;
+	EchoContext   m_EchoContext;
 
 #endif
 
