@@ -231,6 +231,20 @@ HRESULT CBSoundBuffer::Play(bool Looping, DWORD StartSample)
 	// reset panning of channel to default
 	Mix_SetPanning(m_currChannel, 127, 127);
 
+	// register reverb if channel number was not known during reverb config
+	// TODO do not double-register!!!
+	if (m_ReverbContext.hInstance != NULL)
+	{
+		if (!Mix_RegisterEffect(m_currChannel, &ReverbEffectFunction, &ReverbEffectDoneFunction, (void *) this))
+		{
+			Game->LOG(0, "Register reverb effect error!");
+			free(m_ReverbContext.OutFrames32);
+			free(m_ReverbContext.InFrames32);
+			Reverb_free(&m_ReverbContext);
+			m_ReverbContext.hInstance = NULL;
+		}
+	}
+
 	if ((m_chunk) || (m_music))
 	{
 		// re-allocate enough mixer channels dynamically
@@ -497,21 +511,160 @@ HRESULT CBSoundBuffer::SetPan(float Pan)
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float Param3, float Param4)
 {
+	// at first, remove all previously registered effects when the channel is already active
+	if (m_currChannel >= 0)
+	{
+		while(Mix_UnregisterEffect(m_currChannel, &ReverbEffectFunction));
+		while(Mix_UnregisterEffect(m_currChannel, &EchoEffectFunction));
+	}
+
 	switch(Type)
 	{
 	case SFX_ECHO:
+
+
+
 		break;
 
-	case SFX_REVERB:
+	case SFX_REVERB_PRESET:
+		// TODO need to check whether context is already in use
+		int status;
+		uint32_t replyCount;
+		char replydata[8];
+
+		m_ReverbContext.hInstance  = NULL;
+		m_ReverbContext.boolAuxiliary  = 0;
+
+	    m_ReverbContext.boolPreset     = 1;
+	    m_ReverbContext.curPreset  = REVERB_PRESET_LAST + 1;
+
+	    switch (int (Param1))
+	    {
+	    case 0:
+	    	m_ReverbContext.nextPreset = REVERB_PRESET_NONE;
+	    	break;
+	    case 1:
+	    	m_ReverbContext.nextPreset = REVERB_PRESET_SMALLROOM;
+	    	break;
+	    case 2:
+	    	m_ReverbContext.nextPreset = REVERB_PRESET_MEDIUMROOM;
+	    	break;
+	    case 3:
+	    	m_ReverbContext.nextPreset = REVERB_PRESET_LARGEROOM;
+	    	break;
+	    case 4:
+	    	m_ReverbContext.nextPreset = REVERB_PRESET_MEDIUMHALL;
+	    	break;
+	    case 5:
+	    	m_ReverbContext.nextPreset = REVERB_PRESET_LARGEHALL;
+	    	break;
+	    case 6:
+	    	m_ReverbContext.nextPreset = REVERB_PRESET_PLATE;
+	    	break;
+	    default:
+	    	m_ReverbContext.nextPreset = REVERB_PRESET_NONE;
+	    	break;
+	    }
+
+		Game->LOG(0, "====> Next preset=%d.\n", m_ReverbContext.nextPreset);
+
+		status = Reverb_init(&m_ReverbContext);
+
+		if (status != 0)
+		{
+			Game->LOG(0, "Reverb init error=%d", status);
+			return S_FALSE;
+		}
+
+		m_ReverbContext.config.outputCfg.accessMode = EFFECT_BUFFER_ACCESS_WRITE;
+
+	    m_ReverbContext.InFrames32  = (LVM_INT32 *)malloc(LVREV_MAX_FRAME_SIZE * sizeof(LVM_INT32) * 2);
+
+		if (m_ReverbContext.InFrames32 == NULL)
+		{
+			Game->LOG(0, "Reverb malloc failed (1)!");
+			Reverb_free(&m_ReverbContext);
+			m_ReverbContext.hInstance = NULL;
+			return S_FALSE;
+		}
+		else
+		{
+			// Game->LOG(0, "Malloc inframes addr 0x%08X!", (uint32_t*) m_context.InFrames32);
+		}
+
+	    m_ReverbContext.OutFrames32 = (LVM_INT32 *)malloc(LVREV_MAX_FRAME_SIZE * sizeof(LVM_INT32) * 2);
+
+		if (m_ReverbContext.OutFrames32 == NULL)
+		{
+			Game->LOG(0, "Reverb malloc failed (2)!");
+			free(m_ReverbContext.InFrames32);
+			Reverb_free(&m_ReverbContext);
+			m_ReverbContext.hInstance = NULL;
+			return S_FALSE;
+		}
+		else
+		{
+			// Game->LOG(0, "Malloc outframes addr 0x%08X!", (uint32_t*) m_context.OutFrames32);
+		}
+
+	    replyCount = sizeof(int);
+
+	    status = Reverb_command(&m_ReverbContext, EFFECT_CMD_ENABLE, 0, NULL, &replyCount, replydata);
+
+		if (status != 0)
+		{
+			Game->LOG(0, "Reverb command error=%d", status);
+			free(m_ReverbContext.OutFrames32);
+			free(m_ReverbContext.InFrames32);
+			Reverb_free(&m_ReverbContext);
+			m_ReverbContext.hInstance = NULL;
+			return S_FALSE;
+		}
+
+		if (m_currChannel >= 0)
+		{
+			if (!Mix_RegisterEffect(m_currChannel, &ReverbEffectFunction, &ReverbEffectDoneFunction, (void *) this))
+			{
+				Game->LOG(0, "Register reverb effect error!");
+				free(m_ReverbContext.OutFrames32);
+				free(m_ReverbContext.InFrames32);
+				Reverb_free(&m_ReverbContext);
+				m_ReverbContext.hInstance = NULL;
+				return S_FALSE;
+			}
+		}
+
+	//	Game->LOG(0, "Preset reverb active, ptr=0x%08X.", (uint32_t) m_pContext);
+		Game->LOG(0, "Preset reverb active.");
+
+
 		break;
 
+// freely configurable reverb not yet implemented
+//	case SFX_REVERB:
 	default:
+		// deallocate all effect data
+		if (m_ReverbContext.hInstance != NULL)
+		{
+			free(m_ReverbContext.InFrames32);
+			free(m_ReverbContext.OutFrames32);
+			Reverb_free(&m_ReverbContext);
+			m_ReverbContext.hInstance = NULL;
+		}
+
+		if (m_EchoContext.inBuffer != NULL)
+		{
+			Echo_free(&m_EchoContext);
+			m_EchoContext.inBuffer = NULL;
+		}
+
 		break;
 	}
 
 	return S_OK;
 }
 
+//////////////////////////////////////////////////////////////////////////
 void CBSoundBuffer::InvalidateChannelNumber(int finished_channel)
 {
     if (m_currChannel >= 0) {
@@ -521,12 +674,14 @@ void CBSoundBuffer::InvalidateChannelNumber(int finished_channel)
     }
 }
 
+//////////////////////////////////////////////////////////////////////////
 Sint64 CBSoundBuffer::FileSizeImpl(SDL_RWops *ops)
 {
 	CBFile* file = static_cast<CBFile*>(ops->hidden.unknown.data1);
 	return file->GetSize();
 }
 
+//////////////////////////////////////////////////////////////////////////
 Sint64 CBSoundBuffer::FileSeekImpl(SDL_RWops *ops, Sint64 offset, int whence)
 {
     CBFile* file = static_cast<CBFile*>(ops->hidden.unknown.data1);
@@ -542,6 +697,7 @@ Sint64 CBSoundBuffer::FileSeekImpl(SDL_RWops *ops, Sint64 offset, int whence)
     return file->GetPos();
 }
 
+//////////////////////////////////////////////////////////////////////////
 size_t CBSoundBuffer::FileReadImpl(SDL_RWops *ops, void *buffer, size_t size, size_t nmemb)
 {
 	CBFile* file = static_cast<CBFile*>(ops->hidden.unknown.data1);
@@ -550,13 +706,52 @@ size_t CBSoundBuffer::FileReadImpl(SDL_RWops *ops, void *buffer, size_t size, si
 	return file->GetPos() - oldPos;
 }
 
+//////////////////////////////////////////////////////////////////////////
 size_t CBSoundBuffer::FileWriteImpl(SDL_RWops *ops, const void *buffer, size_t size, size_t nmemb)
 {
   return 0;
 }
 
+//////////////////////////////////////////////////////////////////////////
 int CBSoundBuffer::FileCloseImpl(SDL_RWops *ops)
 {
   return 0;
 }
 
+//////////////////////////////////////////////////////////////////////////
+void CBSoundBuffer::ReverbEffectFunction(int chan, void *stream, int len, void *udata)
+{
+}
+
+//////////////////////////////////////////////////////////////////////////
+void CBSoundBuffer::ReverbEffectDoneFunction(int chan, void *udata)
+{
+	CBSoundBuffer *obj;
+
+	obj = static_cast<CBSoundBuffer*>(udata);
+
+	obj->Game->LOG(0, "Reverb done callback, freeing reverb effect of channel %d.", chan);
+
+	free(obj->m_ReverbContext.InFrames32);
+	free(obj->m_ReverbContext.OutFrames32);
+	Reverb_free(&(obj->m_ReverbContext));
+	obj->m_ReverbContext.hInstance = NULL;
+}
+
+//////////////////////////////////////////////////////////////////////////
+void CBSoundBuffer::EchoEffectFunction(int chan, void *stream, int len, void *udata)
+{
+}
+
+//////////////////////////////////////////////////////////////////////////
+void CBSoundBuffer::EchoEffectDoneFunction(int chan, void *udata)
+{
+	CBSoundBuffer *obj;
+
+	obj = static_cast<CBSoundBuffer*>(udata);
+
+	obj->Game->LOG(0, "Echo done callback, freeing echo effect of channel %d.", chan);
+
+	Echo_free(&(obj->m_EchoContext));
+	obj->m_EchoContext.inBuffer = NULL;
+}
