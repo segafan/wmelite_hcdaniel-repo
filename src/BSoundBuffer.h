@@ -132,6 +132,12 @@ public:
 	ReverbContext m_ReverbContext;
 	EchoContext   m_EchoContext;
 
+	static void ReverbEffectFunction(int chan, void *stream, int len, void *udata);
+	static void ReverbEffectDoneFunction(int chan, void *udata);
+
+	static void EchoEffectFunction(int chan, void *stream, int len, void *udata);
+	static void EchoEffectDoneFunction(int chan, void *udata);
+
 #endif
 
 };

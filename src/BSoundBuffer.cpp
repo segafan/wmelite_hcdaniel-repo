@@ -492,6 +492,7 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 		break;
 
 	case SFX_REVERB_PRESET:
+		// TODO need to check whether context is already in use
 #ifdef USE_LIBEFFECTS_REVERB
 		int status;
 		uint32_t replyCount;
