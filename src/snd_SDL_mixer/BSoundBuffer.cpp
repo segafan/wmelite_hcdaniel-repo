@@ -308,6 +308,12 @@ HRESULT CBSoundBuffer::Resume()
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBSoundBuffer::Stop()
 {
+	if (m_currChannel != -1)
+	{
+		// delete EVERY effect
+		Mix_UnregisterAllEffects(m_currChannel);
+	}
+
 	if ((m_chunk) && (m_currChannel >= 0))
 	{
 		Game->LOG(0, "Non-buffered channel %d stopped!", m_currChannel);
@@ -535,8 +541,12 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 	switch(Type)
 	{
 	case SFX_ECHO:
-		// TODO need to check whether context is already in use
-
+		// free previous echo
+		if (m_EchoContext.inBuffer != NULL)
+		{
+			Echo_free(&m_EchoContext);
+			m_EchoContext.inBuffer = NULL;
+		}
 
 		// attenuation = mean of param1 and param2, as float from 0..1
 		// delay = mean of param3 and param 4 (echo delay in ms)
@@ -555,7 +565,14 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 		break;
 
 	case SFX_REVERB_PRESET:
-		// TODO need to check whether context is already in use
+		// free previous reverb
+		if (m_ReverbContext.hInstance != NULL)
+		{
+			free(m_ReverbContext.InFrames32);
+			free(m_ReverbContext.OutFrames32);
+			Reverb_free(&m_ReverbContext);
+			m_ReverbContext.hInstance = NULL;
+		}
 
 		uint32_t replyCount;
 		char replydata[8];
@@ -594,7 +611,7 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 	    	break;
 	    }
 
-		Game->LOG(0, "====> Next preset=%d.\n", m_ReverbContext.nextPreset);
+		Game->LOG(0, "====> Next preset=%d.", m_ReverbContext.nextPreset);
 
 		status = Reverb_init(&m_ReverbContext);
 
@@ -697,6 +714,10 @@ void CBSoundBuffer::InvalidateChannelNumber(int finished_channel)
 {
     if (m_currChannel >= 0) {
         if (m_currChannel == finished_channel) {
+
+			// delete EVERY effect (should run the "effectdone" callbacks)
+			Mix_UnregisterAllEffects(m_currChannel);
+
             m_currChannel = -1;
         }
     }
@@ -759,9 +780,15 @@ void CBSoundBuffer::ReverbEffectFunction(int chan, void *stream, int len, void *
 
 	obj = static_cast<CBSoundBuffer*>(udata);
 
-	obj->Game->LOG(0, "Reverb process chan=%d len=%d.", chan, len);
+	// obj->Game->LOG(0, "Reverb process chan=%d len=%d.", chan, len);
 
 	ctx = &(obj->m_ReverbContext);
+
+	if (ctx->hInstance == NULL)
+	{
+		obj->Game->LOG(0, "Error!!! Calling reverb effect function on channel %d without valid context!", chan);
+		return;
+	}
 
 	currLength = 0;
 	totalLength = 0;
@@ -805,10 +832,17 @@ void CBSoundBuffer::ReverbEffectDoneFunction(int chan, void *udata)
 
 	obj->Game->LOG(0, "Reverb done callback, freeing reverb effect of channel %d.", chan);
 
-	free(obj->m_ReverbContext.InFrames32);
-	free(obj->m_ReverbContext.OutFrames32);
-	Reverb_free(&(obj->m_ReverbContext));
-	obj->m_ReverbContext.hInstance = NULL;
+	if (obj->m_ReverbContext.hInstance != NULL)
+	{
+		free(obj->m_ReverbContext.InFrames32);
+		free(obj->m_ReverbContext.OutFrames32);
+		Reverb_free(&(obj->m_ReverbContext));
+		obj->m_ReverbContext.hInstance = NULL;
+	}
+	else
+	{
+		obj->Game->LOG(0, "Error!!! Reverb done callback, data already freed???");
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -819,7 +853,13 @@ void CBSoundBuffer::EchoEffectFunction(int chan, void *stream, int len, void *ud
 
 	obj = static_cast<CBSoundBuffer*>(udata);
 
-	obj->Game->LOG(0, "Echo process chan=%d len=%d.", chan, len);
+	// obj->Game->LOG(0, "Echo process chan=%d len=%d.", chan, len);
+
+	if (obj->m_EchoContext.inBuffer == NULL)
+	{
+		obj->Game->LOG(0, "Error!!! Calling echo effect function on channel %d without valid context!", chan);
+		return;
+	}
 
 	status = Echo_process(&(obj->m_EchoContext), (uint8_t*) stream, (uint32_t) len);
 
@@ -842,6 +882,13 @@ void CBSoundBuffer::EchoEffectDoneFunction(int chan, void *udata)
 
 	obj->Game->LOG(0, "Echo done callback, freeing echo effect of channel %d.", chan);
 
-	Echo_free(&(obj->m_EchoContext));
-	obj->m_EchoContext.inBuffer = NULL;
+	if (obj->m_EchoContext.inBuffer != NULL)
+	{
+		Echo_free(&(obj->m_EchoContext));
+		obj->m_EchoContext.inBuffer = NULL;
+	}
+	else
+	{
+		obj->Game->LOG(0, "Error!!! Echo done callback, data already freed???");
+	}
 }
