@@ -458,7 +458,6 @@ HRESULT CBObject::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *Thi
 		return S_OK;
 	}
 
-#ifdef USE_LIBEFFECTS_REVERB
 	//////////////////////////////////////////////////////////////////////////
 	// SoundFXReverb
 	//////////////////////////////////////////////////////////////////////////
@@ -471,7 +470,6 @@ HRESULT CBObject::ScCallMethod(CScScript* Script, CScStack *Stack, CScStack *Thi
 
 		return S_OK;
 	}
-#endif
 
 	else return CBScriptHolder::ScCallMethod(Script, Stack, ThisStack, Name);
 }
