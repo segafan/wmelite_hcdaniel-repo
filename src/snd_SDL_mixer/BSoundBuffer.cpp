@@ -245,6 +245,18 @@ HRESULT CBSoundBuffer::Play(bool Looping, DWORD StartSample)
 		}
 	}
 
+	// register echo if channel number was not known during echo config
+	// TODO do not double-register!!!
+	if (m_EchoContext.inBuffer != NULL)
+	{
+		if (!Mix_RegisterEffect(m_currChannel, &EchoEffectFunction, &EchoEffectDoneFunction, (void *) this))
+		{
+			Game->LOG(0, "Register echo effect error!");
+			Echo_free(&m_EchoContext);
+			m_EchoContext.inBuffer = NULL;
+		}
+	}
+
 	if ((m_chunk) || (m_music))
 	{
 		// re-allocate enough mixer channels dynamically
@@ -511,6 +523,8 @@ HRESULT CBSoundBuffer::SetPan(float Pan)
 //////////////////////////////////////////////////////////////////////////
 HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float Param3, float Param4)
 {
+	int status; 
+
 	// at first, remove all previously registered effects when the channel is already active
 	if (m_currChannel >= 0)
 	{
@@ -521,14 +535,28 @@ HRESULT CBSoundBuffer::ApplyFX(TSFXType Type, float Param1, float Param2, float 
 	switch(Type)
 	{
 	case SFX_ECHO:
+		// TODO need to check whether context is already in use
 
 
+		// attenuation = mean of param1 and param2, as float from 0..1
+		// delay = mean of param3 and param 4 (echo delay in ms)
+		// other params given by call to Mix_OpenAudio() in BSoundMgr
+
+		status = Echo_init(&m_EchoContext, 2, 2, 44100, (((float) Param1 + (float) Param2) / 2.0f / 100.0f), (uint16_t) ((Param3 + Param4) / 2.0f));
+
+		if (status != 0)
+		{
+			Game->LOG(0, "Echo init error=%d", status);
+			return S_FALSE;
+		}
+
+		Game->LOG(0, "Echo effect generated. attenuation=%.2f delay=%d.", (((float) Param1 + (float) Param2) / 2.0f / 100.0f), (uint16_t) ((Param3 + Param4) / 2.0f));
 
 		break;
 
 	case SFX_REVERB_PRESET:
 		// TODO need to check whether context is already in use
-		int status;
+
 		uint32_t replyCount;
 		char replydata[8];
 
@@ -721,6 +749,51 @@ int CBSoundBuffer::FileCloseImpl(SDL_RWops *ops)
 //////////////////////////////////////////////////////////////////////////
 void CBSoundBuffer::ReverbEffectFunction(int chan, void *stream, int len, void *udata)
 {
+	int status;
+	ReverbContext *ctx;
+	audio_buffer_t audio_in;
+	audio_buffer_t audio_out;
+	CBSoundBuffer *obj; 
+	DWORD currLength;
+	DWORD totalLength;
+
+	obj = static_cast<CBSoundBuffer*>(udata);
+
+	obj->Game->LOG(0, "Reverb process chan=%d len=%d.", chan, len);
+
+	ctx = &(obj->m_ReverbContext);
+
+	currLength = 0;
+	totalLength = 0;
+
+	while (totalLength < len)
+	{
+		currLength = (len - totalLength);
+		if ((currLength / 4) > LVREV_MAX_FRAME_SIZE)
+		{
+			currLength = LVREV_MAX_FRAME_SIZE * 4;
+		} 		
+
+		audio_in.raw = ((uint8_t *) stream) + totalLength;
+		// memcpy(inbuf, buffer, length);
+
+		audio_out.raw = ((uint8_t *) stream) + totalLength;
+
+		// TODO need to properly adjust this!
+		audio_in.frameCount = currLength / 4;
+		audio_out.frameCount = currLength / 4;
+
+		// obj->Game->LOG(0, "Frame count=%d.", audio_out.frameCount);
+
+		status = Reverb_process(ctx, &audio_in, &audio_out);
+
+		if (status != 0)
+		{
+			obj->Game->LOG(0, "Reverb process error=%d", status);
+		}
+
+		totalLength += currLength;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -741,6 +814,23 @@ void CBSoundBuffer::ReverbEffectDoneFunction(int chan, void *udata)
 //////////////////////////////////////////////////////////////////////////
 void CBSoundBuffer::EchoEffectFunction(int chan, void *stream, int len, void *udata)
 {
+	CBSoundBuffer *obj;
+	int status;
+
+	obj = static_cast<CBSoundBuffer*>(udata);
+
+	obj->Game->LOG(0, "Echo process chan=%d len=%d.", chan, len);
+
+	status = Echo_process(&(obj->m_EchoContext), (uint8_t*) stream, (uint32_t) len);
+
+	// testing
+	// memset(stream, 0, len);
+
+	if (status != 0)
+	{
+		obj->Game->LOG(0, "Echo process error=%d", status);
+	}
+
 }
 
 //////////////////////////////////////////////////////////////////////////
