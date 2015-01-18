@@ -12,16 +12,32 @@ LOCAL_MODULE := SDL2
 LOCAL_SRC_FILES := ../../../prebuilt/android/$(TARGET_ARCH_ABI)/libSDL2.so
 
 include $(PREBUILT_SHARED_LIBRARY)
+
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := SDL2_mixer
 LOCAL_SRC_FILES := ../../../prebuilt/android/$(TARGET_ARCH_ABI)/libSDL2_mixer.so
 
 include $(PREBUILT_SHARED_LIBRARY)
+
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := freeimage
 LOCAL_SRC_FILES := ../../../prebuilt/android/$(TARGET_ARCH_ABI)/libfreeimage.so
+
+include $(PREBUILT_SHARED_LIBRARY)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := effectsprivate
+LOCAL_SRC_FILES := ../../../prebuilt/android/$(TARGET_ARCH_ABI)/libeffectsprivate.so
+
+include $(PREBUILT_SHARED_LIBRARY)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := echo
+LOCAL_SRC_FILES := ../../../prebuilt/android/$(TARGET_ARCH_ABI)/libecho.so
 
 include $(PREBUILT_SHARED_LIBRARY)
 
@@ -37,6 +53,10 @@ $(LOCAL_PATH)/$(SDL_PATH)/src/ \
 $(LOCAL_PATH)/../../../dependencies/SDL_mixer/jni/ \
 $(LOCAL_PATH)/../../../dependencies/libfreetype-android/jni/include/ \
 $(LOCAL_PATH)/../../../dependencies/FreeImage3154/jni/Source/ \
+$(LOCAL_PATH)/../../../dependencies/libeffects-android/jni/ \
+$(LOCAL_PATH)/../../../dependencies/libeffects-android/jni/Reverb/lib/ \
+$(LOCAL_PATH)/../../../dependencies/libeffects-android/jni/Common/lib/ \
+$(LOCAL_PATH)/../../../dependencies/libecho/jni/ \
 $(LOCAL_PATH)/../../../src/
 
 LOCAL_CPPFLAGS += -fexceptions -frtti -Wno-write-strings -Wno-conversion-null -DUSE_SDL_MIXER
@@ -167,7 +187,7 @@ LOCAL_SRC_FILES := ../../../src/android/SDL_android_main.c \
 #../../../src/VidTheoraPlayer.cpp \
 
 
-LOCAL_SHARED_LIBRARIES := SDL2 freeimage SDL2_mixer
+LOCAL_SHARED_LIBRARIES := SDL2 freeimage SDL2_mixer effectsprivate echo
 LOCAL_STATIC_LIBRARIES := freetype
 LOCAL_LDLIBS := -lGLESv1_CM -llog -landroid
 
