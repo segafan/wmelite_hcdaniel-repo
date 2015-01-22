@@ -6,13 +6,13 @@ DEFINES=USE_SDL_MIXER
 CFLAGS=-I$(IDIR) -I. -O2 `sdl2-config --cflags` `freetype-config --cflags`
 
 CPP=g++
-CPPFLAGS=-I$(IDIR) -I. -D$(DEFINES) -O2 -Wno-write-strings -Wno-conversion-null `freetype-config --cflags` `sdl2-config --cflags`
+CPPFLAGS=-I$(IDIR) -I. -I../dependencies/libeffects-android/jni/ -I../dependencies/libeffects-android/jni/Reverb/lib/ -I../dependencies/libeffects-android/jni/Common/lib/ -I../dependencies/libecho/jni/ -D$(DEFINES) -O2 -Wno-write-strings -Wno-conversion-null `freetype-config --cflags` `sdl2-config --cflags`
 
 SRCDIR=../src
 
 ODIR=obj_sdl_mixer
 
-LIBS=`sdl2-config --libs` `freetype-config --libs` -lfreeimage -L. -lSDL2_mixer -lSDL2
+LIBS=`sdl2-config --libs` `freetype-config --libs` -lfreeimage -L. -lSDL2_mixer -lSDL2 -leffects -lecho
 
 _OBJC = ConvertUTF.o DirectoryOperations.o FileOperations.o
 OBJC = $(patsubst %,$(ODIR)/%,$(_OBJC))
