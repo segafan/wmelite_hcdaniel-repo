@@ -395,10 +395,10 @@ HRESULT CBSoundBuffer::SetVolume(int Volume)
 		}
 		if ((m_music) && (m_currChannel >= 0))
 		{
-			Mix_Volume(m_currChannel, (int) resultingVolumePerCent);
+			// Mix_Volume(m_currChannel, (int) resultingVolumePerCent);
 
-			// hmmmm
-			// Mix_VolumeMusicCh((int) resultingVolumePerCent, m_currChannel);
+			// volume of the chunk is ignored for music, must set music volume instead
+			Mix_VolumeMusicCh((int) resultingVolumePerCent, m_currChannel);
 		}
 	}
 
