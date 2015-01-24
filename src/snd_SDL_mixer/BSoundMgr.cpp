@@ -306,6 +306,10 @@ HRESULT CBSoundMgr::SetMasterVolumePercent(BYTE Percent)
 {
 	m_VolumeMaster = Percent;
 	// TODO how does SDL_mixer handle a master volume setting?
+
+	// TODO now that there is a music volume, a chunk volume and a channel volume,
+	// the channel volume could be used for the "master volume" setting
+
 	// BASS_SetConfig(BASS_CONFIG_GVOL_STREAM, (DWORD)(10000.0f / 100.0f * (float)Percent));
 	return S_OK;
 }
