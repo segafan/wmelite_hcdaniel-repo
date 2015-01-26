@@ -216,7 +216,8 @@ HRESULT CBSoundBuffer::Play(bool Looping, DWORD StartSample)
 	}
 	if (m_music)
 	{
-		m_currChannel = Mix_PlayMusicCh(m_music, (Looping == true) ? -1 : 0, -1);
+		double position_s = ((double) m_LoopStart) / 1000.0f;
+		m_currChannel = Mix_FadeInMusicPosCh(music, (Looping == true) ? -1 : 0, 0, -1, position_s);
 		Game->LOG(0, "Started streaming play.");
 	}
 
@@ -285,8 +286,7 @@ void CBSoundBuffer::SetLooping(bool looping)
 	}
 	if ((m_music) && (m_currChannel >= 0))
 	{
-		// TODO
-		Game->LOG(0, "FIXME: Set looping for already playing music not yet implemented.");
+		Mix_SetMusicLoops(m_music, m_currChannel, (looping == true) ? -1 : 0);
 	}
 }
 
@@ -358,7 +358,7 @@ DWORD CBSoundBuffer::GetLength()
 		play_length_ms = Mix_GetMusicDuration(m_music);
 	}
 	
-	Game->LOG(0, "File %s play length %d ms.", m_Filename, play_length_ms);
+	// Game->LOG(0, "File %s play length %d ms.", m_Filename, play_length_ms);
 
 	return play_length_ms;
 }
@@ -456,7 +456,10 @@ DWORD CBSoundBuffer::GetPosition()
 	if ((m_music) && (m_currChannel >= 0))
 	{
 		// TODO
+		double position_s;
 		Game->LOG(0, "FIXME: Get position for music not yet implemented.");
+		position_s = Mix_GetMusicPositionCh(m_currChannel);
+		curr_position_ms = (DWORD) (position_s * 1000.0f);
 	}
 
 	Game->LOG(0, "File %s current position %d ms.", m_Filename, curr_position_ms);
@@ -493,8 +496,9 @@ HRESULT CBSoundBuffer::SetLoopStart(DWORD Pos)
 	}
 	if ((m_music) && (m_currChannel >= 0))
 	{
-		// TODO
+		double position_s = ((double) Pos) / 1000.0f;
 		Game->LOG(0, "FIXME: Set loop start for music not yet implemented.");
+		Mix_SetMusicLoopStart(m_music, m_currChannel, position_s);
 	}
 
 	return S_OK;
