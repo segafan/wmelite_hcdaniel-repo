@@ -217,7 +217,7 @@ HRESULT CBSoundBuffer::Play(bool Looping, DWORD StartSample)
 	if (m_music)
 	{
 		double position_s = ((double) m_LoopStart) / 1000.0f;
-		m_currChannel = Mix_FadeInMusicPosCh(music, (Looping == true) ? -1 : 0, 0, -1, position_s);
+		m_currChannel = Mix_FadeInMusicPosCh(m_music, (Looping == true) ? -1 : 0, 0, -1, position_s);
 		Game->LOG(0, "Started streaming play.");
 	}
 
