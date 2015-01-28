@@ -301,6 +301,12 @@ HRESULT CBSoundBuffer::Resume()
 	{
 		Mix_ResumeMusicCh(m_currChannel);
 	}
+
+	if (m_currChannel < 0)
+	{
+		Game->LOG(0, "FIXME! Resume() called but no music/chunk loaded! Filename=%s.", m_Filename);
+	}
+
 	return S_OK;
 }
 
