@@ -211,12 +211,12 @@ HRESULT CBSoundBuffer::Play(bool Looping, DWORD StartSample)
 
 	if (m_chunk)
 	{
-		m_currChannel = Mix_PlayChannelTimed(-1, m_chunk, (Looping == true) ? -1 : 0, -1, m_LoopStart);
+		m_currChannel = Mix_PlayChannelTimed(-1, m_chunk, (Looping == true) ? -1 : 0, -1, StartSample);
 		Game->LOG(0, "Started non-streaming play.");
 	}
 	if (m_music)
 	{
-		double position_s = ((double) m_LoopStart) / 1000.0f;
+		double position_s = ((double) StartSample) / 1000.0f;
 		m_currChannel = Mix_FadeInMusicPosCh(m_music, (Looping == true) ? -1 : 0, 0, -1, position_s);
 		Game->LOG(0, "Started streaming play.");
 	}
