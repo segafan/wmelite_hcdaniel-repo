@@ -46,6 +46,7 @@ CBSoundBuffer::CBSoundBuffer(CBGame* inGame):CBBase(inGame)
 	m_File = NULL;
 	m_PrivateVolume = 100;
 	m_cachedVolume = 100;
+	m_cachedPosition = 0;
 
 	m_Looping = false;
 	m_LoopStart = 0;
@@ -157,6 +158,7 @@ HRESULT CBSoundBuffer::LoadFromFile(const char* Filename, bool ForceReload)
 	
 	m_currChannel = -1;
 	m_cachedVolume = 100;
+	m_cachedPosition = 0;
 
 	m_File = Game->m_FileManager->OpenFile(Filename);
 	if (!m_File)
@@ -304,7 +306,8 @@ HRESULT CBSoundBuffer::Resume()
 
 	if (m_currChannel < 0)
 	{
-		Game->LOG(0, "FIXME! Resume() called but no music/chunk loaded! Filename=%s.", m_Filename);
+		Game->LOG(0, "FIXME! Resume() called but no music/chunk loaded! Filename=%s. Trying to start at offset %d!", m_Filename, m_cachedPosition);
+		Play(m_Looping, m_cachedPosition);
 	}
 
 	return S_OK;
@@ -487,6 +490,9 @@ HRESULT CBSoundBuffer::SetPosition(DWORD Pos)
 		Mix_SetMusicPositionCh(position_s, m_currChannel);
 		Game->LOG(0, "Set music position is experimental!");
 	}
+
+	m_cachedPosition = Pos;
+
 	return S_OK;
 }
 
