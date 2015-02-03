@@ -14,7 +14,7 @@ static JNIEnv *localEnv;
 
 AAssetManager *assetManager;
 
-void Java_org_deadcode_wmelite_WMELiteFunctions_nativeInit(JNIEnv* env, jobject o, jobject assetMgr)
+JNIEXPORT void JNICALL Java_org_deadcode_wmelite_WMELiteFunctions_nativeInit(JNIEnv* env, jobject o, jobject assetMgr)
 {
 
 	callbackObject = (*env)->NewGlobalRef(env, o);
