@@ -87,7 +87,7 @@ $(LOCAL_PATH)/../../../src/
 
 LOCAL_CPPFLAGS += -fexceptions -frtti -Wno-write-strings -Wno-conversion-null -DUSE_SDL_MIXER
 
-LOCAL_ARM_MODE := arm
+# LOCAL_ARM_MODE := arm
 
 # Add your application source files here...
 LOCAL_SRC_FILES := ../../../src/android/SDL_android_main.c \
@@ -215,7 +215,7 @@ LOCAL_SRC_FILES := ../../../src/android/SDL_android_main.c \
 
 LOCAL_SHARED_LIBRARIES := SDL2 freeimage SDL2_mixer effectsprivate echo
 LOCAL_STATIC_LIBRARIES := freetype
-LOCAL_LDLIBS := -lGLESv1_CM -llog -landroid
+LOCAL_LDLIBS := -lGLESv1_CM -llog -landroid -lz
 
 include $(BUILD_SHARED_LIBRARY)
 
