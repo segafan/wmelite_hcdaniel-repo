@@ -163,7 +163,7 @@ LOCAL_SRC_FILES := ../../../src/android/SDL_android_main.c \
 
 LOCAL_SHARED_LIBRARIES := SDL2 freeimage bass
 LOCAL_STATIC_LIBRARIES := freetype
-LOCAL_LDLIBS := -lGLESv1_CM -llog -landroid
+LOCAL_LDLIBS := -lGLESv1_CM -llog -landroid -lz
 
 include $(BUILD_SHARED_LIBRARY)
 
