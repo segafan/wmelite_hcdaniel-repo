@@ -169,6 +169,13 @@ public class SDLActivity extends Activity {
         // Set up the surface
         mSurface = new SDLSurface(getApplication());
         
+        nativeAddHintCallback(SDL_HINT_ANDROID_USE_UI_LOW_PROFILE, new SDLHintCallback() {
+        	@Override
+        	public void callback(String name, String oldValue, String newValue) {
+        		updateLowProfileSettings(newValue);
+        	}
+        });
+        
         if(Build.VERSION.SDK_INT >= 12) {
             mJoystickHandler = new SDLJoystickHandler_API12();
         }
@@ -205,6 +212,8 @@ public class SDLActivity extends Activity {
         }
 
         SDLActivity.handleResume();
+        
+        updateLowProfileSettings(nativeGetHint(SDL_HINT_ANDROID_USE_UI_LOW_PROFILE));
     }
 
 
@@ -317,6 +326,20 @@ public class SDLActivity extends Activity {
         mSingleton.finish();
     }
 
+    private static final String SDL_HINT_ANDROID_USE_UI_LOW_PROFILE = "SDL_ANDROID_USE_UI_LOW_PROFILE";
+    		
+    void updateLowProfileSettings(String value) {
+    	if ("1".equals(value)) {
+    		runOnUiThread(new Runnable() {
+    			@Override
+    			public void run() {
+    				if (Build.VERSION.SDK_INT >= 14) {
+    					getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+    				}
+    			}
+    		});
+    	}
+    }
 
     // Messages from the SDLMain thread
     static final int COMMAND_CHANGE_TITLE = 1;
@@ -426,6 +449,11 @@ public class SDLActivity extends Activity {
                                                int is_accelerometer, int nbuttons, 
                                                int naxes, int nhats, int nballs);
     public static native int nativeRemoveJoystick(int device_id);
+    
+    interface SDLHintCallback {
+    	void callback(String name, String oldValue, String newValue);
+    }
+    public static native void nativeAddHintCallback(String name, SDLHintCallback callback);
     public static native String nativeGetHint(String name);
 
     /**

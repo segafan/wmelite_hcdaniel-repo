@@ -282,6 +282,12 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 
 	if (vsync == true) SDL_SetHint(SDL_HINT_RENDER_VSYNC, "1");
 
+#ifdef __ANDROID__
+
+	SDL_SetHint(SDL_HINT_ANDROID_USE_UI_LOW_PROFILE, "1");
+
+#endif
+
 	// m_Renderer = SDL_CreateRenderer(m_Win, -1, SDL_RENDERER_PRESENTVSYNC);
 	m_Renderer = SDL_CreateRenderer(m_Win, -1, 0);
 	if (!m_Renderer) return E_FAIL;
