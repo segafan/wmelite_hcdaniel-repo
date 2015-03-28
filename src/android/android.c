@@ -10,11 +10,9 @@ const char* className_wmeliteFunctions = "org/deadcode/wmelite";
 
 static jobject callbackObject;
 
-static JNIEnv *localEnv;
-
 AAssetManager *assetManager;
 
-JNIEXPORT void JNICALL Java_org_deadcode_wmelite_WMELiteFunctions_nativeInit(JNIEnv* env, jobject o, jobject assetMgr)
+void Java_org_deadcode_wmelite_WMELiteFunctions_nativeInit(JNIEnv* env, jobject o, jobject assetMgr)
 {
 
 	callbackObject = (*env)->NewGlobalRef(env, o);
@@ -27,18 +25,13 @@ JNIEXPORT void JNICALL Java_org_deadcode_wmelite_WMELiteFunctions_nativeInit(JNI
 	// localEnv = env;
 }
 
-void android_setLocalEnv(JNIEnv *env)
-{
-	localEnv = env;
-}
-
 void android_getLogFileDirectory(char *buffer, int length)
 {
 	const char *tmp;
 
 	// get the proper jni env from SDL
 	// JNIEnv *env = Android_JNI_GetEnv();
-	JNIEnv *env = localEnv;
+	JNIEnv *env = Android_JNI_GetEnv();
 	jclass cls = (*env)->GetObjectClass(env, callbackObject);
 	jmethodID callbackID = (*env)->GetMethodID(env, cls, "getLogFileDirectory", "()Ljava/lang/String;");
 	jstring str = (*env)->CallObjectMethod(env, callbackObject, callbackID);
@@ -64,7 +57,7 @@ void android_getPrivateFilesPath(char *buffer, int length)
 
 	// get the proper jni env from SDL
 	// JNIEnv *env = Android_JNI_GetEnv();
-	JNIEnv *env = localEnv;
+	JNIEnv *env = Android_JNI_GetEnv();
 	jclass cls = (*env)->GetObjectClass(env, callbackObject);
 	jmethodID callbackID = (*env)->GetMethodID(env, cls, "getPrivateFilesPath", "()Ljava/lang/String;");
 	jstring str = (*env)->CallObjectMethod(env, callbackObject, callbackID);
@@ -90,7 +83,7 @@ void android_getDeviceTypeHint(char *buffer, int length)
 
 	// get the proper jni env from SDL
 	// JNIEnv *env = Android_JNI_GetEnv();
-	JNIEnv *env = localEnv;
+	JNIEnv *env = Android_JNI_GetEnv();
 	jclass cls = (*env)->GetObjectClass(env, callbackObject);
 	jmethodID callbackID = (*env)->GetMethodID(env, cls, "getDeviceTypeHint", "()Ljava/lang/String;");
 	jstring str = (*env)->CallObjectMethod(env, callbackObject, callbackID);
@@ -116,7 +109,7 @@ void android_getGamePackagePath(char *buffer, int length)
 
 	// get the proper jni env from SDL
 	// JNIEnv *env = Android_JNI_GetEnv();
-	JNIEnv *env = localEnv;
+	JNIEnv *env = Android_JNI_GetEnv();
 	jclass cls = (*env)->GetObjectClass(env, callbackObject);
 
 	// __android_log_print(ANDROID_LOG_VERBOSE, "org.libsdl.app", "android_getGamePackagePath() env=%s", (env == NULL) ? "NULL" : "OK");
@@ -150,7 +143,7 @@ void android_getGameFilePath(char *buffer, int length)
 
 	// get the proper jni env from SDL
 	// JNIEnv *env = Android_JNI_GetEnv();
-	JNIEnv *env = localEnv;
+	JNIEnv *env = Android_JNI_GetEnv();
 	jclass cls = (*env)->GetObjectClass(env, callbackObject);
 	jmethodID callbackID = (*env)->GetMethodID(env, cls, "getGameFilePath", "()Ljava/lang/String;");
 	jstring str = (*env)->CallObjectMethod(env, callbackObject, callbackID);
@@ -176,7 +169,7 @@ void android_getFontPath(char *buffer, int length)
 
 	// get the proper jni env from SDL
 	// JNIEnv *env = Android_JNI_GetEnv();
-	JNIEnv *env = localEnv;
+	JNIEnv *env = Android_JNI_GetEnv();
 	jclass cls = (*env)->GetObjectClass(env, callbackObject);
 	jmethodID callbackID = (*env)->GetMethodID(env, cls, "getFontPath", "()Ljava/lang/String;");
 	jstring str = (*env)->CallObjectMethod(env, callbackObject, callbackID);
@@ -202,7 +195,7 @@ void android_getLocalSettingsPath(char *buffer, int length)
 
 	// get the proper jni env from SDL
 	// JNIEnv *env = Android_JNI_GetEnv();
-	JNIEnv *env = localEnv;
+	JNIEnv *env = Android_JNI_GetEnv();
 	jclass cls = (*env)->GetObjectClass(env, callbackObject);
 	jmethodID callbackID = (*env)->GetMethodID(env, cls, "getLocalSettingsPath", "()Ljava/lang/String;");
 	jstring str = (*env)->CallObjectMethod(env, callbackObject, callbackID);
@@ -224,7 +217,7 @@ void android_getLocalSettingsPath(char *buffer, int length)
 
 void android_getEncodedString(char *inputString, char *encoding, char *buffer, int *length)
 {
-	JNIEnv *env = localEnv;
+	JNIEnv *env = Android_JNI_GetEnv();
 	jclass cls = (*env)->GetObjectClass(env, callbackObject);
 	jmethodID callbackID = (*env)->GetMethodID(env, cls, "getEncodedString", "(Ljava/lang/String;Ljava/lang/String;)[B");
 	jstring input = (*env)->NewStringUTF(env, inputString);
@@ -271,7 +264,7 @@ void android_getEncodedString(char *inputString, char *encoding, char *buffer, i
 
 void android_getUTFString(char *inputString, char *encoding, char *buffer, int *length)
 {
-	JNIEnv *env = localEnv;
+	JNIEnv *env = Android_JNI_GetEnv();
 	jclass cls = (*env)->GetObjectClass(env, callbackObject);
 	jmethodID callbackID = (*env)->GetMethodID(env, cls, "getUTFString", "([BLjava/lang/String;)Ljava/lang/String;");
 
@@ -324,7 +317,7 @@ void android_getUTFString(char *inputString, char *encoding, char *buffer, int *
 
 void android_showURLInBrowser(char *URL)
 {
-  JNIEnv *env = localEnv;
+  JNIEnv *env = Android_JNI_GetEnv();
   jclass cls = (*env)->GetObjectClass(env, callbackObject);
   jmethodID callbackID = (*env)->GetMethodID(env, cls, "showURLInBrowser", "(Ljava/lang/String;)V");
 
@@ -334,3 +327,38 @@ void android_showURLInBrowser(char *URL)
 
   (*env)->DeleteLocalRef(env, urlString);
 }
+
+int android_advertisementPrepare(char *key, int number)
+{
+	  JNIEnv *env = Android_JNI_GetEnv();
+	  jclass cls = (*env)->GetObjectClass(env, callbackObject);
+	  jmethodID callbackID = (*env)->GetMethodID(env, cls, "advertisementPrepare", "(Ljava/lang/String;I)I");
+
+	  jstring keyString = (*env)->NewStringUTF(env, key);
+	  jint numberVal = (jint) number;
+	  jint ret;
+
+	  ret = (*env)->CallIntMethod(env, callbackObject, callbackID, keyString, numberVal);
+
+	  (*env)->DeleteLocalRef(env, keyString);
+
+	  return (int) ret;
+}
+
+int android_advertisementShow(char *key, int number)
+{
+	  JNIEnv *env = Android_JNI_GetEnv();
+	  jclass cls = (*env)->GetObjectClass(env, callbackObject);
+	  jmethodID callbackID = (*env)->GetMethodID(env, cls, "advertisementShow", "(Ljava/lang/String;I)I");
+
+	  jstring keyString = (*env)->NewStringUTF(env, key);
+	  jint numberVal = (jint) number;
+	  jint ret;
+
+	  ret = (*env)->CallIntMethod(env, callbackObject, callbackID, keyString, numberVal);
+
+	  (*env)->DeleteLocalRef(env, keyString);
+
+	  return (int) ret;
+}
+
