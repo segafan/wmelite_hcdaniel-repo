@@ -299,6 +299,7 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 		if (!m_Texture) return E_FAIL;
 		SDL_SetTextureBlendMode(m_Texture, SDL_BLENDMODE_BLEND);
 		SDL_SetRenderTarget(m_Renderer, m_Texture);
+		SDL_RenderSetViewport(m_Renderer, NULL);
 
 		m_PixelPerfectTargetRect.x = m_BorderLeft;
 		m_PixelPerfectTargetRect.y = m_BorderTop;
@@ -313,7 +314,7 @@ HRESULT CBRenderSDL::InitRenderer(int width, int height, bool windowed, float up
 	} else {
 		m_RenderOffscreen = false;
 
-		SDL_RenderSetViewport(GetSdlRenderer(), NULL);
+		SDL_RenderSetViewport(m_Renderer, NULL);
 
 		Game->LOG(0, "PixelPerfect rendering disabled!");
 	}
@@ -347,10 +348,11 @@ HRESULT CBRenderSDL::SendRenderingHintSceneComplete()
 	if (m_PixelPerfect == true) {
 		if (m_RenderOffscreen == true) {
 			SDL_SetRenderTarget(m_Renderer, NULL);
+			SDL_RenderSetViewport(m_Renderer, NULL);
 			SDL_RenderCopy(m_Renderer, m_Texture, NULL, &m_PixelPerfectTargetRect);
 
 #ifndef __IPHONEOS__
-			SDL_RenderSetViewport(GetSdlRenderer(), &m_PixelPerfectTargetRect);
+			SDL_RenderSetViewport(m_Renderer, &m_PixelPerfectTargetRect);
 #endif
 
 			m_RenderOffscreen = false;
@@ -487,8 +489,8 @@ HRESULT CBRenderSDL::EraseBackground()
 	// in case of pixelperfect rendering, both on- and offscreen
 	// image need to be erased
 	if (m_PixelPerfect == true) {
-		SDL_RenderSetViewport(GetSdlRenderer(), NULL);
 		SDL_SetRenderTarget(m_Renderer, m_Texture);
+		SDL_RenderSetViewport(m_Renderer, NULL);
 		Fill(0, 0, 0, NULL);
 		m_RenderOffscreen = true;
 	} else {
