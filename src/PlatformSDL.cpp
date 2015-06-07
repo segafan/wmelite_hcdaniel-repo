@@ -41,6 +41,10 @@ THE SOFTWARE.
 #	include "android/android.h"
 #endif
 
+#ifdef __MACOSX__
+#   include <locale.h>
+#endif
+
 CBGame* CBPlatform::Game = NULL;
 
 
