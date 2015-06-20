@@ -8,24 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
-		1E3C29F2175B54D200B79FCB /* VidDataSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3C29EC175B54D200B79FCB /* VidDataSource.cpp */; };
-		1E3C29F3175B54D200B79FCB /* VidManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3C29EE175B54D200B79FCB /* VidManager.cpp */; };
-		1E3C29F4175B54D200B79FCB /* VidTheoraPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3C29F0175B54D200B79FCB /* VidTheoraPlayer.cpp */; };
 		1E3D7C3A1743F0F20038FD9C /* SXStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1E3D7C381743F0F20038FD9C /* SXStore.cpp */; };
 		1E3D7C3C1743F21F0038FD9C /* data.dcp in Resources */ = {isa = PBXBuildFile; fileRef = 1E3D7C3B1743F21F0038FD9C /* data.dcp */; };
 		1E6BAC9A1787006B0017D579 /* DirectoryOperations.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E6BAC961787006B0017D579 /* DirectoryOperations.c */; };
 		1E6BAC9B1787006B0017D579 /* FileOperations.c in Sources */ = {isa = PBXBuildFile; fileRef = 1E6BAC981787006B0017D579 /* FileOperations.c */; };
 		1EDECB6817456DB5008020C3 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6717456DB5008020C3 /* SDL2.framework */; };
 		1EDECB6917456DBD008020C3 /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6717456DB5008020C3 /* SDL2.framework */; };
-		1EDECB6E17456EE4008020C3 /* Ogg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6A17456EE4008020C3 /* Ogg.framework */; };
-		1EDECB6F17456EE4008020C3 /* Theora.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6B17456EE4008020C3 /* Theora.framework */; };
-		1EDECB7017456EE4008020C3 /* theoraplayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6C17456EE4008020C3 /* theoraplayer.framework */; };
-		1EDECB7117456EE4008020C3 /* Vorbis.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6D17456EE4008020C3 /* Vorbis.framework */; };
-		1EDECB7217456EF1008020C3 /* Ogg.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6A17456EE4008020C3 /* Ogg.framework */; };
-		1EDECB7317456EF1008020C3 /* Theora.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6B17456EE4008020C3 /* Theora.framework */; };
-		1EDECB7417456EF1008020C3 /* theoraplayer.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6C17456EE4008020C3 /* theoraplayer.framework */; };
-		1EDECB7517456EF1008020C3 /* Vorbis.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1EDECB6D17456EE4008020C3 /* Vorbis.framework */; };
-		469841EA1351DA2B00E5CCEF /* libbass.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 46D40F76134A5D67002829D8 /* libbass.dylib */; };
 		46D40E4D134A44DC002829D8 /* AdActor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D40D66134A44DB002829D8 /* AdActor.cpp */; };
 		46D40E4E134A44DC002829D8 /* AdActorDir.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D40D68134A44DB002829D8 /* AdActorDir.cpp */; };
 		46D40E4F134A44DC002829D8 /* AdEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D40D6A134A44DB002829D8 /* AdEntity.cpp */; };
@@ -90,8 +78,6 @@
 		46D40E8A134A44DC002829D8 /* BScriptable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D40DE1134A44DB002829D8 /* BScriptable.cpp */; };
 		46D40E8B134A44DC002829D8 /* BScriptHolder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D40DE3134A44DB002829D8 /* BScriptHolder.cpp */; };
 		46D40E8C134A44DC002829D8 /* BSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D40DE5134A44DB002829D8 /* BSound.cpp */; };
-		46D40E8D134A44DC002829D8 /* BSoundBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D40DE7134A44DB002829D8 /* BSoundBuffer.cpp */; };
-		46D40E8E134A44DC002829D8 /* BSoundMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D40DE9134A44DB002829D8 /* BSoundMgr.cpp */; };
 		46D40E8F134A44DC002829D8 /* BSprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D40DEB134A44DB002829D8 /* BSprite.cpp */; };
 		46D40E90134A44DC002829D8 /* BStringTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D40DED134A44DB002829D8 /* BStringTable.cpp */; };
 		46D40E91134A44DC002829D8 /* BSubFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D40DEF134A44DB002829D8 /* BSubFrame.cpp */; };
@@ -141,8 +127,10 @@
 		46D40EBD134A44DC002829D8 /* Vector2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46D40E49134A44DC002829D8 /* Vector2.cpp */; };
 		46D40F6C134A5D0F002829D8 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46D40F6B134A5D0F002829D8 /* libz.a */; };
 		46D40F72134A5D45002829D8 /* libfreeimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46D40F71134A5D45002829D8 /* libfreeimage.a */; };
-		46D40F77134A5D67002829D8 /* libbass.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 46D40F76134A5D67002829D8 /* libbass.dylib */; };
 		46D40F79134A5D92002829D8 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46D40F78134A5D92002829D8 /* libfreetype.a */; };
+		656744151B35B06F00D96DAD /* SDL2_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 656744141B35B06F00D96DAD /* SDL2_mixer.framework */; };
+		6567454E1B35BB3A00D96DAD /* BSoundBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6567454C1B35BB3A00D96DAD /* BSoundBuffer.cpp */; };
+		6567454F1B35BB3A00D96DAD /* BSoundMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6567454D1B35BB3A00D96DAD /* BSoundMgr.cpp */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
@@ -154,12 +142,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				469841EA1351DA2B00E5CCEF /* libbass.dylib in Copy Frameworks */,
 				1EDECB6917456DBD008020C3 /* SDL2.framework in Copy Frameworks */,
-				1EDECB7217456EF1008020C3 /* Ogg.framework in Copy Frameworks */,
-				1EDECB7317456EF1008020C3 /* Theora.framework in Copy Frameworks */,
-				1EDECB7417456EF1008020C3 /* theoraplayer.framework in Copy Frameworks */,
-				1EDECB7517456EF1008020C3 /* Vorbis.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -171,12 +154,6 @@
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		1E3C29EC175B54D200B79FCB /* VidDataSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VidDataSource.cpp; path = ../../src/VidDataSource.cpp; sourceTree = "<group>"; };
-		1E3C29ED175B54D200B79FCB /* VidDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VidDataSource.h; path = ../../src/VidDataSource.h; sourceTree = "<group>"; };
-		1E3C29EE175B54D200B79FCB /* VidManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VidManager.cpp; path = ../../src/VidManager.cpp; sourceTree = "<group>"; };
-		1E3C29EF175B54D200B79FCB /* VidManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VidManager.h; path = ../../src/VidManager.h; sourceTree = "<group>"; };
-		1E3C29F0175B54D200B79FCB /* VidTheoraPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VidTheoraPlayer.cpp; path = ../../src/VidTheoraPlayer.cpp; sourceTree = "<group>"; };
-		1E3C29F1175B54D200B79FCB /* VidTheoraPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VidTheoraPlayer.h; path = ../../src/VidTheoraPlayer.h; sourceTree = "<group>"; };
 		1E3D7C381743F0F20038FD9C /* SXStore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SXStore.cpp; path = ../../src/SXStore.cpp; sourceTree = "<group>"; };
 		1E3D7C391743F0F20038FD9C /* SXStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SXStore.h; path = ../../src/SXStore.h; sourceTree = "<group>"; };
 		1E3D7C3B1743F21F0038FD9C /* data.dcp */ = {isa = PBXFileReference; lastKnownFileType = file; path = data.dcp; sourceTree = "<group>"; };
@@ -185,10 +162,6 @@
 		1E6BAC981787006B0017D579 /* FileOperations.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = FileOperations.c; path = ../../src/FileOperations.c; sourceTree = "<group>"; };
 		1E6BAC991787006B0017D579 /* FileOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileOperations.h; path = ../../src/FileOperations.h; sourceTree = "<group>"; };
 		1EDECB6717456DB5008020C3 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../dep/SDL/SDL2.framework; sourceTree = "<group>"; };
-		1EDECB6A17456EE4008020C3 /* Ogg.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Ogg.framework; path = ../dep/libtheoraplayer/Ogg.framework; sourceTree = "<group>"; };
-		1EDECB6B17456EE4008020C3 /* Theora.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Theora.framework; path = ../dep/libtheoraplayer/Theora.framework; sourceTree = "<group>"; };
-		1EDECB6C17456EE4008020C3 /* theoraplayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = theoraplayer.framework; path = ../dep/libtheoraplayer/theoraplayer.framework; sourceTree = "<group>"; };
-		1EDECB6D17456EE4008020C3 /* Vorbis.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vorbis.framework; path = ../dep/libtheoraplayer/Vorbis.framework; sourceTree = "<group>"; };
 		256AC3F00F4B6AF500CF3369 /* wmelite_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wmelite_Prefix.pch; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -321,9 +294,7 @@
 		46D40DE4134A44DB002829D8 /* BScriptHolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BScriptHolder.h; path = ../../src/BScriptHolder.h; sourceTree = SOURCE_ROOT; };
 		46D40DE5134A44DB002829D8 /* BSound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BSound.cpp; path = ../../src/BSound.cpp; sourceTree = SOURCE_ROOT; };
 		46D40DE6134A44DB002829D8 /* BSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSound.h; path = ../../src/BSound.h; sourceTree = SOURCE_ROOT; };
-		46D40DE7134A44DB002829D8 /* BSoundBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BSoundBuffer.cpp; path = ../../src/BSoundBuffer.cpp; sourceTree = SOURCE_ROOT; };
 		46D40DE8134A44DB002829D8 /* BSoundBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSoundBuffer.h; path = ../../src/BSoundBuffer.h; sourceTree = SOURCE_ROOT; };
-		46D40DE9134A44DB002829D8 /* BSoundMgr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BSoundMgr.cpp; path = ../../src/BSoundMgr.cpp; sourceTree = SOURCE_ROOT; };
 		46D40DEA134A44DB002829D8 /* BSoundMgr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSoundMgr.h; path = ../../src/BSoundMgr.h; sourceTree = SOURCE_ROOT; };
 		46D40DEB134A44DB002829D8 /* BSprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BSprite.cpp; path = ../../src/BSprite.cpp; sourceTree = SOURCE_ROOT; };
 		46D40DEC134A44DB002829D8 /* BSprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BSprite.h; path = ../../src/BSprite.h; sourceTree = SOURCE_ROOT; };
@@ -425,8 +396,10 @@
 		46D40E4C134A44DC002829D8 /* wme_debugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = wme_debugger.h; path = ../../src/wme_debugger.h; sourceTree = SOURCE_ROOT; };
 		46D40F6B134A5D0F002829D8 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../dep/zlib/lib/libz.a; sourceTree = SOURCE_ROOT; };
 		46D40F71134A5D45002829D8 /* libfreeimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreeimage.a; path = ../dep/FreeImage/lib/libfreeimage.a; sourceTree = SOURCE_ROOT; };
-		46D40F76134A5D67002829D8 /* libbass.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbass.dylib; path = ../dep/bass/lib/libbass.dylib; sourceTree = SOURCE_ROOT; };
 		46D40F78134A5D92002829D8 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../dep/freetype/lib/libfreetype.a; sourceTree = SOURCE_ROOT; };
+		656744141B35B06F00D96DAD /* SDL2_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_mixer.framework; path = ../dep/SDL_mixer/SDL2_mixer.framework; sourceTree = "<group>"; };
+		6567454C1B35BB3A00D96DAD /* BSoundBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BSoundBuffer.cpp; path = ../../src/snd_SDL_mixer/BSoundBuffer.cpp; sourceTree = "<group>"; };
+		6567454D1B35BB3A00D96DAD /* BSoundMgr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BSoundMgr.cpp; path = ../../src/snd_SDL_mixer/BSoundMgr.cpp; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* wmelite-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "wmelite-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* WME Lite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WME Lite.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -436,16 +409,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				656744151B35B06F00D96DAD /* SDL2_mixer.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				46D40F6C134A5D0F002829D8 /* libz.a in Frameworks */,
 				46D40F72134A5D45002829D8 /* libfreeimage.a in Frameworks */,
-				46D40F77134A5D67002829D8 /* libbass.dylib in Frameworks */,
 				46D40F79134A5D92002829D8 /* libfreetype.a in Frameworks */,
 				1EDECB6817456DB5008020C3 /* SDL2.framework in Frameworks */,
-				1EDECB6E17456EE4008020C3 /* Ogg.framework in Frameworks */,
-				1EDECB6F17456EE4008020C3 /* Theora.framework in Frameworks */,
-				1EDECB7017456EE4008020C3 /* theoraplayer.framework in Frameworks */,
-				1EDECB7117456EE4008020C3 /* Vorbis.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -459,12 +428,6 @@
 				1E6BAC971787006B0017D579 /* DirectoryOperations.h */,
 				1E6BAC981787006B0017D579 /* FileOperations.c */,
 				1E6BAC991787006B0017D579 /* FileOperations.h */,
-				1E3C29EC175B54D200B79FCB /* VidDataSource.cpp */,
-				1E3C29ED175B54D200B79FCB /* VidDataSource.h */,
-				1E3C29EE175B54D200B79FCB /* VidManager.cpp */,
-				1E3C29EF175B54D200B79FCB /* VidManager.h */,
-				1E3C29F0175B54D200B79FCB /* VidTheoraPlayer.cpp */,
-				1E3C29F1175B54D200B79FCB /* VidTheoraPlayer.h */,
 				1E3D7C381743F0F20038FD9C /* SXStore.cpp */,
 				1E3D7C391743F0F20038FD9C /* SXStore.h */,
 				46D40D66134A44DB002829D8 /* AdActor.cpp */,
@@ -596,9 +559,7 @@
 				46D40DE4134A44DB002829D8 /* BScriptHolder.h */,
 				46D40DE5134A44DB002829D8 /* BSound.cpp */,
 				46D40DE6134A44DB002829D8 /* BSound.h */,
-				46D40DE7134A44DB002829D8 /* BSoundBuffer.cpp */,
 				46D40DE8134A44DB002829D8 /* BSoundBuffer.h */,
-				46D40DE9134A44DB002829D8 /* BSoundMgr.cpp */,
 				46D40DEA134A44DB002829D8 /* BSoundMgr.h */,
 				46D40DEB134A44DB002829D8 /* BSprite.cpp */,
 				46D40DEC134A44DB002829D8 /* BSprite.h */,
@@ -705,7 +666,6 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				46D40F76134A5D67002829D8 /* libbass.dylib */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 			);
 			name = "Linked Frameworks";
@@ -732,6 +692,8 @@
 		29B97314FDCFA39411CA2CEA /* wmelite */ = {
 			isa = PBXGroup;
 			children = (
+				6567454C1B35BB3A00D96DAD /* BSoundBuffer.cpp */,
+				6567454D1B35BB3A00D96DAD /* BSoundMgr.cpp */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -763,10 +725,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1EDECB6A17456EE4008020C3 /* Ogg.framework */,
-				1EDECB6B17456EE4008020C3 /* Theora.framework */,
-				1EDECB6C17456EE4008020C3 /* theoraplayer.framework */,
-				1EDECB6D17456EE4008020C3 /* Vorbis.framework */,
+				656744141B35B06F00D96DAD /* SDL2_mixer.framework */,
 				1EDECB6717456DB5008020C3 /* SDL2.framework */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
@@ -891,6 +850,7 @@
 				46D40E68134A44DC002829D8 /* BActiveRect.cpp in Sources */,
 				46D40E69134A44DC002829D8 /* BBase.cpp in Sources */,
 				46D40E6A134A44DC002829D8 /* BDebugger.cpp in Sources */,
+				6567454E1B35BB3A00D96DAD /* BSoundBuffer.cpp in Sources */,
 				46D40E6B134A44DC002829D8 /* BDiskFile.cpp in Sources */,
 				46D40E6C134A44DC002829D8 /* BDynBuffer.cpp in Sources */,
 				46D40E6D134A44DC002829D8 /* BEvent.cpp in Sources */,
@@ -901,6 +861,7 @@
 				46D40E72134A44DC002829D8 /* BFont.cpp in Sources */,
 				46D40E73134A44DC002829D8 /* BFontBitmap.cpp in Sources */,
 				46D40E74134A44DC002829D8 /* BFontStorage.cpp in Sources */,
+				6567454F1B35BB3A00D96DAD /* BSoundMgr.cpp in Sources */,
 				46D40E75134A44DC002829D8 /* BFontTT.cpp in Sources */,
 				46D40E76134A44DC002829D8 /* BFrame.cpp in Sources */,
 				46D40E77134A44DC002829D8 /* BGame.cpp in Sources */,
@@ -925,8 +886,6 @@
 				46D40E8A134A44DC002829D8 /* BScriptable.cpp in Sources */,
 				46D40E8B134A44DC002829D8 /* BScriptHolder.cpp in Sources */,
 				46D40E8C134A44DC002829D8 /* BSound.cpp in Sources */,
-				46D40E8D134A44DC002829D8 /* BSoundBuffer.cpp in Sources */,
-				46D40E8E134A44DC002829D8 /* BSoundMgr.cpp in Sources */,
 				46D40E8F134A44DC002829D8 /* BSprite.cpp in Sources */,
 				46D40E90134A44DC002829D8 /* BStringTable.cpp in Sources */,
 				46D40E91134A44DC002829D8 /* BSubFrame.cpp in Sources */,
@@ -975,9 +934,6 @@
 				46D40EBC134A44DC002829D8 /* utils.cpp in Sources */,
 				46D40EBD134A44DC002829D8 /* Vector2.cpp in Sources */,
 				1E3D7C3A1743F0F20038FD9C /* SXStore.cpp in Sources */,
-				1E3C29F2175B54D200B79FCB /* VidDataSource.cpp in Sources */,
-				1E3C29F3175B54D200B79FCB /* VidManager.cpp in Sources */,
-				1E3C29F4175B54D200B79FCB /* VidTheoraPlayer.cpp in Sources */,
 				1E6BAC9A1787006B0017D579 /* DirectoryOperations.c in Sources */,
 				1E6BAC9B1787006B0017D579 /* FileOperations.c in Sources */,
 			);
@@ -1009,7 +965,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LIBRARY = "libstdc++";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_WARN_EMPTY_BODY = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -1017,6 +974,8 @@
 					/Library/Frameworks,
 					"\"$(SRCROOT)/../dep/SDL\"",
 					"\"$(SRCROOT)/../dep/libtheoraplayer\"",
+					"/Users/daniel/wmelite-rapaki-edition/xcode/dep/SDL_mixer",
+					"$(SRCROOT)/../dep/SDL_mixer",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
@@ -1027,11 +986,12 @@
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = NO;
 				HEADER_SEARCH_PATHS = (
 					../dep/SDL/SDL2.framework/Headers,
-					../dep/bass/include,
 					../dep/freetype/include,
 					../dep/FreeImage/include,
 					../dep/zlib/include,
-					../dep/libtheoraplayer/theoraplayer.framework/Headers,
+					../dep/SDL_mixer/SDL2_mixer.framework/Headers,
+					../dep/libeffects/,
+					../dep/libecho/,
 				);
 				INFOPLIST_FILE = "wmelite-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
@@ -1039,11 +999,14 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../dep/zlib/lib\"",
 					"\"$(SRCROOT)/../dep/FreeImage/lib\"",
-					"\"$(SRCROOT)/../dep/bass/lib\"",
 					"\"$(SRCROOT)/../dep/freetype/lib\"",
 				);
+				OTHER_CFLAGS = (
+					"-DUSE_SDL_MIXER",
+					"-D__EXCLUDE_LIBTHEORA_PLAYER__",
+				);
 				PRODUCT_NAME = "WME Lite";
-				SDKROOT = "";
+				SDKROOT = macosx;
 				WARNING_CFLAGS = "-Wno-deprecated-writable-strings";
 			};
 			name = Debug;
@@ -1053,7 +1016,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_WARN_EMPTY_BODY = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1061,6 +1024,8 @@
 					/Library/Frameworks,
 					"\"$(SRCROOT)/../dep/SDL\"",
 					"\"$(SRCROOT)/../dep/libtheoraplayer\"",
+					"/Users/daniel/wmelite-rapaki-edition/xcode/dep/SDL_mixer",
+					"$(SRCROOT)/../dep/SDL_mixer",
 				);
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1069,11 +1034,12 @@
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = NO;
 				HEADER_SEARCH_PATHS = (
 					../dep/SDL/SDL2.framework/Headers,
-					../dep/bass/include,
 					../dep/freetype/include,
 					../dep/FreeImage/include,
 					../dep/zlib/include,
-					../dep/libtheoraplayer/theoraplayer.framework/Headers,
+					../dep/SDL_mixer/SDL2_mixer.framework/Headers,
+					../dep/libeffects/,
+					../dep/libecho/,
 				);
 				INFOPLIST_FILE = "wmelite-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
@@ -1081,11 +1047,14 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../dep/zlib/lib\"",
 					"\"$(SRCROOT)/../dep/FreeImage/lib\"",
-					"\"$(SRCROOT)/../dep/bass/lib\"",
 					"\"$(SRCROOT)/../dep/freetype/lib\"",
 				);
+				OTHER_CFLAGS = (
+					"-DUSE_SDL_MIXER",
+					"-D__EXCLUDE_LIBTHEORA_PLAYER__",
+				);
 				PRODUCT_NAME = "WME Lite";
-				SDKROOT = "";
+				SDKROOT = macosx;
 				VALID_ARCHS = i386;
 				WARNING_CFLAGS = "-Wno-deprecated-writable-strings";
 			};
